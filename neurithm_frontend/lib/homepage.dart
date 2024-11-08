@@ -45,7 +45,6 @@ class HomePage extends StatelessWidget {
             end: Alignment.bottomCenter,
             colors: [
               Color.fromARGB(255, 79, 114, 190), // stat color (lighter blue)
-              // Color(0xFF283E4A), // middle transitional color
               Color(0xFF1A2A3A), // end color (dark blue)
             ],
           ),
@@ -122,11 +121,41 @@ class HomePage extends StatelessWidget {
               right: 20,
               bottom: 50,
               child: Image.asset(
-                'assets/images/brainsignals.png', 
+                'assets/images/brainsignals.png',
                 height: 200,
               ),
             ),
           ],
+        ),
+      ),
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.all(1.0), // Adds spacing around the navbar
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(15.0), // Adjust for rounded corners
+          child: BottomNavigationBar(
+        backgroundColor: Color.fromARGB(255, 70, 100, 166),// Matching color with dark blue gradient
+        selectedItemColor: Color.fromARGB(255, 255, 255, 255), // Light blue for selected icon
+        unselectedItemColor: Color.fromARGB(255, 168, 167, 167), // Gray for unselected icons
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.devices),
+            label: 'Devices',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.settings),
+            label: 'Settings',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.history),
+            label: 'History',
+              ),
+            ],
+            type: BottomNavigationBarType.fixed,
+          ),
         ),
       ),
     );
