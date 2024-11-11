@@ -1,10 +1,21 @@
 import 'package:flutter/material.dart';
+import '../widgets/appbar.dart';
+import '../widgets/bottombar.dart';
 
 class HomePage extends StatelessWidget {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
+
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+
+    double fontSize(double size) =>
+        size * screenWidth / 400; 
+    double spacing(double size) =>
+        size * screenHeight / 800; 
+
     return Scaffold(
       key: _scaffoldKey,
       drawer: sideAppBar(context),
@@ -16,184 +27,186 @@ class HomePage extends StatelessWidget {
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
               colors: [
-                Color.fromARGB(255, 79, 114, 190), // stat color (lighter blue)
+                Color.fromARGB(255, 79, 114, 190), // start color (lighter blue)
                 Color(0xFF1A2A3A), // end color (dark blue)
               ],
             ),
           ),
           child: Stack(
             children: [
+              // Waves Image with transparency
+              Positioned.fill(
+                child: Opacity(
+                  opacity: 0.50, // Adjust opacity as desired
+                  child: Image.asset(
+                    'assets/images/waves.jpg', // Your waves image path
+                    fit: BoxFit.fitHeight,
+                    
+                  ),
+                ),
+              ),
+
               Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 15, vertical: 55.0),
+                padding: EdgeInsets.symmetric(
+                  horizontal: spacing(10),
+                  vertical: spacing(50),
+                ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Drawer Navbar
-                    navBar(_scaffoldKey),
-                    const SizedBox(height: 60),
-                    const Padding(
-                      padding: EdgeInsets.only(left: 10.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text("Welcome,",
-                              style: TextStyle(
-                                fontSize: 25,
-                                fontFamily: 'Lato',
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white,
-                              )),
-                          Text("Potenial User",
-                              style: TextStyle(
-                                fontSize: 35,
-                                color: Colors.white,
-                              )),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                            SizedBox(width: 100),
-                              SizedBox(
-                                width: 150,
-                                height: 150,
-                                child: DecoratedBox(
+                    // Drawer appBar
+                    appBar(_scaffoldKey),
+                    SizedBox(height: spacing(20)),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: spacing(15)),
+                      child: Center(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            SizedBox(
+                              width: screenWidth * 0.75, // 75% of screen width
+                              height: screenHeight * 0.4, // 40% of screen height
+                              child: Padding(
+                                padding: EdgeInsets.all(spacing(20)),
+                                child: const DecoratedBox(
                                   decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Color(0x3F000000),
+                                        offset: Offset(2, 4),
+                                        blurRadius: 6,
+                                        spreadRadius: 10,
+                                      ),
+                                    ],
                                     image: DecorationImage(
                                       image: AssetImage(
-                                          'assets/images/brainsignals.png'),
-                                      fit: BoxFit
-                                          .cover, // You can adjust the fit to your needs
+                                        'assets/images/brainsignals.png',
+                                      ),
+                                      fit: BoxFit.contain,
                                     ),
                                   ),
                                 ),
-                              )
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 100,
-                    ),
-                    // Intro
-                    Center(
-                      child: Column(
-                        children: [
-                          const Text(
-                            "Voice Your Mind",
-                            style: TextStyle(
-                              fontSize: 32,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                            ),
-                          ),
-                          const SizedBox(height: 20),
-                          const Text(
-                            "Transform your thoughts into speech effortlessly.",
-                            style:
-                                TextStyle(fontSize: 15, color: Colors.white60),
-                          ),
-                          const SizedBox(height: 30),
-
-                          //start speaking button
-                          ElevatedButton(
-                            onPressed: () {},
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor:
-                                  const Color.fromARGB(255, 240, 240, 240),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20),
                               ),
                             ),
-                            child: const Text(
-                              "Start Speaking Now",
+                            SizedBox(height: spacing(10)),
+                            Text(
+                              "Welcome, Potential User",
                               style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.bold,
-                                color: Color(0xFF1A2A3A),
+                                fontSize: fontSize(30),
+                                color: Colors.white,
+                                fontWeight: FontWeight.normal,
                               ),
                             ),
-                          ),
-                        ],
+                            Text(
+                              "Voice Your Mind Effortlessly",
+                              style: TextStyle(
+                                fontSize: fontSize(22),
+                                fontFamily: 'Lato',
+                                color: const Color.fromARGB(255, 206, 206, 206),
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
+                    SizedBox(height: spacing(20)),
+                    Center(
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(horizontal: spacing(10.0)),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            SizedBox(
+                              width: double.infinity,
+                              child: ElevatedButton(
+                                onPressed: () {},
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: const Color.fromARGB(255, 240, 240, 240),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(50),
+                                  ),
+                                  padding: const EdgeInsets.symmetric(vertical: 12),
+                                ),
+                                child: const Text(
+                                  "Start Speaking Now",
+                                  style: TextStyle(
+                                    fontSize: 28,
+                                    fontWeight: FontWeight.normal,
+                                    color: Color(0xFF1A2A3A),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 15),
 
-                    const SizedBox(height: 30),
+                            // Help & Guide button
+                            SizedBox(
+                              width: double.infinity,
+                              child: ElevatedButton(
+                                onPressed: () {},
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: const Color.fromARGB(255, 240, 240, 240),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(50),
+                                  ),
+                                  padding: const EdgeInsets.symmetric(vertical: 12),
+                                ),
+                                child: const Text(
+                                  "Help & Guide",
+                                  style: TextStyle(
+                                    fontSize: 28,
+                                    fontWeight: FontWeight.normal,
+                                    color: Color(0xFF1A2A3A),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: spacing(30)),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text(
+                        Text(
                           "History",
                           style: TextStyle(
                             fontFamily: 'Lato',
-                            fontSize: 30,
+                            fontSize: fontSize(30),
                             fontWeight: FontWeight.bold,
-                            color: Color.fromARGB(255, 206, 206, 206),
+                            color: const Color.fromARGB(255, 206, 206, 206),
                           ),
                         ),
                         IconButton(
-                          icon: const Icon(Icons.arrow_forward_ios,
-                              color: Color.fromARGB(255, 206, 206, 206)),
+                          icon: const Icon(Icons.arrow_forward_ios, color: Color.fromARGB(255, 206, 206, 206)),
                           onPressed: () {},
                         )
                       ],
                     ),
-                    const SizedBox(height: 15),
+                    SizedBox(height: spacing(15)),
                     SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 5.0),
-                              child: Container(
-                                height: 100,
-                                width: 150,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(10),
-                                  color: Colors.black.withOpacity(0.12),
-                                ),
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: List.generate(
+                          4,
+                          (index) => Padding(
+                            padding: EdgeInsets.symmetric(horizontal: spacing(5)),
+                            child: Container(
+                              height: spacing(100),
+                              width: screenWidth * 0.35, // 35% of screen width
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
+                                color: Colors.black.withOpacity(0.12),
                               ),
                             ),
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 5.0),
-                              child: Container(
-                                height: 100,
-                                width: 150,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(10),
-                                  color: Colors.black.withOpacity(0.12),
-                                ),
-                              ),
-                            ),
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 5.0),
-                              child: Container(
-                                height: 100,
-                                width: 150,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(10),
-                                  color: Colors.black.withOpacity(0.12),
-                                ),
-                              ),
-                            ),
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 5.0),
-                              child: Container(
-                                height: 100,
-                                width: 150,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(10),
-                                  color: Colors.black.withOpacity(0.12),
-                                ),
-                              ),
-                            )
-                          ],
-                        ))
+                          ),
+                        ),
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -202,101 +215,12 @@ class HomePage extends StatelessWidget {
         ),
       ),
       bottomNavigationBar: Padding(
-        padding: const EdgeInsets.all(1.0), // Adds spacing around the navbar
+        padding: EdgeInsets.all(spacing(5)),
         child: ClipRRect(
-            borderRadius:
-                BorderRadius.circular(15.0), // Adjust for rounded corners
-            child: bottomNavbar()),
+          borderRadius: BorderRadius.circular(15.0),
+          child: bottomappBar(),
+        ),
       ),
     );
   }
-}
-
-Row navBar(_scaffoldKey) {
-  return Row(
-    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-    children: [
-      IconButton(
-        icon: const Icon(Icons.menu, color: Color.fromARGB(255, 206, 206, 206)),
-        onPressed: () {
-          _scaffoldKey.currentState?.openDrawer();
-        },
-      ),
-      const Text(
-        "Neurithm",
-        style: TextStyle(
-          color: Color.fromARGB(255, 206, 206, 206),
-          fontSize: 25,
-          fontWeight: FontWeight.normal,
-          fontFamily: 'Vonique',
-        ),
-      ),
-      // SizedBox(width: 20,) lw ayza title centered
-    ],
-  );
-}
-
-Drawer sideAppBar(context) {
-  return Drawer(
-    child: ListView(
-      padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 60.0),
-      
-      children: <Widget>[
-        ListTile(
-          title: const Text('About'),
-          onTap: () {
-            Navigator.pop(context);
-          },
-        ),
-        ListTile(
-          title: const Text('Contact'),
-          onTap: () {
-            Navigator.pop(context);
-          },
-        ),
-        ListTile(
-          title: const Text('Pricing'),
-          onTap: () {
-            Navigator.pop(context);
-          },
-        ),
-        ListTile(
-          title: const Text('Sign In'),
-          onTap: () {
-            Navigator.pop(context);
-          },
-        ),
-      ],
-    ),
-  );
-}
-
-BottomNavigationBar bottomNavbar() {
-  return BottomNavigationBar(
-    backgroundColor: Color.fromARGB(
-        255, 70, 100, 166), // Matching color with dark blue gradient
-    selectedItemColor:
-        Color.fromARGB(255, 255, 255, 255), // Light blue for selected icon
-    unselectedItemColor:
-        Color.fromARGB(255, 168, 167, 167), // Gray for unselected icons
-    items: const [
-      BottomNavigationBarItem(
-        icon: Icon(Icons.home),
-        label: 'Home',
-      ),
-      BottomNavigationBarItem(
-        icon: Icon(Icons.devices),
-        label: 'Devices',
-      ),
-      BottomNavigationBarItem(
-        icon: Icon(Icons.settings),
-        label: 'Settings',
-      ),
-      BottomNavigationBarItem(
-        icon: Icon(Icons.history),
-        label: 'History',
-      ),
-    ],
-    type: BottomNavigationBarType.fixed,
-  );
 }
