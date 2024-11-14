@@ -1,24 +1,34 @@
 import 'package:flutter/material.dart';
 import '../widgets/appbar.dart';
 import '../widgets/bottombar.dart';
+import '../screens/history.dart';
+import '../screens/devices.dart';
+import '../screens/settings.dart';
 
 class HomePage extends StatelessWidget {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
+ 
+  
+
   @override
   Widget build(BuildContext context) {
-
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
 
-    double fontSize(double size) =>
-        size * screenWidth / 400; 
-    double spacing(double size) =>
-        size * screenHeight / 800; 
+    double fontSize(double size) => size * screenWidth / 400;
+    double spacing(double size) => size * screenHeight / 800;
 
     return Scaffold(
       key: _scaffoldKey,
       drawer: sideAppBar(context),
+      bottomNavigationBar: Padding(
+        padding: EdgeInsets.all(spacing(5)),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(15.0),
+          child: bottomappBar(context),
+        ),
+      ),
       body: SingleChildScrollView(
         scrollDirection: Axis.vertical,
         child: Container(
@@ -27,25 +37,22 @@ class HomePage extends StatelessWidget {
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
               colors: [
-                Color.fromARGB(255, 79, 114, 190), // start color (lighter blue)
-                Color(0xFF1A2A3A), // end color (dark blue)
+                Color.fromARGB(255, 79, 114, 190),
+                Color(0xFF1A2A3A),
               ],
             ),
           ),
           child: Stack(
             children: [
-              // Waves Image with transparency
               Positioned.fill(
                 child: Opacity(
-                  opacity: 0.50, // Adjust opacity as desired
+                  opacity: 0.50,
                   child: Image.asset(
-                    'assets/images/waves.jpg', // Your waves image path
+                    'assets/images/waves.jpg',
                     fit: BoxFit.fitHeight,
-                    
                   ),
                 ),
               ),
-
               Padding(
                 padding: EdgeInsets.symmetric(
                   horizontal: spacing(10),
@@ -54,7 +61,6 @@ class HomePage extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Drawer appBar
                     appBar(_scaffoldKey),
                     SizedBox(height: spacing(20)),
                     Padding(
@@ -64,8 +70,8 @@ class HomePage extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             SizedBox(
-                              width: screenWidth * 0.75, // 75% of screen width
-                              height: screenHeight * 0.4, // 40% of screen height
+                              width: screenWidth * 0.75,
+                              height: screenHeight * 0.4,
                               child: Padding(
                                 padding: EdgeInsets.all(spacing(20)),
                                 child: const DecoratedBox(
@@ -140,8 +146,6 @@ class HomePage extends StatelessWidget {
                               ),
                             ),
                             const SizedBox(height: 15),
-
-                            // Help & Guide button
                             SizedBox(
                               width: double.infinity,
                               child: ElevatedButton(
@@ -197,7 +201,7 @@ class HomePage extends StatelessWidget {
                             padding: EdgeInsets.symmetric(horizontal: spacing(5)),
                             child: Container(
                               height: spacing(100),
-                              width: screenWidth * 0.35, // 35% of screen width
+                              width: screenWidth * 0.35,
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(10),
                                 color: Colors.black.withOpacity(0.12),
@@ -212,13 +216,6 @@ class HomePage extends StatelessWidget {
               ),
             ],
           ),
-        ),
-      ),
-      bottomNavigationBar: Padding(
-        padding: EdgeInsets.all(spacing(5)),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(15.0),
-          child: bottomappBar(),
         ),
       ),
     );

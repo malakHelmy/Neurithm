@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
-import '../screens/history.dart'; 
-import '../screens/homepage.dart'; 
-import '../screens/devices.dart'; 
-import '../screens/settings.dart'; 
+import '../screens/history.dart';
+import '../screens/homepage.dart';
+import '../screens/devices.dart';
+import '../screens/settings.dart';
 
-
-class HomeScreen extends StatelessWidget {
-  void _onItemTapped(BuildContext context, int index) {
+BottomNavigationBar bottomappBar(BuildContext context) {
+  void _onItemTapped(int index) {
     switch (index) {
       case 0:
         Navigator.push(
@@ -35,34 +34,29 @@ class HomeScreen extends StatelessWidget {
     }
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: const Color.fromARGB(255, 70, 100, 166),
-        selectedItemColor: const Color.fromARGB(255, 255, 255, 255),
-        unselectedItemColor: const Color.fromARGB(255, 168, 167, 167),
-        onTap: (index) => _onItemTapped(context, index),
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.devices),
-            label: 'Devices',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.settings),
-            label: 'Settings',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.history),
-            label: 'History',
-          ),
-        ],
-        type: BottomNavigationBarType.fixed,
+  return BottomNavigationBar(
+    backgroundColor: Color.fromARGB(255, 70, 100, 166),
+    selectedItemColor: Color.fromARGB(255, 255, 255, 255),
+    unselectedItemColor: Color.fromARGB(255, 168, 167, 167),
+    onTap: _onItemTapped, // Use the onItemTapped method here
+    items: const [
+      BottomNavigationBarItem(
+        icon: Icon(Icons.home),
+        label: 'Home',
       ),
-    );
-  }
+      BottomNavigationBarItem(
+        icon: Icon(Icons.devices),
+        label: 'Devices',
+      ),
+      BottomNavigationBarItem(
+        icon: Icon(Icons.settings),
+        label: 'Settings',
+      ),
+      BottomNavigationBarItem(
+        icon: Icon(Icons.history),
+        label: 'History',
+      ),
+    ],
+    type: BottomNavigationBarType.fixed,
+  );
 }
