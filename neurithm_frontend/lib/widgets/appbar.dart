@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import '../screens/homePage.dart';
+import '../screens/loginPage.dart';
 
 Drawer sideAppBar(context) {
   return Drawer(
@@ -50,7 +52,11 @@ Drawer sideAppBar(context) {
                 fontWeight: FontWeight.bold,
               )),
           onTap: () {
-            Navigator.pop(context);
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => LoginPage(),
+                ));
           },
         ),
       ],
@@ -84,6 +90,20 @@ Row appBar(_scaffoldKey) {
           size: 25,
         ),
         onPressed: () {},
+      ),
+    ],
+  );
+}
+
+Row loginPageAppBar(_scaffoldKey) {
+  return Row(
+    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    children: [
+      IconButton(
+        icon: const Icon(Icons.menu, color: Color.fromARGB(255, 206, 206, 206)),
+        onPressed: () {
+          _scaffoldKey.currentState?.openDrawer();
+        },
       ),
     ],
   );

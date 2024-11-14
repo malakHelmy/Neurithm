@@ -1,20 +1,19 @@
 import 'package:flutter/material.dart';
 import '../widgets/appbar.dart';
 import '../widgets/bottombar.dart';
+import '../widgets/wavesBackground.dart';
+import 'loginPage.dart'; // Import the LoginPage
 
 class HomePage extends StatelessWidget {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
-
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
 
-    double fontSize(double size) =>
-        size * screenWidth / 400; 
-    double spacing(double size) =>
-        size * screenHeight / 800; 
+    double fontSize(double size) => size * screenWidth / 400;
+    double spacing(double size) => size * screenHeight / 800;
 
     return Scaffold(
       key: _scaffoldKey,
@@ -22,43 +21,36 @@ class HomePage extends StatelessWidget {
       body: SingleChildScrollView(
         scrollDirection: Axis.vertical,
         child: Container(
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [
-                Color.fromARGB(255, 79, 114, 190), // start color (lighter blue)
-                Color(0xFF1A2A3A), // end color (dark blue)
-              ],
-            ),
-          ),
+          decoration: gradientBackground,
           child: Stack(
             children: [
-              // Waves Image with transparency
-              Positioned.fill(
+              AspectRatio(
+                aspectRatio: screenWidth / screenHeight,
                 child: Opacity(
-                  opacity: 0.50, // Adjust opacity as desired
+                  opacity: 0.50,
                   child: Image.asset(
-                    'assets/images/waves.jpg', // Your waves image path
-                    fit: BoxFit.fitHeight,
-                    
+                    'assets/images/waves.jpg',
+                    fit: BoxFit.cover,
                   ),
                 ),
               ),
-
               Padding(
                 padding: EdgeInsets.symmetric(
-                  horizontal: spacing(10),
-                  vertical: spacing(50),
+                  horizontal: spacing(15),
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     // Drawer appBar
-                    appBar(_scaffoldKey),
+                    Padding(
+                      padding: EdgeInsets.only(
+                        top: 40,
+                      ),
+                      child: appBar(_scaffoldKey),
+                    ),
                     SizedBox(height: spacing(20)),
                     Padding(
-                      padding: EdgeInsets.symmetric(horizontal: spacing(15)),
+                      padding: EdgeInsets.symmetric(horizontal: spacing(10)),
                       child: Center(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.center,
@@ -93,7 +85,7 @@ class HomePage extends StatelessWidget {
                             Text(
                               "Welcome, Potential User",
                               style: TextStyle(
-                                fontSize: fontSize(30),
+                                fontSize: fontSize(28),
                                 color: Colors.white,
                                 fontWeight: FontWeight.normal,
                               ),
@@ -121,18 +113,25 @@ class HomePage extends StatelessWidget {
                             SizedBox(
                               width: double.infinity,
                               child: ElevatedButton(
-                                onPressed: () {},
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => LoginPage(),
+                                    ),
+                                  );
+                                },
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: const Color.fromARGB(255, 240, 240, 240),
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(50),
                                   ),
-                                  padding: const EdgeInsets.symmetric(vertical: 12),
+                                  padding: EdgeInsets.symmetric(vertical: spacing(13)),
                                 ),
                                 child: const Text(
                                   "Start Speaking Now",
                                   style: TextStyle(
-                                    fontSize: 28,
+                                    fontSize: 25,
                                     fontWeight: FontWeight.normal,
                                     color: Color(0xFF1A2A3A),
                                   ),
@@ -140,7 +139,6 @@ class HomePage extends StatelessWidget {
                               ),
                             ),
                             const SizedBox(height: 15),
-
                             // Help & Guide button
                             SizedBox(
                               width: double.infinity,
@@ -156,7 +154,7 @@ class HomePage extends StatelessWidget {
                                 child: const Text(
                                   "Help & Guide",
                                   style: TextStyle(
-                                    fontSize: 28,
+                                    fontSize: 25,
                                     fontWeight: FontWeight.normal,
                                     color: Color(0xFF1A2A3A),
                                   ),
@@ -164,46 +162,6 @@ class HomePage extends StatelessWidget {
                               ),
                             ),
                           ],
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: spacing(30)),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "History",
-                          style: TextStyle(
-                            fontFamily: 'Lato',
-                            fontSize: fontSize(30),
-                            fontWeight: FontWeight.bold,
-                            color: const Color.fromARGB(255, 206, 206, 206),
-                          ),
-                        ),
-                        IconButton(
-                          icon: const Icon(Icons.arrow_forward_ios, color: Color.fromARGB(255, 206, 206, 206)),
-                          onPressed: () {},
-                        )
-                      ],
-                    ),
-                    SizedBox(height: spacing(15)),
-                    SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: List.generate(
-                          4,
-                          (index) => Padding(
-                            padding: EdgeInsets.symmetric(horizontal: spacing(5)),
-                            child: Container(
-                              height: spacing(100),
-                              width: screenWidth * 0.35, // 35% of screen width
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                color: Colors.black.withOpacity(0.12),
-                              ),
-                            ),
-                          ),
                         ),
                       ),
                     ),
