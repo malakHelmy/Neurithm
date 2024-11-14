@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import '../widgets/appbar.dart';
 import '../widgets/bottombar.dart';
+import '../screens/history.dart';
+import '../screens/devices.dart';
+import '../screens/settings.dart';
 import '../widgets/wavesBackground.dart';
 import 'loginPage.dart'; // Import the LoginPage
 
@@ -18,6 +21,13 @@ class HomePage extends StatelessWidget {
     return Scaffold(
       key: _scaffoldKey,
       drawer: sideAppBar(context),
+      bottomNavigationBar: Padding(
+        padding: EdgeInsets.all(spacing(5)),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(15.0),
+          child: bottomappBar(context),
+        ),
+      ),
       body: SingleChildScrollView(
         scrollDirection: Axis.vertical,
         child: Container(
@@ -29,8 +39,9 @@ class HomePage extends StatelessWidget {
                 child: Opacity(
                   opacity: 0.50,
                   child: Image.asset(
-                    'assets/images/waves.jpg',
-                    fit: BoxFit.cover,
+                    'assets/images/waves.jpg', // Your waves image path
+                    fit: BoxFit.fitHeight,
+                    
                   ),
                 ),
               ),
@@ -44,11 +55,11 @@ class HomePage extends StatelessWidget {
                     // Drawer appBar
                     Padding(
                       padding: EdgeInsets.only(
-                        top: 40,
+                        top: 45,
                       ),
                       child: appBar(_scaffoldKey),
                     ),
-                    SizedBox(height: spacing(20)),
+                    SizedBox(height: spacing(15)),
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: spacing(10)),
                       child: Center(
@@ -56,8 +67,8 @@ class HomePage extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             SizedBox(
-                              width: screenWidth * 0.75, // 75% of screen width
-                              height: screenHeight * 0.4, // 40% of screen height
+                              width: screenWidth * 0.75,
+                              height: screenHeight * 0.4,
                               child: Padding(
                                 padding: EdgeInsets.all(spacing(20)),
                                 child: const DecoratedBox(
@@ -139,6 +150,7 @@ class HomePage extends StatelessWidget {
                               ),
                             ),
                             const SizedBox(height: 15),
+
                             // Help & Guide button
                             SizedBox(
                               width: double.infinity,
@@ -165,18 +177,51 @@ class HomePage extends StatelessWidget {
                         ),
                       ),
                     ),
+                    SizedBox(height: spacing(30)),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "History",
+                          style: TextStyle(
+                            fontFamily: 'Lato',
+                            fontSize: fontSize(30),
+                            fontWeight: FontWeight.bold,
+                            color: const Color.fromARGB(255, 206, 206, 206),
+                          ),
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.arrow_forward_ios, color: Color.fromARGB(255, 206, 206, 206)),
+                          onPressed: () {},
+                        )
+                      ],
+                    ),
+                    SizedBox(height: spacing(15)),
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: List.generate(
+                          4,
+                          (index) => Padding(
+                            padding: EdgeInsets.symmetric(horizontal: spacing(5)),
+                            child: Container(
+                              height: spacing(100),
+                              width: screenWidth * 0.35, // 35% of screen width
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
+                                color: Colors.black.withOpacity(0.12),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
                   ],
                 ),
               ),
             ],
           ),
-        ),
-      ),
-      bottomNavigationBar: Padding(
-        padding: EdgeInsets.all(spacing(5)),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(15.0),
-          child: bottomappBar(),
         ),
       ),
     );

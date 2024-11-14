@@ -48,7 +48,7 @@ class _LoginPageState extends State<LoginPage> {
           AnimatedPositioned(
             duration: const Duration(milliseconds: 500),
             curve: Curves.easeInOut,
-            top: _showSignUpForm ? 100 : 250, // Move up when form appears
+            top: _showSignUpForm ? 110 : 300, // Move up when form appears
             left: 0,
             right: 0,
             child: Column(

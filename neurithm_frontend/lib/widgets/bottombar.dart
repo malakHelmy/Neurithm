@@ -1,14 +1,44 @@
 import 'package:flutter/material.dart';
+import '../screens/history.dart';
+import '../screens/homepage.dart';
+import '../screens/devices.dart';
+import '../screens/settings.dart';
 
+BottomNavigationBar bottomappBar(BuildContext context) {
+  void _onItemTapped(int index) {
+    switch (index) {
+      case 0:
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => HomePage()),
+        );
+        break;
+      case 1:
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => DevicesPage()),
+        );
+        break;
+      case 2:
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => SettingsPage()),
+        );
+        break;
+      case 3:
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => HistoryPage()),
+        );
+        break;
+    }
+  }
 
-BottomNavigationBar bottomappBar() {
   return BottomNavigationBar(
-    backgroundColor: Color.fromARGB(
-        255, 70, 100, 166), // Matching color with dark blue gradient
-    selectedItemColor:
-        Color.fromARGB(255, 255, 255, 255), // Light blue for selected icon
-    unselectedItemColor:
-        Color.fromARGB(255, 168, 167, 167), // Gray for unselected icons
+    backgroundColor: Color.fromARGB(255, 70, 100, 166),
+    selectedItemColor: Color.fromARGB(255, 255, 255, 255),
+    unselectedItemColor: Color.fromARGB(255, 168, 167, 167),
+    onTap: _onItemTapped, // Use the onItemTapped method here
     items: const [
       BottomNavigationBarItem(
         icon: Icon(Icons.home),
