@@ -23,7 +23,7 @@ const BoxDecoration darkGradientBackground = BoxDecoration(
 );
 
 //old waves background code
-Positioned wavesBackground = Positioned.fill(
+Positioned waveBackground = Positioned.fill(
   child: Opacity(
     opacity: 0.50, // Adjust opacity as desired
     child: Image.asset(
@@ -32,3 +32,16 @@ Positioned wavesBackground = Positioned.fill(
     ),
   ),
 );
+
+AspectRatio wavesBackground(screenWidth, screenHeight) {
+  return AspectRatio(
+    aspectRatio: screenWidth / screenHeight,
+    child: Opacity(
+      opacity: 0.50,
+      child: Image.asset(
+        'assets/images/waves.jpg', // Your waves image path
+        fit: BoxFit.fitHeight,
+      ),
+    ),
+  );
+}

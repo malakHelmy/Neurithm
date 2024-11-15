@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import '../screens/homePage.dart';
+import 'appBar.dart';
 
 AnimatedOpacity loginForm(context, _showLoginForm, _showSignUpForm) {
+
   return AnimatedOpacity(
     opacity: _showLoginForm ? 1.0 : 0.0,
     duration: const Duration(milliseconds: 600),
@@ -76,8 +78,8 @@ AnimatedOpacity loginForm(context, _showLoginForm, _showSignUpForm) {
                             fontWeight: FontWeight.bold,
                           ),
                         )),
-                const SizedBox(
-                  height: 190,
+                 SizedBox(
+                  height: 100,
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,

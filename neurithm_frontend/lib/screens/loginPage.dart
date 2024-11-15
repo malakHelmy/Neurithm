@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:neurithm_frontend/widgets/signUpForm.dart';
+import '../widgets/signUpForm.dart';
 import '../widgets/appbar.dart';
 import '../widgets/wavesBackground.dart';
-import '../widgets/loginForm.dart';
 import 'homePage.dart';
 
 class LoginPage extends StatefulWidget {
@@ -42,13 +41,13 @@ class _LoginPageState extends State<LoginPage> {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.only(top: 40, left: 15),
+            padding:  EdgeInsets.only(top: getScreenHeight(context)*0.075, left: 15),
             child: loginPageAppBar(_scaffoldKey),
           ),
           AnimatedPositioned(
             duration: const Duration(milliseconds: 500),
             curve: Curves.easeInOut,
-            top: _showSignUpForm ? 110 : 300, // Move up when form appears
+            top: _showSignUpForm? screenHeight * 0.15 : _showLoginForm ? screenHeight * 0.3: screenHeight * 0.35, // Adjust positions
             left: 0,
             right: 0,
             child: Column(
@@ -67,7 +66,7 @@ class _LoginPageState extends State<LoginPage> {
                     "Where Thoughts Find a Voice",
                     style: TextStyle(
                       fontFamily: 'lato',
-                      color: const Color.fromARGB(255, 206, 206, 206),
+                      color: Color.fromARGB(255, 206, 206, 206),
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
                     ),

@@ -108,3 +108,15 @@ Row loginPageAppBar(_scaffoldKey) {
     ],
   );
 }
+
+//get screen width and height (for better responsiveness)
+getScreenWidth(context) {
+  return MediaQuery.of(context).size.width;
+}
+
+getScreenHeight(context) {
+  return MediaQuery.of(context).size.height;
+}
+
+double fontSize(double size, screenWidth) => size * screenWidth / 400;
+double spacing(double size, screenHeight) => size * screenHeight / 800;

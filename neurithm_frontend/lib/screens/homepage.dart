@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:neurithm_frontend/screens/setUpConnectionPage.dart';
 import '../widgets/appbar.dart';
 import '../widgets/bottombar.dart';
 import '../screens/history.dart';
@@ -6,6 +7,7 @@ import '../screens/devices.dart';
 import '../screens/settings.dart';
 import '../widgets/wavesBackground.dart';
 import 'loginPage.dart'; // Import the LoginPage
+import 'setUpConnectionPage.dart'; // Import the LoginPage
 
 class HomePage extends StatelessWidget {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
@@ -34,17 +36,7 @@ class HomePage extends StatelessWidget {
           decoration: gradientBackground,
           child: Stack(
             children: [
-              AspectRatio(
-                aspectRatio: screenWidth / screenHeight,
-                child: Opacity(
-                  opacity: 0.50,
-                  child: Image.asset(
-                    'assets/images/waves.jpg', // Your waves image path
-                    fit: BoxFit.fitHeight,
-                    
-                  ),
-                ),
-              ),
+              wavesBackground(screenWidth, screenHeight),
               Padding(
                 padding: EdgeInsets.symmetric(
                   horizontal: spacing(15),
@@ -55,7 +47,7 @@ class HomePage extends StatelessWidget {
                     // Drawer appBar
                     Padding(
                       padding: EdgeInsets.only(
-                        top: 45,
+                        top: screenHeight * 0.075,
                       ),
                       child: appBar(_scaffoldKey),
                     ),
@@ -110,17 +102,7 @@ class HomePage extends StatelessWidget {
                                 fontWeight: FontWeight.w600,
                               ),
                             ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: spacing(20)),
-                    Center(
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(horizontal: spacing(10.0)),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
+                            SizedBox(height: spacing(20)),
                             SizedBox(
                               width: double.infinity,
                               child: ElevatedButton(
@@ -128,16 +110,19 @@ class HomePage extends StatelessWidget {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) => LoginPage(),
+                                      builder: (context) =>
+                                          setUpConnectionPage(),
                                     ),
                                   );
                                 },
                                 style: ElevatedButton.styleFrom(
-                                  backgroundColor: const Color.fromARGB(255, 240, 240, 240),
+                                  backgroundColor:
+                                      const Color.fromARGB(255, 240, 240, 240),
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(50),
                                   ),
-                                  padding: EdgeInsets.symmetric(vertical: spacing(13)),
+                                  padding: EdgeInsets.symmetric(
+                                      vertical: spacing(13)),
                                 ),
                                 child: const Text(
                                   "Start Speaking Now",
@@ -157,11 +142,13 @@ class HomePage extends StatelessWidget {
                               child: ElevatedButton(
                                 onPressed: () {},
                                 style: ElevatedButton.styleFrom(
-                                  backgroundColor: const Color.fromARGB(255, 240, 240, 240),
+                                  backgroundColor:
+                                      const Color.fromARGB(255, 240, 240, 240),
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(50),
                                   ),
-                                  padding: const EdgeInsets.symmetric(vertical: 12),
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 12),
                                 ),
                                 child: const Text(
                                   "Help & Guide",
@@ -191,7 +178,8 @@ class HomePage extends StatelessWidget {
                           ),
                         ),
                         IconButton(
-                          icon: const Icon(Icons.arrow_forward_ios, color: Color.fromARGB(255, 206, 206, 206)),
+                          icon: const Icon(Icons.arrow_forward_ios,
+                              color: Color.fromARGB(255, 206, 206, 206)),
                           onPressed: () {},
                         )
                       ],
@@ -204,7 +192,8 @@ class HomePage extends StatelessWidget {
                         children: List.generate(
                           4,
                           (index) => Padding(
-                            padding: EdgeInsets.symmetric(horizontal: spacing(5)),
+                            padding:
+                                EdgeInsets.symmetric(horizontal: spacing(5)),
                             child: Container(
                               height: spacing(100),
                               width: screenWidth * 0.35, // 35% of screen width
