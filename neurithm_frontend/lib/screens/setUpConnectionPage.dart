@@ -26,9 +26,9 @@ class _setUpConnectionPageState extends State<setUpConnectionPage>
     )..repeat(reverse: true);
 
     _shadowBlurAnimation =
-        Tween<double>(begin: 16.0, end: 30.0).animate(_controller);
+        Tween<double>(begin: 6.0, end: 10.0).animate(_controller);
     _shadowSpreadAnimation =
-        Tween<double>(begin: 100.0, end: 185.0).animate(_controller);
+        Tween<double>(begin: 10.0, end: 25.0).animate(_controller);
   }
 
   @override
@@ -93,7 +93,7 @@ class _setUpConnectionPageState extends State<setUpConnectionPage>
                           child: const Center(
                             child: Text(
                               'Scan',
-                              style: TextStyle(color: Color.fromARGB(255, 255, 255, 255), fontSize: 50),
+                              style: TextStyle(color: Colors.grey, fontSize: 50),
                             ),
                           ),
                         ),
