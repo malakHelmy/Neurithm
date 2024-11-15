@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:neurithm_frontend/screens/setUpConnectionPage.dart';
 import '../widgets/appbar.dart';
 import '../widgets/bottombar.dart';
 import '../screens/history.dart';

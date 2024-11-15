@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:neurithm_frontend/screens/homePage.dart';
-import '../widgets/wavesBackground.dart';
 import '../widgets/appBar.dart';
+import '../widgets/wavesBackground.dart';
+import 'homePage.dart';
 
 class setUpConnectionPage extends StatefulWidget {
   const setUpConnectionPage({super.key});
@@ -13,27 +13,41 @@ class setUpConnectionPage extends StatefulWidget {
 class _setUpConnectionPageState extends State<setUpConnectionPage>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
-  late Animation<double> _shadowBlurAnimation;
-  late Animation<double> _shadowSpreadAnimation;
+  bool _isScanning = false;
+  bool _isScanComplete = false;
 
   @override
   void initState() {
-    super.initState(); // Ensure this line is included
-
+    super.initState();
     _controller = AnimationController(
       vsync: this,
-      duration: const Duration(seconds: 1),
-    )..repeat(reverse: true);
+      duration: const Duration(seconds: 3),
+    )..addStatusListener((status) {
+        if (status == AnimationStatus.completed) {
+          setState(() {
+            _isScanComplete = true;
+          });
+        }
+      });
+  }
 
-    _shadowBlurAnimation =
-        Tween<double>(begin: 6.0, end: 10.0).animate(_controller);
-    _shadowSpreadAnimation =
-        Tween<double>(begin: 10.0, end: 25.0).animate(_controller);
+  void _startScanning() {
+    setState(() {
+      _isScanning = true;
+      _isScanComplete = false;
+    });
+    _controller.repeat();
+    Future.delayed(const Duration(seconds: 3), () {
+      _controller.stop();
+      setState(() {
+        _isScanComplete = true;
+      });
+    });
   }
 
   @override
   void dispose() {
-    _controller.dispose(); // Dispose of the controller
+    _controller.dispose();
     super.dispose();
   }
 
@@ -42,13 +56,15 @@ class _setUpConnectionPageState extends State<setUpConnectionPage>
     return Scaffold(
       body: Container(
         decoration: gradientBackground,
-        child: Stack(
-          children: [
-            wavesBackground(getScreenWidth(context), getScreenHeight(context)),
-            Padding(
-              padding: EdgeInsets.symmetric(
-                  horizontal: spacing(25, getScreenHeight(context))),
-              child: Center(
+        child: Center(
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              wavesBackground(
+                  getScreenWidth(context), getScreenHeight(context)),
+              Padding(
+                padding: EdgeInsets.symmetric(
+                    horizontal: spacing(15, getScreenHeight(context))),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
@@ -58,50 +74,93 @@ class _setUpConnectionPageState extends State<setUpConnectionPage>
                       child: const Text(
                         'Connect to a Headset',
                         style: TextStyle(
-                            fontSize: 27,
-                            fontWeight: FontWeight.w900,
-                            fontFamily: 'Lato'),
-                      ),
-                    ),
-                    SizedBox(
-                      height: spacing(50, getScreenHeight(context)),
-                    ),
-                    SizedBox(
-                      width: getScreenWidth(context) * 0.75,
-                      height: getScreenHeight(context) * 0.4,
-                      child: Padding(
-                        padding: EdgeInsets.all(
-                            spacing(20, getScreenHeight(context))),
-                        child: AnimatedBuilder(
-                          animation: _controller,
-                          builder: (context, child) {
-                            return DecoratedBox(
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: const Color(0x3F000000),
-                                    offset: const Offset(2, 4),
-                                    blurRadius: _shadowBlurAnimation.value,
-                                    spreadRadius: _shadowSpreadAnimation.value,
-                                  ),
-                                ],
-                              ),
-                              child: child,
-                            );
-                          },
-                          child: const Center(
-                            child: Text(
-                              'Scan',
-                              style: TextStyle(color: Colors.grey, fontSize: 50),
-                            ),
-                          ),
+                          fontSize: 27,
+                          fontWeight: FontWeight.w900,
+                          fontFamily: 'Lato',
                         ),
                       ),
                     ),
-                    SizedBox(
-                      height: spacing(200, getScreenHeight(context)),
+                    SizedBox(height: spacing(20, getScreenHeight(context))),
+                    Center(
+                      child: const Text(
+                          "Sync your mobile app to your headset to start voicing your thoughts",
+                          style: TextStyle(
+                            fontSize: 15,
+                            color: Color.fromARGB(255, 206, 206, 206),
+                            fontWeight: FontWeight.bold,
+                          )),
                     ),
+                    SizedBox(height: spacing(50, getScreenHeight(context))),
+
+                    // Wrapping the scan animation area with a fixed height container
+                    Container(
+                      height: spacing(300, getScreenHeight(context)),
+                      alignment: Alignment.center,
+                      child: Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          if (_isScanning) ...[
+                            RippleCircle(
+                                animation: _controller,
+                                radius: 300,
+                                opacity: 0.3),
+                            RippleCircle(
+                                animation: _controller,
+                                radius: 250,
+                                opacity: 0.5),
+                            RippleCircle(
+                                animation: _controller,
+                                radius: 200,
+                                opacity: 0.7),
+                          ],
+                          GestureDetector(
+                            onTap: _isScanning ? null : _startScanning,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: const Color.fromARGB(255, 62, 99, 135),
+                                shape: BoxShape.circle,
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: const Color.fromARGB(255, 62, 99, 135)
+                                        .withOpacity(0.4),
+                                    spreadRadius: 4,
+                                    blurRadius: 15,
+                                    offset: const Offset(0, 5),
+                                  ),
+                                ],
+                              ),
+                              width: spacing(200, getScreenHeight(context)),
+                              height: spacing(200, getScreenHeight(context)),
+                              child: Center(
+                                child: Text(
+                                  _isScanning ? 'Scanning' : 'Scan',
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 30,
+                                    fontWeight: FontWeight.normal,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    if (_isScanComplete)
+                      const Padding(
+                        padding: EdgeInsets.only(top: 20),
+                        child: Text(
+                          "Headset was found",
+                          style: TextStyle(
+                            color: Color.fromARGB(255, 254, 255, 255),
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    
+                    SizedBox(height: spacing(80, getScreenHeight(context))),
+
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -109,12 +168,7 @@ class _setUpConnectionPageState extends State<setUpConnectionPage>
                           width: 165,
                           child: ElevatedButton(
                             onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => HomePage(),
-                                ),
-                              );
+                              Navigator.pop(context);
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor:
@@ -135,9 +189,7 @@ class _setUpConnectionPageState extends State<setUpConnectionPage>
                                   color: Color(0xFF1A2A3A),
                                   size: 20,
                                 ),
-                                SizedBox(
-                                  width: 5,
-                                ),
+                                SizedBox(width: 5),
                                 Text(
                                   "Go Back",
                                   style: TextStyle(
@@ -153,14 +205,16 @@ class _setUpConnectionPageState extends State<setUpConnectionPage>
                         SizedBox(
                           width: 165,
                           child: ElevatedButton(
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => HomePage(),
-                                ),
-                              );
-                            },
+                            onPressed: _isScanComplete
+                                ? () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => HomePage(),
+                                      ),
+                                    );
+                                  }
+                                : null,
                             style: ElevatedButton.styleFrom(
                               backgroundColor:
                                   const Color.fromARGB(255, 240, 240, 240),
@@ -183,9 +237,7 @@ class _setUpConnectionPageState extends State<setUpConnectionPage>
                                     color: Color(0xFF1A2A3A),
                                   ),
                                 ),
-                                SizedBox(
-                                  width: 10,
-                                ),
+                                SizedBox(width: 10),
                                 Icon(
                                   Icons.arrow_forward_ios,
                                   color: Color(0xFF1A2A3A),
@@ -200,10 +252,40 @@ class _setUpConnectionPageState extends State<setUpConnectionPage>
                   ],
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
+    );
+  }
+}
+
+class RippleCircle extends StatelessWidget {
+  final Animation<double> animation;
+  final double radius;
+  final double opacity;
+
+  const RippleCircle({
+    required this.animation,
+    required this.radius,
+    required this.opacity,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: animation,
+      builder: (context, child) {
+        return Container(
+          width: radius,
+          height: radius,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: const Color.fromARGB(255, 62, 99, 135)
+                .withOpacity(opacity * (1 - animation.value)),
+          ),
+        );
+      },
     );
   }
 }
