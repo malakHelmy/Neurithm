@@ -37,9 +37,10 @@ class _setUpConnectionPageState extends State<setUpConnectionPage>
       _isScanComplete = false;
     });
     _controller.repeat();
-    Future.delayed(const Duration(seconds: 3), () {
+    Future.delayed(const Duration(seconds: 5), () {
       _controller.stop();
       setState(() {
+        _isScanning = false;
         _isScanComplete = true;
       });
     });
@@ -81,18 +82,20 @@ class _setUpConnectionPageState extends State<setUpConnectionPage>
                       ),
                     ),
                     SizedBox(height: spacing(20, getScreenHeight(context))),
-                    Center(
-                      child: const Text(
-                          "Sync your mobile app to your headset to start voicing your thoughts",
-                          style: TextStyle(
-                            fontSize: 15,
-                            color: Color.fromARGB(255, 206, 206, 206),
-                            fontWeight: FontWeight.bold,
-                          )),
+                    // Center the description text
+                    const Center(
+                      child: Text(
+                        "Sync your mobile app to your headset to start voicing your thoughts",
+                        style: TextStyle(
+                          fontSize: 15,
+                          color: Color.fromARGB(255, 206, 206, 206),
+                          fontWeight: FontWeight.bold,
+                        ),
+                        textAlign: TextAlign.center, // Center-align text
+                      ),
                     ),
                     SizedBox(height: spacing(50, getScreenHeight(context))),
 
-                    // Wrapping the scan animation area with a fixed height container
                     Container(
                       height: spacing(300, getScreenHeight(context)),
                       alignment: Alignment.center,
@@ -102,15 +105,15 @@ class _setUpConnectionPageState extends State<setUpConnectionPage>
                           if (_isScanning) ...[
                             RippleCircle(
                                 animation: _controller,
-                                radius: 300,
+                                radius: 350,
                                 opacity: 0.3),
                             RippleCircle(
                                 animation: _controller,
-                                radius: 250,
+                                radius: 300,
                                 opacity: 0.5),
                             RippleCircle(
                                 animation: _controller,
-                                radius: 200,
+                                radius: 250,
                                 opacity: 0.7),
                           ],
                           GestureDetector(
@@ -121,23 +124,22 @@ class _setUpConnectionPageState extends State<setUpConnectionPage>
                                 shape: BoxShape.circle,
                                 boxShadow: [
                                   BoxShadow(
-                                    color: const Color.fromARGB(255, 62, 99, 135)
-                                        .withOpacity(0.4),
+                                    color:
+                                        const Color.fromARGB(255, 62, 99, 135)
+                                            .withOpacity(0.4),
                                     spreadRadius: 4,
                                     blurRadius: 15,
                                     offset: const Offset(0, 5),
                                   ),
                                 ],
                               ),
-                              width: spacing(200, getScreenHeight(context)),
-                              height: spacing(200, getScreenHeight(context)),
+                              width: spacing(250, getScreenHeight(context)),
+                              height: spacing(250, getScreenHeight(context)),
                               child: Center(
-                                child: Text(
-                                  _isScanning ? 'Scanning' : 'Scan',
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 30,
-                                    fontWeight: FontWeight.normal,
+                                child: Padding(
+                                  padding: const EdgeInsets.only(left: 30.0, right: 30, bottom: 25),
+                                  child: Image.asset(
+                                    'assets/images/bci.png', // Your waves image path
                                   ),
                                 ),
                               ),
@@ -146,23 +148,25 @@ class _setUpConnectionPageState extends State<setUpConnectionPage>
                         ],
                       ),
                     ),
-                    if (_isScanComplete)
-                      const Padding(
-                        padding: EdgeInsets.only(top: 20),
-                        child: Text(
-                          "Headset was found",
-                          style: TextStyle(
-                            color: Color.fromARGB(255, 254, 255, 255),
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 20),
+                      child: Text(
+                        _isScanning
+                            ? "Scanning..." // Show "Scanning..." during scanning
+                            : _isScanComplete
+                                ? "Headset was found" // Show "Headset was found" after scanning completes
+                                : "",
+                        style: const TextStyle(
+                          color: Color.fromARGB(255, 254, 255, 255),
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
-                    
-                    SizedBox(height: spacing(80, getScreenHeight(context))),
+                    ),
 
+                    SizedBox(height: spacing(80, getScreenHeight(context))),
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         SizedBox(
                           width: 165,
