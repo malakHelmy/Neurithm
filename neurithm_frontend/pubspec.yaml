@@ -31,8 +31,8 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_tts: ^3.3.0  # Check for the latest version
-  http: ^0.13.1
-  audioplayers: ^0.20.1
+  http: ^1.2.2
+  audioplayers: ^6.1.0
   path_provider: ^2.0.11 # Check for the latest version
 
 

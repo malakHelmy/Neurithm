@@ -8,9 +8,9 @@ class SettingsPage extends StatefulWidget {
 
 class _SettingsPageState extends State<SettingsPage> {
   FlutterTts _flutterTts = FlutterTts();
-  double _pitch = 1.0; // Default pitch
-  String _selectedGender = "female"; // Default gender
-  String _selectedAccent = "en-US"; // Default accent (American English)
+  double _pitch = 1.0; 
+  String _selectedGender = "male"; 
+  String _selectedAccent = "en-US"; 
 
   @override
   void initState() {
@@ -20,10 +20,10 @@ class _SettingsPageState extends State<SettingsPage> {
 
   void _initializeTts() {
     _flutterTts.setLanguage(_selectedAccent);
-    _flutterTts.setSpeechRate(1.2); // Default speech rate
-    _flutterTts.setVolume(1.0); // Default volume
+    _flutterTts.setSpeechRate(1.2); 
+    _flutterTts.setVolume(1.0); 
     _flutterTts.setPitch(_pitch);
-    _flutterTts.setVoice({'name': _selectedGender, 'locale': _selectedAccent});
+    _flutterTts.setVoice({'name': _selectedGender, 'accent': _selectedAccent});
   }
 
   void _setPitch(double pitch) {
@@ -31,15 +31,15 @@ class _SettingsPageState extends State<SettingsPage> {
       _pitch = pitch;
     });
     _flutterTts.setPitch(_pitch);
-    _playDemo(); // Automatically play demo with new pitch
+    _playDemo(); 
   }
 
   void _setGender(String gender) {
     setState(() {
       _selectedGender = gender;
     });
-    _flutterTts.setVoice({'name': _selectedGender, 'locale': _selectedAccent});
-    _playDemo(); // Automatically play demo with new gender
+    _flutterTts.setVoice({'name': _selectedGender, 'accent': _selectedAccent});
+    _playDemo(); 
   }
 
   void _setAccent(String accent) {
@@ -48,14 +48,14 @@ class _SettingsPageState extends State<SettingsPage> {
     });
     _flutterTts.setLanguage(_selectedAccent);
     _flutterTts.setVoice({'name': _selectedGender, 'locale': _selectedAccent});
-    _playDemo(); // Automatically play demo with new accent
+    _playDemo(); 
   }
 
   
 
   Future<void> _playDemo() async {
-    await _flutterTts.stop(); // Stop any ongoing speech
-    await _flutterTts.speak("Hello, what's on your mind today?"); // Speak with updated pitch
+    await _flutterTts.stop(); 
+    await _flutterTts.speak("Hello, what's on your mind today?"); 
   }
 
   @override

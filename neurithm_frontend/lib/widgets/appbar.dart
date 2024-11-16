@@ -8,6 +8,22 @@ Drawer sideAppBar(context) {
       padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 60.0),
       children: <Widget>[
         ListTile(
+          title: const Text('Home',
+              style: TextStyle(
+                color: Color.fromARGB(255, 206, 206, 206),
+                fontSize: 25,
+                fontFamily: 'Lato',
+                fontWeight: FontWeight.bold,
+              )),
+          onTap: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => HomePage(),
+                ));
+          },
+        ),
+        ListTile(
           title: const Text('About',
               style: TextStyle(
                 color: Color.fromARGB(255, 206, 206, 206),
