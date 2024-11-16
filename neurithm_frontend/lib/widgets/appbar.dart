@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import '../screens/homePage.dart';
+import '../screens/loginPage.dart';
 
 Drawer sideAppBar(context) {
   return Drawer(
@@ -50,7 +52,11 @@ Drawer sideAppBar(context) {
                 fontWeight: FontWeight.bold,
               )),
           onTap: () {
-            Navigator.pop(context);
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => LoginPage(),
+                ));
           },
         ),
       ],
@@ -88,3 +94,29 @@ Row appBar(_scaffoldKey) {
     ],
   );
 }
+
+Row loginPageAppBar(_scaffoldKey) {
+  return Row(
+    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    children: [
+      IconButton(
+        icon: const Icon(Icons.menu, color: Color.fromARGB(255, 206, 206, 206)),
+        onPressed: () {
+          _scaffoldKey.currentState?.openDrawer();
+        },
+      ),
+    ],
+  );
+}
+
+//get screen width and height (for better responsiveness)
+getScreenWidth(context) {
+  return MediaQuery.of(context).size.width;
+}
+
+getScreenHeight(context) {
+  return MediaQuery.of(context).size.height;
+}
+
+double fontSize(double size, screenWidth) => size * screenWidth / 400;
+double spacing(double size, screenHeight) => size * screenHeight / 800;
