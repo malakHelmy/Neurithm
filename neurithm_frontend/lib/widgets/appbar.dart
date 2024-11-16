@@ -67,7 +67,7 @@ Drawer sideAppBar(context) {
                     },
         ),
         ListTile(
-          title: const Text('Sign In',
+          title: const Text('Account Info',
               style: TextStyle(
                 color: Color.fromARGB(255, 206, 206, 206),
                 fontSize: 25,

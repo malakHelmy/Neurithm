@@ -64,17 +64,17 @@ AnimatedOpacity signUpForm(BuildContext context, bool _showLoginForm, bool _show
         ? Form(
             key: _formKey,
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 40),
+              padding: const EdgeInsets.symmetric(horizontal: 25),
               child: Column(
                 children: [
                   TextFormField(
                     controller: _firstNameController,
                     style:
-                        const TextStyle(fontSize: 20, color: Color(0xFF1A2A3A)),
+                        const TextStyle(fontSize: 20, color: Color.fromARGB(255, 255, 255, 255)),
                     decoration: InputDecoration(
                       hintText: "First Name",
                       filled: true,
-                      fillColor: Colors.white,
+                      fillColor: Colors.transparent,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(30),
                       ),
@@ -85,11 +85,11 @@ AnimatedOpacity signUpForm(BuildContext context, bool _showLoginForm, bool _show
                   TextFormField(
                     controller: _lastNameController,
                     style:
-                        const TextStyle(fontSize: 20, color: Color(0xFF1A2A3A)),
+                        const TextStyle(fontSize: 20, color: Colors.white),
                     decoration: InputDecoration(
                       hintText: "Last Name",
                       filled: true,
-                      fillColor: Colors.white,
+                      fillColor: Colors.transparent,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(30),
                       ),
@@ -100,11 +100,11 @@ AnimatedOpacity signUpForm(BuildContext context, bool _showLoginForm, bool _show
                   TextFormField(
                     controller: _emailController,
                     style:
-                        const TextStyle(fontSize: 20, color: Color(0xFF1A2A3A)),
+                        const TextStyle(fontSize: 20, color:  Colors.white),
                     decoration: InputDecoration(
                       hintText: "Email",
                       filled: true,
-                      fillColor: Colors.white,
+                      fillColor: Colors.transparent,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(30),
                       ),
@@ -116,14 +116,14 @@ AnimatedOpacity signUpForm(BuildContext context, bool _showLoginForm, bool _show
                     controller: _ageController,
                     keyboardType: TextInputType.number,
                     style:
-                        const TextStyle(fontSize: 20, color: Color(0xFF1A2A3A)),
+                        const TextStyle(fontSize: 20, color:  Colors.white),
                     decoration: InputDecoration(
                       hintText: "Age",
                       filled: true,
-                      fillColor: Colors.white,
+                      fillColor: Colors.transparent,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(30),
-                      ),
+                      )
                     ),
                     // validator: _validateAge,
                   ),
@@ -132,11 +132,11 @@ AnimatedOpacity signUpForm(BuildContext context, bool _showLoginForm, bool _show
                     controller: _passwordController,
                     obscureText: true,
                     style:
-                        const TextStyle(fontSize: 20, color: Color(0xFF1A2A3A)),
+                        const TextStyle(fontSize: 20, color:  Colors.white),
                     decoration: InputDecoration(
                       hintText: "Password",
                       filled: true,
-                      fillColor: Colors.white,
+                      fillColor: Colors.transparent,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(30),
                       ),
@@ -148,11 +148,11 @@ AnimatedOpacity signUpForm(BuildContext context, bool _showLoginForm, bool _show
                     controller: _confirmPasswordController,
                     obscureText: true,
                     style:
-                        const TextStyle(fontSize: 20, color: Color(0xFF1A2A3A)),
+                        const TextStyle(fontSize: 20, color:  Colors.white),
                     decoration: InputDecoration(
                       hintText: "Confirm Password",
                       filled: true,
-                      fillColor: Colors.white,
+                      fillColor: Colors.transparent,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(30),
                       ),
@@ -174,7 +174,7 @@ AnimatedOpacity signUpForm(BuildContext context, bool _showLoginForm, bool _show
                         }
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF1A2A3A),
+                        backgroundColor: const Color.fromARGB(255, 255, 255, 255),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(30),
                         ),
@@ -185,7 +185,7 @@ AnimatedOpacity signUpForm(BuildContext context, bool _showLoginForm, bool _show
                         "Create Account",
                         style: TextStyle(
                           fontSize: 22,
-                          color: Colors.white,
+                          color: Color(0xFF1A2A3A),
                         ),
                       ),
                     ),
