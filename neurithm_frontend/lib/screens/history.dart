@@ -33,83 +33,83 @@ class HistoryPage extends StatelessWidget {
         ),
       ),
       body: Container(
-        decoration: darkGradientBackground,
+        decoration: gradientBackground,
         child: Stack(
           children: [
-            wavesBackground(screenWidth, screenHeight),
-              Padding(
-                padding: EdgeInsets.symmetric(
-                  horizontal: spacing(15),
+            Positioned.fill(
+              child: Opacity(
+                opacity: 0.50,
+                child: Image.asset(
+                  'assets/images/waves.jpg',
+                  fit: BoxFit.cover,
                 ),
+              ),
             ),
-            SizedBox(height: spacing(15)),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Drawer appBar
-                    Padding(
-                      padding: EdgeInsets.only(
-                        top: screenHeight * 0.075,
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: spacing(15)),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Drawer appBar
+                  Padding(
+                    padding: EdgeInsets.only(top: screenHeight * 0.075),
+                    child: appBar(_scaffoldKey),
+                  ),
+                  SizedBox(height: spacing(15)),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: spacing(10)),
+                    child: Center(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          SizedBox(height: spacing(10)),
+                          // Scrollable content area for conversation history
+                          ListView.builder(
+                            shrinkWrap: true, // Ensures it works with the rest of the content
+                            itemCount: conversationHistory.length,
+                            itemBuilder: (context, index) {
+                              final history = conversationHistory[index];
+                              return Card(
+                                color: const Color.fromARGB(255, 29, 29, 29)
+                                    .withOpacity(0.15),
+                                margin: EdgeInsets.symmetric(vertical: spacing(8)),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: Padding(
+                                  padding: EdgeInsets.all(spacing(10)),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        history['date'] ?? '',
+                                        style: TextStyle(
+                                          fontSize: fontSize(12),
+                                          color: Colors.white54,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                      SizedBox(height: spacing(5)),
+                                      Text(
+                                        history['content'] ?? '',
+                                        style: TextStyle(
+                                          fontSize: fontSize(15),
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.normal,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                        ],
                       ),
-                      child: appBar(_scaffoldKey),
-                    ), 
-                    
-                    SizedBox(height: spacing(30)),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: spacing(15)),
-                  child: Text(
-                    "Conversation History",
-                    style: TextStyle(
-                      fontSize: fontSize(20),
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
                     ),
                   ),
-                ),
-                Expanded(
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: spacing(20)),
-                    child: ListView.builder(
-                      itemCount: conversationHistory.length,
-                      itemBuilder: (context, index) {
-                        final history = conversationHistory[index];
-                        return Card(
-                          color: Colors.black.withOpacity(0.15),
-                          margin: EdgeInsets.symmetric(vertical: spacing(8)),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: Padding(
-                            padding: EdgeInsets.all(spacing(10)),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  history['date'] ?? '',
-                                  style: TextStyle(
-                                    fontSize: fontSize(12),
-                                    color: Colors.white54,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
-                                SizedBox(height: spacing(5)),
-                                Text(
-                                  history['content'] ?? '',
-                                  style: TextStyle(
-                                    fontSize: fontSize(15),
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.normal,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-                ),
-              ],
+                ],
+              ),
             ),
           ],
         ),

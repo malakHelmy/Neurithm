@@ -13,9 +13,9 @@ class _SettingsPageState extends State<SettingsPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   FlutterTts _flutterTts = FlutterTts();
-  double _pitch = 1.0; 
-  String _selectedGender = "male"; 
-  String _selectedAccent = "en-US"; 
+  double _pitch = 1.0;
+  String _selectedGender = "male";
+  String _selectedAccent = "en-US";
 
   @override
   void initState() {
@@ -25,8 +25,8 @@ class _SettingsPageState extends State<SettingsPage> {
 
   void _initializeTts() {
     _flutterTts.setLanguage(_selectedAccent);
-    _flutterTts.setSpeechRate(1.2); 
-    _flutterTts.setVolume(1.0); 
+    _flutterTts.setSpeechRate(1.2);
+    _flutterTts.setVolume(1.0);
     _flutterTts.setPitch(_pitch);
     _flutterTts.setVoice({'name': _selectedGender, 'accent': _selectedAccent});
   }
@@ -36,7 +36,7 @@ class _SettingsPageState extends State<SettingsPage> {
       _pitch = pitch;
     });
     _flutterTts.setPitch(_pitch);
-    _playDemo(); 
+    _playDemo();
   }
 
   void _setGender(String gender) {
@@ -44,7 +44,7 @@ class _SettingsPageState extends State<SettingsPage> {
       _selectedGender = gender;
     });
     _flutterTts.setVoice({'name': _selectedGender, 'accent': _selectedAccent});
-    _playDemo(); 
+    _playDemo();
   }
 
   void _setAccent(String accent) {
@@ -53,12 +53,12 @@ class _SettingsPageState extends State<SettingsPage> {
     });
     _flutterTts.setLanguage(_selectedAccent);
     _flutterTts.setVoice({'name': _selectedGender, 'locale': _selectedAccent});
-    _playDemo(); 
+    _playDemo();
   }
 
   Future<void> _playDemo() async {
-    await _flutterTts.stop(); 
-    await _flutterTts.speak("Hello, what's on your mind today?"); 
+    await _flutterTts.stop();
+    await _flutterTts.speak("Hello, what's on your mind today?");
   }
 
   @override
@@ -80,7 +80,7 @@ class _SettingsPageState extends State<SettingsPage> {
         ),
       ),
       body: Container(
-        decoration: darkGradientBackground,
+        decoration: gradientBackground,
         child: Stack(
           children: [
             Positioned.fill(
@@ -88,137 +88,147 @@ class _SettingsPageState extends State<SettingsPage> {
                 opacity: 0.50,
                 child: Image.asset(
                   'assets/images/waves.jpg',
-                  fit: BoxFit.cover,  
+                  fit: BoxFit.cover,
                 ),
               ),
             ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                 // Drawer appBar
-                    Padding(
-                      padding: EdgeInsets.only(
-                        top: screenHeight * 0.075,
-                      ),
-                      child: appBar(_scaffoldKey),
-                    ),
-                SizedBox(height: spacing(30)),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: spacing(15)),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Drawer appBar
+                  Padding(
+                    padding: EdgeInsets.only(top: screenHeight * 0.075),
+                    child: appBar(_scaffoldKey),
+                  ),
+                  SizedBox(height: spacing(15)),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: spacing(10)),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start, // Align to left
+                      children: [
+                        SizedBox(height: spacing(10)),
 
-                // Adjust Pitch
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: spacing(15)),
-                  child: Text(
-                    "Adjust Pitch (Tone)",
-                    style: TextStyle(
-                      fontSize: fontSize(15),
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-                SizedBox(height: spacing(20)),
-                Slider(
-                  value: _pitch,
-                  min: 0.5,
-                  max: 2.0,
-                  onChanged: _setPitch,
-                  divisions: 15,
-                  label: _pitch.toStringAsFixed(2),
-                ),
+                        // Adjust Pitch
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: spacing(0)),
+                          child: Text(
+                            "Adjust Pitch (Tone)",
+                            style: TextStyle(
+                              fontSize: fontSize(15),
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: spacing(20)),
+                        Slider(
+                          value: _pitch,
+                          min: 0.5,
+                          max: 2.0,
+                          onChanged: _setPitch,
+                          divisions: 15,
+                          label: _pitch.toStringAsFixed(2),
+                        ),
 
-                // Select Gender
-                SizedBox(height: spacing(30)),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: spacing(15)),
-                  child: Text(
-                    "Select Gender",
-                    style: TextStyle(
-                      fontSize: fontSize(15),
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-                SizedBox(height: spacing(10)),
-                Container(
-                  padding: EdgeInsets.symmetric(horizontal: spacing(15)),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(5),
-                  ),
-                  child: DropdownButton<String>(
-                    value: _selectedGender,
-                    isExpanded: true,  // Ensures the dropdown button takes up all the width
-                    dropdownColor: const Color(0xFF1A2A3A),
-                    onChanged: (value) => _setGender(value!),
-                    items: const [
-                      DropdownMenuItem(
-                        value: "female",
-                        child: Text(
-                          "Female",
-                          style: TextStyle(color: Colors.white),
+                        // Select Gender
+                        SizedBox(height: spacing(30)),
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: spacing(0)),
+                          child: Text(
+                            "Select Gender",
+                            style: TextStyle(
+                              fontSize: fontSize(15),
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                          ),
                         ),
-                      ),
-                      DropdownMenuItem(
-                        value: "male",
-                        child: Text(
-                          "Male",
-                          style: TextStyle(color: Colors.white),
+                        SizedBox(height: spacing(10)),
+                        Container(
+                          padding: EdgeInsets.symmetric(horizontal: spacing(0)),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                          child: DropdownButton<String>(
+                            value: _selectedGender,
+                            isExpanded: true,
+                            dropdownColor: const Color(0xFF1A2A3A),
+                            onChanged: (value) => _setGender(value!),
+                            items: const [
+                              DropdownMenuItem(
+                                value: "female",
+                                child: Text(
+                                  "Female",
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                              ),
+                              DropdownMenuItem(
+                                value: "male",
+                                child: Text(
+                                  "Male",
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                ),
 
-                // Select Accent
-                SizedBox(height: spacing(30)),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: spacing(15)),
-                  child: Text(
-                    "Select Accent",
-                    style: TextStyle(
-                      fontSize: fontSize(15),
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
+                        // Select Accent
+                        SizedBox(height: spacing(30)),
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: spacing(0)),
+                          child: Text(
+                            "Select Accent",
+                            style: TextStyle(
+                              fontSize: fontSize(15),
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: spacing(10)),
+                        Container(
+                          padding: EdgeInsets.symmetric(horizontal: spacing(0)),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                          child: DropdownButton<String>(
+                            value: _selectedAccent,
+                            isExpanded: true,
+                            dropdownColor: const Color(0xFF1A2A3A),
+                            onChanged: (value) => _setAccent(value!),
+                            items: const [
+                              DropdownMenuItem(
+                                value: "en-US",
+                                child: Text(
+                                  "American English",
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                              ),
+                              DropdownMenuItem(
+                                value: "en-GB",
+                                child: Text(
+                                  "British English",
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                              ),
+                              DropdownMenuItem(
+                                value: "en-AU",
+                                child: Text(
+                                  "Australian English",
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                ),
-                SizedBox(height: spacing(10)),
-                Container(
-                  padding: EdgeInsets.symmetric(horizontal: spacing(15)),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(5),
-                  ),
-                  child: DropdownButton<String>(
-                    value: _selectedAccent,
-                    isExpanded: true,  // Ensures the dropdown button takes up all the width
-                    dropdownColor: const Color(0xFF1A2A3A),
-                    onChanged: (value) => _setAccent(value!),
-                    items: const [
-                      DropdownMenuItem(
-                        value: "en-US",
-                        child: Text(
-                          "American English",
-                          style: TextStyle(color: Colors.white),
-                        ),
-                      ),
-                      DropdownMenuItem(
-                        value: "en-GB",
-                        child: Text(
-                          "British English",
-                          style: TextStyle(color: Colors.white),
-                        ),
-                      ),
-                      DropdownMenuItem(
-                        value: "en-AU",
-                        child: Text(
-                          "Australian English",
-                          style: TextStyle(color: Colors.white),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
+                ],
+              ),
             ),
           ],
         ),
