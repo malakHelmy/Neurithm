@@ -114,7 +114,7 @@ class FeedbackPage extends StatelessWidget {
                                   'Select Feedback Type',
                                   style: TextStyle(
                                     fontSize: fontSize(15),
-                                    color: Colors.grey,
+                                    color: const Color.fromARGB(255, 228, 228, 228),
                                   ),
                                 ),
                                 items: [
@@ -125,7 +125,8 @@ class FeedbackPage extends StatelessWidget {
                                 onChanged: (value) {},
                                 decoration: InputDecoration(
                                   filled: true,
-                                  fillColor: Colors.white,
+                                  fillColor: const Color.fromARGB(255, 29, 29, 29)
+                                    .withOpacity(0.4),
                                   border: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(10),
                                     borderSide: BorderSide.none,
@@ -143,9 +144,10 @@ class FeedbackPage extends StatelessWidget {
                                 style: TextStyle(fontSize: fontSize(15), color: Colors.black),
                                 decoration: InputDecoration(
                                   hintText: 'Enter your feedback...',
-                                  hintStyle: TextStyle(fontSize: fontSize(18), color: Colors.grey),
+                                  hintStyle: TextStyle(fontSize: fontSize(18), color: const Color.fromARGB(255, 228, 228, 228)),
                                   filled: true,
-                                  fillColor: Colors.white,
+                                  fillColor: const Color.fromARGB(255, 29, 29, 29)
+                                    .withOpacity(0.4),
                                   border: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(10),
                                     borderSide: BorderSide.none,
