@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:neurithm_frontend/screens/userProfile.dart';
 import '../screens/homePage.dart';
 import '../screens/loginPage.dart';
 import '../screens/feedback.dart';
@@ -78,7 +79,7 @@ Drawer sideAppBar(context) {
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => LoginPage(),
+                  builder: (context) => userProfilePage(),
                 ));
           },
         ),

@@ -31,6 +31,7 @@ class SettingsPage extends StatelessWidget {
         decoration: gradientBackground, // Gradient background
         child: Stack(
           children: [
+            appBar(_scaffoldKey),
             Positioned.fill(
               child: Opacity(
                 opacity: 0.50,
@@ -46,10 +47,7 @@ class SettingsPage extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   // Drawer appBar
-                  Padding(
-                    padding: EdgeInsets.only(top: screenHeight * 0.075),
-                    child: appBar(context), 
-                  ),
+                  
                   SizedBox(height: spacing(80)),
                   // Account Settings Option
                   GestureDetector(
