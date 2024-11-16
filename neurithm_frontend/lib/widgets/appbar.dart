@@ -87,32 +87,38 @@ Drawer sideAppBar(context) {
   );
 }
 
-Row appBar(_scaffoldKey) {
-  return Row(
-    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-    children: [
-      IconButton(
-        icon: const Icon(Icons.menu, color: Color.fromARGB(255, 206, 206, 206)),
-        onPressed: () {
-          _scaffoldKey.currentState?.openDrawer();
-        },
+AppBar appBar(GlobalKey<ScaffoldState> scaffoldKey) {
+  return AppBar(
+    backgroundColor: Colors.transparent, elevation: 0.0,
+    leading: IconButton(
+      icon: const Icon(
+        Icons.menu,
+        color: Color.fromARGB(255, 206, 206, 206),
       ),
-      const Text(
-        "Neurithm",
-        style: TextStyle(
-          color: Color.fromARGB(255, 206, 206, 206),
-          fontSize: 25,
-          fontWeight: FontWeight.normal,
-          fontFamily: 'Vonique',
-        ),
+      onPressed: () {
+        scaffoldKey.currentState?.openDrawer();
+      },
+    ),
+    title: const Text(
+      "Neurithm",
+      style: TextStyle(
+        color: Color.fromARGB(255, 206, 206, 206),
+        fontSize: 25,
+        fontWeight: FontWeight.normal,
+        fontFamily: 'Vonique',
       ),
+    ),
+    centerTitle: true, // Centers the title in the app bar
+    actions: [
       IconButton(
         icon: const Icon(
           Icons.signal_wifi_statusbar_4_bar_rounded,
           color: Color.fromARGB(255, 130, 197, 116),
           size: 25,
         ),
-        onPressed: () {},
+        onPressed: () {
+          // Add functionality here
+        },
       ),
     ],
   );

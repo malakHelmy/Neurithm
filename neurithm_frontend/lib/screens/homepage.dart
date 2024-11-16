@@ -44,12 +44,8 @@ class HomePage extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     // Drawer appBar
-                    Padding(
-                      padding: EdgeInsets.only(
-                        top: screenHeight * 0.075,
-                      ),
-                      child: appBar(_scaffoldKey),
-                    ),
+                    appBar(_scaffoldKey),
+
                     SizedBox(height: spacing(15)),
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: spacing(10)),
