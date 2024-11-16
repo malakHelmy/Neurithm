@@ -45,8 +45,8 @@ BottomNavigationBar bottomappBar(BuildContext context) {
         label: 'Home',
       ),
       BottomNavigationBarItem(
-        icon: Icon(Icons.devices),
-        label: 'Devices',
+        icon: Icon(Icons.saved_search),
+        label: 'Library',
       ),
       BottomNavigationBarItem(
         icon: Icon(Icons.settings),

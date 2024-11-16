@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import '../screens/homePage.dart';
 import '../screens/loginPage.dart';
+import '../screens/feedback.dart';
+
 
 Drawer sideAppBar(context) {
   return Drawer(
@@ -43,21 +45,26 @@ Drawer sideAppBar(context) {
                 fontFamily: 'Lato',
                 fontWeight: FontWeight.bold,
               )),
-          onTap: () {
-            Navigator.pop(context);
-          },
+              onTap: () {
+              Navigator.pop(context);
+              }
+          
         ),
         ListTile(
-          title: const Text('Pricing',
+          title: const Text('Feedback',
               style: TextStyle(
                 color: Color.fromARGB(255, 206, 206, 206),
                 fontSize: 25,
                 fontFamily: 'Lato',
                 fontWeight: FontWeight.bold,
               )),
-          onTap: () {
-            Navigator.pop(context);
-          },
+         onTap: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => FeedbackPage(),
+                ));
+                    },
         ),
         ListTile(
           title: const Text('Sign In',

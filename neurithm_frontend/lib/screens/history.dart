@@ -36,20 +36,25 @@ class HistoryPage extends StatelessWidget {
         decoration: darkGradientBackground,
         child: Stack(
           children: [
-            Positioned.fill(
-              child: Opacity(
-                opacity: 0.30,
-                child: Image.asset(
-                  'assets/images/waves.jpg',
-                  fit: BoxFit.cover,  
+            wavesBackground(screenWidth, screenHeight),
+              Padding(
+                padding: EdgeInsets.symmetric(
+                  horizontal: spacing(15),
                 ),
-              ),
             ),
+            SizedBox(height: spacing(15)),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                appBar(_scaffoldKey),
-                SizedBox(height: spacing(30)),
+                // Drawer appBar
+                    Padding(
+                      padding: EdgeInsets.only(
+                        top: screenHeight * 0.075,
+                      ),
+                      child: appBar(_scaffoldKey),
+                    ), 
+                    
+                    SizedBox(height: spacing(30)),
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: spacing(15)),
                   child: Text(

@@ -85,7 +85,7 @@ class _SettingsPageState extends State<SettingsPage> {
           children: [
             Positioned.fill(
               child: Opacity(
-                opacity: 0.30,
+                opacity: 0.50,
                 child: Image.asset(
                   'assets/images/waves.jpg',
                   fit: BoxFit.cover,  
@@ -95,7 +95,13 @@ class _SettingsPageState extends State<SettingsPage> {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                appBar(_scaffoldKey),
+                 // Drawer appBar
+                    Padding(
+                      padding: EdgeInsets.only(
+                        top: screenHeight * 0.075,
+                      ),
+                      child: appBar(_scaffoldKey),
+                    ),
                 SizedBox(height: spacing(30)),
 
                 // Adjust Pitch
