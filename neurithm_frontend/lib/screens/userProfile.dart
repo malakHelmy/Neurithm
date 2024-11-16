@@ -69,7 +69,6 @@ class _userProfilePageState extends State<userProfilePage> {
                   // Profile Fields Section
                   Expanded(
                     child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
                       decoration: const BoxDecoration(
                         color: Colors.transparent,
                         borderRadius: BorderRadius.only(
@@ -81,8 +80,6 @@ class _userProfilePageState extends State<userProfilePage> {
                         children: [
                           _profileField(Icons.person, 'Anna Avetisyan'),
                           _profileField(Icons.cake, 'Birthday'),
-                          _profileField(Icons.phone, '818 123 4567'),
-                          _profileField(Icons.camera_alt, 'Instagram account'),
                           _profileField(Icons.email, 'info@aplusdesign.co'),
                           _profileField(Icons.remove_red_eye, 'Password',
                               trailing: Icon(Icons.sync, color: Colors.white)),
@@ -131,7 +128,7 @@ class _userProfilePageState extends State<userProfilePage> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.symmetric(vertical: 10),
+          padding: const EdgeInsets.symmetric(horizontal: 20,vertical: 10),
           child: Row(
             children: [
               Icon(icon, color: Color.fromARGB(255, 206, 206, 206)),
@@ -148,7 +145,7 @@ class _userProfilePageState extends State<userProfilePage> {
         ),
         const Divider(
           color: Color.fromARGB(255, 206, 206, 206),
-          thickness: 1,
+          thickness: 0.75,
         ),
       ],
     );
