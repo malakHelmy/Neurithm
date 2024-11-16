@@ -141,7 +141,7 @@ class FeedbackPage extends StatelessWidget {
                               child: TextField(
                                 controller: _feedbackController,
                                 maxLines: 5,
-                                style: TextStyle(fontSize: fontSize(15), color: Colors.black),
+                                style: TextStyle(fontSize: fontSize(15), color: const Color.fromARGB(255, 255, 255, 255)),
                                 decoration: InputDecoration(
                                   hintText: 'Enter your feedback...',
                                   hintStyle: TextStyle(fontSize: fontSize(18), color: const Color.fromARGB(255, 228, 228, 228)),

@@ -1,68 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_tts/flutter_tts.dart';
 import '../widgets/appbar.dart';
 import '../widgets/bottombar.dart';
 import '../widgets/wavesBackground.dart';
+import '../screens/accountsettings.dart'; // Import Account Settings Page
+import '../screens/voicesettings.dart'; // Import Voice Settings Page
 
-class SettingsPage extends StatefulWidget {
-  @override
-  _SettingsPageState createState() => _SettingsPageState();
-}
-
-class _SettingsPageState extends State<SettingsPage> {
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-
-  FlutterTts _flutterTts = FlutterTts();
-  double _pitch = 1.0;
-  String _selectedGender = "male";
-  String _selectedAccent = "en-US";
-
-  @override
-  void initState() {
-    super.initState();
-    _initializeTts();
-  }
-
-  void _initializeTts() {
-    _flutterTts.setLanguage(_selectedAccent);
-    _flutterTts.setSpeechRate(1.2);
-    _flutterTts.setVolume(1.0);
-    _flutterTts.setPitch(_pitch);
-    _flutterTts.setVoice({'name': _selectedGender, 'accent': _selectedAccent});
-  }
-
-  void _setPitch(double pitch) {
-    setState(() {
-      _pitch = pitch;
-    });
-    _flutterTts.setPitch(_pitch);
-    _playDemo();
-  }
-
-  void _setGender(String gender) {
-    setState(() {
-      _selectedGender = gender;
-    });
-    _flutterTts.setVoice({'name': _selectedGender, 'accent': _selectedAccent});
-    _playDemo();
-  }
-
-  void _setAccent(String accent) {
-    setState(() {
-      _selectedAccent = accent;
-    });
-    _flutterTts.setLanguage(_selectedAccent);
-    _flutterTts.setVoice({'name': _selectedGender, 'locale': _selectedAccent});
-    _playDemo();
-  }
-
-  Future<void> _playDemo() async {
-    await _flutterTts.stop();
-    await _flutterTts.speak("Hello, what's on your mind today?");
-  }
-
+class SettingsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
+
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
 
@@ -80,14 +28,14 @@ class _SettingsPageState extends State<SettingsPage> {
         ),
       ),
       body: Container(
-        decoration: gradientBackground,
+        decoration: gradientBackground, // Gradient background
         child: Stack(
           children: [
             Positioned.fill(
               child: Opacity(
                 opacity: 0.50,
                 child: Image.asset(
-                  'assets/images/waves.jpg',
+                  'assets/images/waves.jpg', // Use waves background
                   fit: BoxFit.cover,
                 ),
               ),
@@ -100,131 +48,70 @@ class _SettingsPageState extends State<SettingsPage> {
                   // Drawer appBar
                   Padding(
                     padding: EdgeInsets.only(top: screenHeight * 0.075),
-                    child: appBar(_scaffoldKey),
+                    child: appBar(context), 
                   ),
-                  SizedBox(height: spacing(15)),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: spacing(10)),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start, // Align to left
-                      children: [
-                        SizedBox(height: spacing(10)),
-
-                        // Adjust Pitch
-                        Padding(
-                          padding: EdgeInsets.symmetric(horizontal: spacing(0)),
-                          child: Text(
-                            "Adjust Pitch (Tone)",
+                  SizedBox(height: spacing(80)),
+                  // Account Settings Option
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => AccountSettingsPage()),
+                      );
+                    },
+                    child: Container(
+                      width: screenWidth, // Full width
+                      padding: EdgeInsets.symmetric(vertical: spacing(15), horizontal: spacing(20)),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: const Color.fromARGB(255, 255, 255, 255),
+                        
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(Icons.arrow_forward_ios, color: const Color.fromARGB(255, 11, 3, 26), size: 20),
+                          SizedBox(width: spacing(10)),
+                          Text(
+                            "Account Settings",
                             style: TextStyle(
-                              fontSize: fontSize(15),
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
+                              fontSize: fontSize(18),
+                              color: const Color.fromARGB(255, 9, 5, 32),
                             ),
                           ),
-                        ),
-                        SizedBox(height: spacing(20)),
-                        Slider(
-                          value: _pitch,
-                          min: 0.5,
-                          max: 2.0,
-                          onChanged: _setPitch,
-                          divisions: 15,
-                          label: _pitch.toStringAsFixed(2),
-                        ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: spacing(20)),
 
-                        // Select Gender
-                        SizedBox(height: spacing(30)),
-                        Padding(
-                          padding: EdgeInsets.symmetric(horizontal: spacing(0)),
-                          child: Text(
-                            "Select Gender",
+                  // Voice Settings Option
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => VoiceSettingsPage()),
+                      );
+                    },
+                    child: Container(
+                      width: screenWidth, // Full width
+                      padding: EdgeInsets.symmetric(vertical: spacing(15), horizontal: spacing(20)),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: const Color.fromARGB(255, 255, 255, 255),
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(Icons.arrow_forward_ios, color: const Color.fromARGB(255, 11, 3, 26), size: 20),
+                          SizedBox(width: spacing(10)),
+                          Text(
+                            "Voice Settings",
                             style: TextStyle(
-                              fontSize: fontSize(15),
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
+                              fontSize: fontSize(18),
+                              color: const Color.fromARGB(255, 9, 5, 32),
                             ),
                           ),
-                        ),
-                        SizedBox(height: spacing(10)),
-                        Container(
-                          padding: EdgeInsets.symmetric(horizontal: spacing(0)),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                          child: DropdownButton<String>(
-                            value: _selectedGender,
-                            isExpanded: true,
-                            dropdownColor: const Color(0xFF1A2A3A),
-                            onChanged: (value) => _setGender(value!),
-                            items: const [
-                              DropdownMenuItem(
-                                value: "female",
-                                child: Text(
-                                  "Female",
-                                  style: TextStyle(color: Colors.white),
-                                ),
-                              ),
-                              DropdownMenuItem(
-                                value: "male",
-                                child: Text(
-                                  "Male",
-                                  style: TextStyle(color: Colors.white),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-
-                        // Select Accent
-                        SizedBox(height: spacing(30)),
-                        Padding(
-                          padding: EdgeInsets.symmetric(horizontal: spacing(0)),
-                          child: Text(
-                            "Select Accent",
-                            style: TextStyle(
-                              fontSize: fontSize(15),
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                        SizedBox(height: spacing(10)),
-                        Container(
-                          padding: EdgeInsets.symmetric(horizontal: spacing(0)),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                          child: DropdownButton<String>(
-                            value: _selectedAccent,
-                            isExpanded: true,
-                            dropdownColor: const Color(0xFF1A2A3A),
-                            onChanged: (value) => _setAccent(value!),
-                            items: const [
-                              DropdownMenuItem(
-                                value: "en-US",
-                                child: Text(
-                                  "American English",
-                                  style: TextStyle(color: Colors.white),
-                                ),
-                              ),
-                              DropdownMenuItem(
-                                value: "en-GB",
-                                child: Text(
-                                  "British English",
-                                  style: TextStyle(color: Colors.white),
-                                ),
-                              ),
-                              DropdownMenuItem(
-                                value: "en-AU",
-                                child: Text(
-                                  "Australian English",
-                                  style: TextStyle(color: Colors.white),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ],
