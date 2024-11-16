@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../widgets/appbar.dart';
 import '../widgets/bottombar.dart';
+import '../widgets/wavesBackground.dart';
 
 class HistoryPage extends StatelessWidget {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
@@ -32,74 +33,78 @@ class HistoryPage extends StatelessWidget {
         ),
       ),
       body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              Color.fromARGB(255, 79, 114, 190), // start color (lighter blue)
-              Color(0xFF1A2A3A), // end color (dark blue)
-            ],
-          ),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start, 
+        decoration: darkGradientBackground,
+        child: Stack(
           children: [
-            appBar(_scaffoldKey),
-            SizedBox(height: spacing(30)),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: spacing(15)),
-              child: Text(
-                "Conversation History",
-                style: TextStyle(
-                  fontSize: fontSize(20),
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
+            Positioned.fill(
+              child: Opacity(
+                opacity: 0.30,
+                child: Image.asset(
+                  'assets/images/waves.jpg',
+                  fit: BoxFit.cover,  
                 ),
               ),
             ),
-            Expanded(
-              child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: spacing(20)),
-                child: ListView.builder(
-                  itemCount: conversationHistory.length,
-                  itemBuilder: (context, index) {
-                    final history = conversationHistory[index];
-                    return Card(
-                      color: Colors.black.withOpacity(0.15),
-                      margin: EdgeInsets.symmetric(vertical: spacing(8)),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Padding(
-                        padding: EdgeInsets.all(spacing(10)),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              history['date'] ?? '',
-                              style: TextStyle(
-                                fontSize: fontSize(12),
-                                color: Colors.white54,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                            SizedBox(height: spacing(5)),
-                            Text(
-                              history['content'] ?? '',
-                              style: TextStyle(
-                                fontSize: fontSize(15),
-                                color: Colors.white,
-                                fontWeight: FontWeight.normal,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    );
-                  },
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                appBar(_scaffoldKey),
+                SizedBox(height: spacing(30)),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: spacing(15)),
+                  child: Text(
+                    "Conversation History",
+                    style: TextStyle(
+                      fontSize: fontSize(20),
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
                 ),
-              ),
+                Expanded(
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: spacing(20)),
+                    child: ListView.builder(
+                      itemCount: conversationHistory.length,
+                      itemBuilder: (context, index) {
+                        final history = conversationHistory[index];
+                        return Card(
+                          color: Colors.black.withOpacity(0.15),
+                          margin: EdgeInsets.symmetric(vertical: spacing(8)),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Padding(
+                            padding: EdgeInsets.all(spacing(10)),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  history['date'] ?? '',
+                                  style: TextStyle(
+                                    fontSize: fontSize(12),
+                                    color: Colors.white54,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                                SizedBox(height: spacing(5)),
+                                Text(
+                                  history['content'] ?? '',
+                                  style: TextStyle(
+                                    fontSize: fontSize(15),
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.normal,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ),
+              ],
             ),
           ],
         ),
