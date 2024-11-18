@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../widgets/signUpForm.dart';
+import '../widgets/logInForm.dart';
 import '../widgets/appbar.dart';
 import '../widgets/wavesBackground.dart';
 import 'homePage.dart';
@@ -46,7 +47,7 @@ class _LoginPageState extends State<LoginPage> {
             top: _showSignUpForm
                 ? screenHeight * 0.15
                 : _showLoginForm
-                    ? screenHeight * 0.3
+                    ? screenHeight * 0.25
                     : screenHeight * 0.35, // Adjust positions
             left: 0,
             right: 0,
@@ -64,16 +65,6 @@ class _LoginPageState extends State<LoginPage> {
                         fontFamily: 'Vonique',
                       ),
                     ),
-                    const Text(
-                      "Where Thoughts Find a Voice",
-                      style: TextStyle(
-                        fontFamily: 'lato',
-                        color: Color.fromARGB(255, 206, 206, 206),
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: 30),
                     Center(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
@@ -88,6 +79,17 @@ class _LoginPageState extends State<LoginPage> {
                                     .shrink() // Hide buttons if form is shown
                                 : Column(
                                     children: [
+                                      const Text(
+                                        "Where Thoughts Find a Voice",
+                                        style: TextStyle(
+                                          fontFamily: 'lato',
+                                          color: Color.fromARGB(
+                                              255, 206, 206, 206),
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 30),
                                       SizedBox(
                                         width: double.infinity,
                                         child: ElevatedButton(
@@ -110,7 +112,7 @@ class _LoginPageState extends State<LoginPage> {
                                           child: const Text(
                                             "Get Started",
                                             style: TextStyle(
-                                              fontSize: 25,
+                                              fontSize: 22,
                                               fontWeight: FontWeight.normal,
                                               color: Color(0xFF1A2A3A),
                                             ),
@@ -127,7 +129,7 @@ class _LoginPageState extends State<LoginPage> {
                                         child: const Text(
                                           "Login",
                                           style: TextStyle(
-                                            fontSize: 25,
+                                            fontSize: 22,
                                             fontWeight: FontWeight.normal,
                                             color: Color.fromARGB(
                                                 255, 255, 255, 255),
@@ -137,126 +139,29 @@ class _LoginPageState extends State<LoginPage> {
                                     ],
                                   ),
                           ),
+                          loginForm(
+                            context,
+                            _showLoginForm,
+                            _showSignUpForm,
+                            () {
+                              setState(() {
+                                _showSignUpForm = true;
+                                _showLoginForm = false;
+                              });
+                            },
+                          ),
                           // Animated opacity for the login form
-                          signUpForm(context, _showLoginForm, _showSignUpForm),
-                          AnimatedOpacity(
-                            opacity: _showLoginForm ? 1.0 : 0.0,
-                            duration: const Duration(milliseconds: 600),
-                            child: _showLoginForm && _showSignUpForm == false
-                                ? Column(
-                                    children: [
-                                      TextField(
-                                        style: const TextStyle(
-                                            fontSize: 20,
-                                            color: Color.fromARGB(255, 255, 255, 255)),
-                                        decoration: InputDecoration(
-                                          contentPadding:
-                                              const EdgeInsets.symmetric(
-                                                  horizontal: 14, vertical: 13),
-                                          hintText: "Username",
-                                          filled: true,
-                                          fillColor: Colors.transparent,
-                                          border: OutlineInputBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(30),
-                                          ),
-                                        ),
-                                      ),
-                                      const SizedBox(height: 20),
-                                      TextField(
-                                        obscureText: true,
-                                        style: const TextStyle(
-                                            fontSize: 20,
-                                            color: Color.fromARGB(255, 255, 255, 255)),
-                                        decoration: InputDecoration(
-                                          contentPadding:
-                                              const EdgeInsets.symmetric(
-                                                  horizontal: 14, vertical: 13),
-                                          hintText: "Password",
-                                          filled: true,
-                                          fillColor: Colors.transparent,
-                                          border: OutlineInputBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(30),
-                                          ),
-                                        ),
-                                      ),
-                                      const SizedBox(height: 20),
-                                      SizedBox(
-                                        width: double.infinity,
-                                        child: ElevatedButton(
-                                          onPressed: () {
-                                            Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      HomePage(),
-                                                ));
-                                          },
-                                          style: ElevatedButton.styleFrom(
-                                            backgroundColor:
-                                                const Color.fromARGB(255, 255, 255, 255),
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(30),
-                                            ),
-                                            padding: const EdgeInsets.symmetric(
-                                                vertical: 12),
-                                          ),
-                                          child: const Text(
-                                            "Log In",
-                                            style: TextStyle(
-                                              fontSize: 22,
-                                              color: Color(0xFF1A2A3A),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      const SizedBox(height: 10),
-                                      TextButton(
-                                          onPressed: () {},
-                                          child: const Text(
-                                            'Forgot Password?',
-                                            style: TextStyle(
-                                              fontSize: 17,
-                                              color: Color.fromARGB(
-                                                  255, 252, 254, 255),
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          )),
-                                      const SizedBox(
-                                        height: 190,
-                                      ),
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          const Text(
-                                            'Dont have an account?',
-                                            style: TextStyle(fontSize: 17),
-                                          ),
-                                          TextButton(
-                                              onPressed: () {
-                                                setState(() {
-                                                  _showSignUpForm = true;
-                                                  _showLoginForm = false;
-                                                });
-                                              },
-                                              child: const Text(
-                                                'Register!',
-                                                style: TextStyle(
-                                                  fontSize: 17,
-                                                  color: Color.fromARGB(
-                                                      255, 252, 254, 255),
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                              ))
-                                        ],
-                                      )
-                                    ],
-                                  )
-                                : const SizedBox.shrink(),
-                          )
+                          signUpForm(
+                            context,
+                            _showLoginForm,
+                            _showSignUpForm,
+                            () {
+                              setState(() {
+                                _showLoginForm = true;
+                                _showSignUpForm = false;
+                              });
+                            },
+                          ),
                         ],
                       ),
                     ),

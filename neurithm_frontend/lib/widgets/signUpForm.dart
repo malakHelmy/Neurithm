@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import '../screens/loginPage.dart';
+import 'inputDecoration.dart';
 import '../screens/homePage.dart';
 
-AnimatedOpacity signUpForm(BuildContext context, bool _showLoginForm, bool _showSignUpForm) {
+AnimatedOpacity signUpForm(BuildContext context, bool _showLoginForm,
+    bool _showSignUpForm, VoidCallback toggleToLoginForm) {
   final _formKey = GlobalKey<FormState>();
   final _firstNameController = TextEditingController();
   final _lastNameController = TextEditingController();
@@ -58,140 +61,151 @@ AnimatedOpacity signUpForm(BuildContext context, bool _showLoginForm, bool _show
   }
 
   return AnimatedOpacity(
-    opacity: _showSignUpForm && _showLoginForm == false ? 1.0 : 0.0,
+    opacity: _showSignUpForm && !_showLoginForm ? 1.0 : 0.0,
     duration: const Duration(milliseconds: 600),
     child: _showSignUpForm
         ? Form(
             key: _formKey,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 25),
-              child: Column(
-                children: [
-                  TextFormField(
-                    controller: _firstNameController,
-                    style:
-                        const TextStyle(fontSize: 20, color: Color.fromARGB(255, 255, 255, 255)),
-                    decoration: InputDecoration(
-                      hintText: "First Name",
-                      filled: true,
-                      fillColor: Colors.transparent,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(30),
-                      ),
-                    ),
-                    // validator: _validateName,
-                  ),
-                  const SizedBox(height: 20),
-                  TextFormField(
-                    controller: _lastNameController,
-                    style:
-                        const TextStyle(fontSize: 20, color: Colors.white),
-                    decoration: InputDecoration(
-                      hintText: "Last Name",
-                      filled: true,
-                      fillColor: Colors.transparent,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(30),
-                      ),
-                    ),
-                    // validator: _validateName,
-                  ),
-                  const SizedBox(height: 20),
-                  TextFormField(
-                    controller: _emailController,
-                    style:
-                        const TextStyle(fontSize: 20, color:  Colors.white),
-                    decoration: InputDecoration(
-                      hintText: "Email",
-                      filled: true,
-                      fillColor: Colors.transparent,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(30),
-                      ),
-                    ),
-                    // validator: _validateEmail,
-                  ),
-                  const SizedBox(height: 20),
-                  TextFormField(
+            child: Column(
+              children: [
+                TextFormField(
+                  controller: _firstNameController,
+                  style: const TextStyle(
+                      fontSize: 20, color: Color.fromARGB(255, 255, 255, 255)),
+                  decoration: customTextFieldDecoration('First Name'),
+                  // validator: _validateName,
+                ),
+                const SizedBox(height: 20),
+                TextFormField(
+                  controller: _lastNameController,
+                  style: const TextStyle(fontSize: 20, color: Colors.white),
+                  decoration: customTextFieldDecoration('Last Name'),
+                  // validator: _validateName,
+                ),
+                const SizedBox(height: 20),
+                TextFormField(
+                  controller: _emailController,
+                  style: const TextStyle(fontSize: 20, color: Colors.white),
+                  decoration: customTextFieldDecoration('Email'),
+                  // validator: _validateEmail,
+                ),
+                const SizedBox(height: 20),
+                TextFormField(
                     controller: _ageController,
                     keyboardType: TextInputType.number,
-                    style:
-                        const TextStyle(fontSize: 20, color:  Colors.white),
-                    decoration: InputDecoration(
-                      hintText: "Age",
-                      filled: true,
-                      fillColor: Colors.transparent,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(30),
-                      )
-                    ),
+                    style: const TextStyle(fontSize: 20, color: Colors.white),
+                    decoration: customTextFieldDecoration('Age')
                     // validator: _validateAge,
-                  ),
-                  const SizedBox(height: 20),
-                  TextFormField(
-                    controller: _passwordController,
-                    obscureText: true,
-                    style:
-                        const TextStyle(fontSize: 20, color:  Colors.white),
-                    decoration: InputDecoration(
-                      hintText: "Password",
-                      filled: true,
-                      fillColor: Colors.transparent,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(30),
-                      ),
                     ),
-                    // validator: _validatePassword,
+
+                const SizedBox(height: 20),
+                // Password Field
+                TextFormField(
+                  controller: _passwordController,
+                  obscureText: true,
+                  style: const TextStyle(
+                    fontSize: 18,
+                    color: Colors.black,
                   ),
-                  const SizedBox(height: 20),
-                  TextFormField(
-                    controller: _confirmPasswordController,
-                    obscureText: true,
-                    style:
-                        const TextStyle(fontSize: 20, color:  Colors.white),
-                    decoration: InputDecoration(
-                      hintText: "Confirm Password",
-                      filled: true,
-                      fillColor: Colors.transparent,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(30),
-                      ),
+                  decoration: InputDecoration(
+                    labelText: "Password",
+                    labelStyle: const TextStyle(
+                        color: Color.fromARGB(115, 255, 255, 255)),
+                    focusedBorder: const UnderlineInputBorder(
+                      borderSide: BorderSide(
+                          color: Color.fromARGB(255, 255, 255, 255), width: 2),
                     ),
-                    // validator: _validateConfirmPassword,
+                    enabledBorder: const UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.grey, width: 1),
+                    ),
+                    suffixIcon: IconButton(
+                      icon: const Icon(Icons.visibility, color: Colors.grey),
+                      onPressed: () {},
+                    ),
                   ),
-                  const SizedBox(height: 20),
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        if (_formKey.currentState!.validate()) {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => HomePage(),
-                            ),
-                          );
-                        }
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color.fromARGB(255, 255, 255, 255),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30),
+                ),                
+                const SizedBox(height: 40),
+                // Sign In Button
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => HomePage(),
                         ),
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 12,)
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color.fromARGB(255, 255, 255, 255),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30),
                       ),
-                      child: const Text(
-                        "Create Account",
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                    ),
+                    child: const Text(
+                      "Sign Up",
+                      style: TextStyle(
+                        fontSize: 20,
+                        color: Color(0xFF1A2A3A),
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 15),
+                // Sign in with Google Button
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton.icon(
+                    onPressed: () {},
+                    icon: Image.asset(
+                      'assets/images/google_logo.png',
+                      height: 24,
+                      width: 24,
+                    ),
+                    label: const Text(
+                      "Sign Up using Google",
+                      style: TextStyle(
+                        fontSize: 20,
+                        color: Color.fromARGB(255, 255, 255, 255),
+                      ),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.transparent,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                    ),
+                  ),
+                ),
+
+                const SizedBox(height: 20),
+                // Register Link
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text("Already have an account? ",
                         style: TextStyle(
-                          fontSize: 22,
-                          color: Color(0xFF1A2A3A),
+                            color: Color.fromARGB(115, 255, 255, 255),
+                            fontSize: 17)),
+                    TextButton(
+                      onPressed: () {
+                        toggleToLoginForm();
+                      },
+                      child: const Text(
+                        "Log In",
+                        style: TextStyle(
+                          color: Color.fromARGB(255, 255, 255, 255),
+                          fontWeight: FontWeight.bold,
+                          fontSize: 17,
                         ),
                       ),
                     ),
-                  ),
-                ],
-              ),
+                  ],
+                ),
+              ],
             ),
           )
         : const SizedBox.shrink(),
