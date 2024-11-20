@@ -5,8 +5,7 @@ import '../screens/history.dart';
 import '../screens/devices.dart';
 import '../screens/settings.dart';
 import '../widgets/wavesBackground.dart';
-import 'loginPage.dart'; // Import the LoginPage
-import 'setUpConnectionPage.dart'; // Import the LoginPage
+import 'setUpConnectionPage.dart'; 
 
 class HomePage extends StatelessWidget {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
