@@ -23,18 +23,21 @@ class _userProfilePageState extends State<userProfilePage> {
               padding: EdgeInsets.symmetric(
                 horizontal: spacing(15, getScreenHeight(context)),
               ),
-              child: AppBar(
-                backgroundColor: Colors.transparent,
-                leading: IconButton(
-                  icon: const Icon(Icons.arrow_back_ios,
-                      color: Color.fromARGB(255, 206, 206, 206)),
-                  onPressed: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => HomePage(),
-                        ));
-                  },
+              child: Padding(
+                padding: const EdgeInsets.only(top: 15),
+                child: AppBar(
+                  backgroundColor: Colors.transparent,
+                  leading: IconButton(
+                    icon: const Icon(Icons.arrow_back_ios,
+                        color: Color.fromARGB(255, 206, 206, 206)),
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => HomePage(),
+                          ));
+                    },
+                  ),
                 ),
               ),
             ),
