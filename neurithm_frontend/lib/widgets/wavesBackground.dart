@@ -28,7 +28,7 @@ Positioned waveBackground = Positioned.fill(
     opacity: 0.50, // Adjust opacity as desired
     child: Image.asset(
       'assets/images/waves.jpg', // Your waves image path
-      fit: BoxFit.fitHeight,
+      fit: BoxFit.cover,
     ),
   ),
 );

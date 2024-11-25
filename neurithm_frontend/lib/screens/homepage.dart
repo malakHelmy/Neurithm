@@ -5,7 +5,7 @@ import '../screens/history.dart';
 import '../screens/devices.dart';
 import '../screens/settings.dart';
 import '../widgets/wavesBackground.dart';
-import 'setUpConnectionPage.dart'; 
+import 'setUpConnectionPage.dart';
 
 class HomePage extends StatelessWidget {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
@@ -177,28 +177,6 @@ class HomePage extends StatelessWidget {
                           onPressed: () {},
                         )
                       ],
-                    ),
-                    SizedBox(height: spacing(15)),
-                    SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: List.generate(
-                          4,
-                          (index) => Padding(
-                            padding:
-                                EdgeInsets.symmetric(horizontal: spacing(5)),
-                            child: Container(
-                              height: spacing(100),
-                              width: screenWidth * 0.35, // 35% of screen width
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                color: Colors.black.withOpacity(0.12),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
                     ),
                   ],
                 ),

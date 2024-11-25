@@ -4,7 +4,6 @@ import '../screens/homePage.dart';
 import '../screens/wordBank.dart';
 import '../screens/feedback.dart';
 
-
 Drawer sideAppBar(context) {
   return Drawer(
     child: ListView(
@@ -39,18 +38,16 @@ Drawer sideAppBar(context) {
           },
         ),
         ListTile(
-          title: const Text('Contact',
-              style: TextStyle(
-                color: Color.fromARGB(255, 206, 206, 206),
-                fontSize: 25,
-                fontFamily: 'Lato',
-                fontWeight: FontWeight.bold,
-              )),
-              onTap: () {
+            title: const Text('Contact',
+                style: TextStyle(
+                  color: Color.fromARGB(255, 206, 206, 206),
+                  fontSize: 25,
+                  fontFamily: 'Lato',
+                  fontWeight: FontWeight.bold,
+                )),
+            onTap: () {
               Navigator.pop(context);
-              }
-          
-        ),
+            }),
         ListTile(
           title: const Text('Feedback',
               style: TextStyle(
@@ -59,13 +56,13 @@ Drawer sideAppBar(context) {
                 fontFamily: 'Lato',
                 fontWeight: FontWeight.bold,
               )),
-         onTap: () {
+          onTap: () {
             Navigator.push(
                 context,
                 MaterialPageRoute(
                   builder: (context) => FeedbackPage(),
                 ));
-                    },
+          },
         ),
         ListTile(
           title: const Text('Account Info',
@@ -104,7 +101,7 @@ Drawer sideAppBar(context) {
   );
 }
 
-AppBar appBar(GlobalKey<ScaffoldState> scaffoldKey) {
+AppBar Appbar(GlobalKey<ScaffoldState> scaffoldKey) {
   return AppBar(
     backgroundColor: Colors.transparent, elevation: 0.0,
     leading: IconButton(
@@ -152,6 +149,13 @@ Row loginPageAppBar(_scaffoldKey) {
         },
       ),
     ],
+  );
+}
+
+Padding appBar(GlobalKey<ScaffoldState> scaffoldKey) {
+  return Padding(
+    padding: EdgeInsets.only(top: 15),
+    child: Appbar(scaffoldKey),
   );
 }
 
