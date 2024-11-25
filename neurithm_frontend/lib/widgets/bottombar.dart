@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import '../screens/history.dart';
 import '../screens/homePage.dart';
-import '../screens/devices.dart';
 import '../screens/settings.dart';
+import '../screens/wordBank.dart';
 
 BottomNavigationBar bottomappBar(BuildContext context) {
   void _onItemTapped(int index) {
@@ -16,7 +16,7 @@ BottomNavigationBar bottomappBar(BuildContext context) {
       case 1:
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => DevicesPage()),
+          MaterialPageRoute(builder: (context) => wordBankPage()),
         );
         break;
       case 2:
@@ -46,7 +46,7 @@ BottomNavigationBar bottomappBar(BuildContext context) {
       ),
       BottomNavigationBarItem(
         icon: Icon(Icons.saved_search),
-        label: 'Library',
+        label: 'Word Bank',
       ),
       BottomNavigationBarItem(
         icon: Icon(Icons.settings),

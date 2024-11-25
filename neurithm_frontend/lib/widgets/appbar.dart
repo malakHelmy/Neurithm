@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:neurithm_frontend/screens/userProfile.dart';
 import '../screens/homePage.dart';
-import '../screens/loginPage.dart';
+import '../screens/wordBank.dart';
 import '../screens/feedback.dart';
 
 
@@ -80,6 +80,22 @@ Drawer sideAppBar(context) {
                 context,
                 MaterialPageRoute(
                   builder: (context) => userProfilePage(),
+                ));
+          },
+        ),
+        ListTile(
+          title: const Text('Word Bank',
+              style: TextStyle(
+                color: Color.fromARGB(255, 206, 206, 206),
+                fontSize: 25,
+                fontFamily: 'Lato',
+                fontWeight: FontWeight.bold,
+              )),
+          onTap: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => wordBankPage(),
                 ));
           },
         ),
