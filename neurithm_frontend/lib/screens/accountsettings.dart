@@ -1,116 +1,226 @@
 import 'package:flutter/material.dart';
-import '../widgets/appbar.dart';
-import '../widgets/bottombar.dart';
+import 'package:neurithm_frontend/screens/homePage.dart';
 import '../widgets/wavesBackground.dart';
-import '../screens/accountsettings.dart'; 
-import '../screens/voicesettings.dart'; 
+import '../widgets/appbar.dart';
 
-class AccountSettingsPage extends StatelessWidget {
-  final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
+class UserProfileSettingsPage extends StatefulWidget {
+  const UserProfileSettingsPage({super.key});
+
+  @override
+  State<UserProfileSettingsPage> createState() =>
+      _UserProfileSettingsPageState();
+}
+
+class _UserProfileSettingsPageState extends State<UserProfileSettingsPage> {
+  // Controllers for editable fields
+  final TextEditingController nameController =
+      TextEditingController(text: 'Anna Avetisyan');
+  final TextEditingController emailController =
+      TextEditingController(text: 'info@aplusdesign.co');
+  final TextEditingController passwordController = TextEditingController();
+
+  @override
+  void dispose() {
+    // Dispose controllers when the widget is removed
+    nameController.dispose();
+    emailController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-
-    final screenWidth = MediaQuery.of(context).size.width;
-    final screenHeight = MediaQuery.of(context).size.height;
-
-    double fontSize(double size) => size * screenWidth / 400;
-    double spacing(double size) => size * screenHeight / 800;
-
     return Scaffold(
-      key: _scaffoldKey,
-      drawer: sideAppBar(context), // Side App Bar
-      bottomNavigationBar: Padding(
-        padding: EdgeInsets.all(spacing(5)),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(15.0),
-          child: bottomappBar(context), // Bottom App Bar
-        ),
-      ),
       body: Container(
         decoration: gradientBackground,
-        padding: EdgeInsets.symmetric(horizontal: spacing(15)),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-
-              Text("Name", style: TextStyle(fontSize: fontSize(18), color: Colors.white)),
-              TextField(
-                controller: _nameController,
-                style: TextStyle(color: Colors.white),
-                decoration: InputDecoration(
-                  hintText: "Enter your name",
-                  hintStyle: TextStyle(color: Colors.white.withOpacity(0.7)),
-                  fillColor: Colors.white.withOpacity(0.1),
-                  filled: true,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
+        child: Stack(
+          children: [
+            wavesBackground(getScreenWidth(context), getScreenHeight(context)),
+            Padding(
+              padding: EdgeInsets.symmetric(
+                horizontal: spacing(15, getScreenHeight(context)),
               ),
-              SizedBox(height: spacing(20)),
-
-              Text("Email", style: TextStyle(fontSize: fontSize(18), color: Colors.white)),
-              TextField(
-                controller: _emailController,
-                style: TextStyle(color: Colors.white),
-                decoration: InputDecoration(
-                  hintText: "Enter your email",
-                  hintStyle: TextStyle(color: Colors.white.withOpacity(0.7)),
-                  fillColor: Colors.white.withOpacity(0.1),
-                  filled: true,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
-              ),
-              SizedBox(height: spacing(20)),
-
-              Text("Password", style: TextStyle(fontSize: fontSize(18), color: Colors.white)),
-              TextField(
-                controller: _passwordController,
-                obscureText: true,
-                style: TextStyle(color: Colors.white),
-                decoration: InputDecoration(
-                  hintText: "Enter your password",
-                  hintStyle: TextStyle(color: Colors.white.withOpacity(0.7)),
-                  fillColor: Colors.white.withOpacity(0.1),
-                  filled: true,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
-              ),
-              SizedBox(height: spacing(30)),
-
-              // Save Button
-              Container(
-                width: screenWidth,  
-                child: ElevatedButton(
+              child: AppBar(
+                backgroundColor: Colors.transparent,
+                leading: IconButton(
+                  icon: const Icon(Icons.arrow_back_ios,
+                      color: Color.fromARGB(255, 206, 206, 206)),
                   onPressed: () {
-                    print("Name: ${_nameController.text}");
-                    print("Email: ${_emailController.text}");
-                    print("Password: ${_passwordController.text}");
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => HomePage(),
+                      ),
+                    );
                   },
-                  child: Text("Save Changes"),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.white,
-                    padding: EdgeInsets.symmetric(vertical: spacing(15)),
-                    textStyle: TextStyle(
-                      fontSize: fontSize(18),
-                      fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 85),
+              child: Column(
+                children: [
+                  const Column(
+                    children: [
+                      CircleAvatar(
+                        radius: 50,
+                        backgroundColor: Color.fromARGB(255, 62, 99, 135),
+                        child: Icon(
+                          Icons.person,
+                          size: 50,
+                          color: Colors.white,
+                        ),
+                      ),
+                      SizedBox(height: 10),
+                      Text(
+                        'Settings',
+                        style: TextStyle(
+                          fontSize: 25,
+                          fontFamily: 'Lato',
+                          fontWeight: FontWeight.bold,
+                          color: Color.fromARGB(255, 255, 255, 255),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 10),
+                  // Profile Settings Fields Section
+                  Expanded(
+                    child: Container(
+                      decoration: const BoxDecoration(
+                        color: Colors.transparent,
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(30),
+                          topRight: Radius.circular(30),
+                        ),
+                      ),
+                      child: ListView(
+                        children: [
+                          _editableField(Icons.person, 'Edit Name',
+                              controller: nameController),
+                          _editableField(Icons.email, 'Change Email',
+                              controller: emailController),
+                          _editableField(Icons.lock, 'Update Password',
+                              controller: passwordController,
+                              obscureText: true),
+                          _editableField(Icons.lock, 'Confirm Password',
+                              controller: passwordController,
+                              obscureText: true),
+                          _settingsField(Icons.cake, 'Birthday',
+                              trailing: const Text(
+                                '12 Jan 1995',
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  color: Colors.white,
+                                ),
+                              )),
+                        ],
+                      ),
                     ),
+                  ),
+                  // Save Profile Settings Button
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 25),
+                    child: SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          // Save profile settings functionality
+                          print("Name: ${nameController.text}");
+                          print("Email: ${emailController.text}");
+                          print("Password: ${passwordController.text}");
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor:
+                              const Color.fromARGB(255, 240, 240, 240),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(50),
+                          ),
+                          padding: EdgeInsets.symmetric(
+                              vertical: spacing(12, getScreenHeight(context))),
+                        ),
+                        child: const Text(
+                          "Save Changes",
+                          style: TextStyle(
+                            fontSize: 25,
+                            fontWeight: FontWeight.normal,
+                            color: Color(0xFF1A2A3A),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // Editable Field with TextEditingController
+  Widget _editableField(IconData icon, String label,
+      {required TextEditingController controller, bool obscureText = false}) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+          child: Row(
+            children: [
+              Icon(icon, color: Color.fromARGB(255, 206, 206, 206)),
+              const SizedBox(width: 25),
+              Expanded(
+                child: TextField(
+                  controller: controller,
+                  obscureText: obscureText,
+                  style: const TextStyle(fontSize: 20, color: Colors.white),
+                  decoration: InputDecoration(
+                    labelText: label,
+                    labelStyle: const TextStyle(color: Colors.white54),
+                    
                   ),
                 ),
               ),
             ],
           ),
         ),
-      ),
+        
+      ],
+    );
+  }
+
+  // Non-editable Field
+  Widget _settingsField(IconData icon, String label,
+      {Widget? trailing, VoidCallback? onTap}) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        GestureDetector(
+          onTap: onTap,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+            child: Row(
+              children: [
+                Icon(icon, color: Color.fromARGB(255, 206, 206, 206)),
+                const SizedBox(width: 25),
+                Expanded(
+                  child: Text(
+                    label,
+                    style: const TextStyle(fontSize: 20, color: Colors.white),
+                  ),
+                ),
+                if (trailing != null) trailing,
+              ],
+            ),
+          ),
+        ),
+        const Divider(
+          color: Color.fromARGB(255, 206, 206, 206),
+          thickness: 0.75,
+        ),
+      ],
     );
   }
 }

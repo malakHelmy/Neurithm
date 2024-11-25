@@ -54,7 +54,7 @@ class SettingsPage extends StatelessWidget {
                     onTap: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => AccountSettingsPage()),
+                        MaterialPageRoute(builder: (context) => UserProfileSettingsPage()),
                       );
                     },
                     child: Container(
