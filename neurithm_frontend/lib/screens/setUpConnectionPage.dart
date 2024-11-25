@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:neurithm_frontend/screens/confirmationPage.dart';
 import '../widgets/appBar.dart';
 import '../widgets/wavesBackground.dart';
 import 'homePage.dart';
+import '../screens/confirmationPage.dart';
 
 class setUpConnectionPage extends StatefulWidget {
   const setUpConnectionPage({super.key});
@@ -214,7 +216,9 @@ class _setUpConnectionPageState extends State<setUpConnectionPage>
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                        builder: (context) => HomePage(),
+                                        builder: (context) => ConfirmationPage(
+                                        processedSentence: "Your processed sentence here", 
+                                        ),
                                       ),
                                     );
                                   }
