@@ -34,6 +34,8 @@ dependencies:
   http: ^1.2.2
   audioplayers: ^6.1.0
   path_provider: ^2.0.11 # Check for the latest version
+  flutter_audio_waveforms: ^1.2.1+8  # Update the version here
+
 
 
 

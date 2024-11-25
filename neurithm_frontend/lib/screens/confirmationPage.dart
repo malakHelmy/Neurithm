@@ -19,7 +19,8 @@ class ConfirmationPage extends StatelessWidget {
           child: Stack(
             alignment: Alignment.center,
             children: [
-              wavesBackground(getScreenWidth(context), getScreenHeight(context)),
+              wavesBackground(
+                  getScreenWidth(context), getScreenHeight(context)),
               Padding(
                 padding: EdgeInsets.symmetric(
                     horizontal: spacing(15, getScreenHeight(context))),
@@ -39,11 +40,11 @@ class ConfirmationPage extends StatelessWidget {
                       ),
                     ),
                     Container(
-                      padding: EdgeInsets.all(
-                          spacing(20, getScreenHeight(context))),
+                      padding:
+                          EdgeInsets.all(spacing(20, getScreenHeight(context))),
                       decoration: BoxDecoration(
                         color: const Color.fromARGB(255, 29, 29, 29)
-                        .withOpacity(0.35),
+                            .withOpacity(0.35),
                         borderRadius: BorderRadius.circular(20),
                         boxShadow: [
                           BoxShadow(
@@ -76,12 +77,14 @@ class ConfirmationPage extends StatelessWidget {
                                 Navigator.pop(context);
                               },
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: const Color.fromARGB(255, 240, 240, 240),
+                                backgroundColor:
+                                    const Color.fromARGB(255, 240, 240, 240),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(50),
                                 ),
                                 padding: EdgeInsets.symmetric(
-                                    vertical: spacing(12, getScreenHeight(context))),
+                                    vertical:
+                                        spacing(12, getScreenHeight(context))),
                               ),
                               child: const Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
@@ -155,7 +158,8 @@ class ConfirmationPage extends StatelessWidget {
                                   borderRadius: BorderRadius.circular(50),
                                 ),
                                 padding: EdgeInsets.symmetric(
-                                    vertical: spacing(12, getScreenHeight(context))),
+                                    vertical:
+                                        spacing(12, getScreenHeight(context))),
                               ),
                               child: const Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
@@ -186,10 +190,14 @@ class ConfirmationPage extends StatelessWidget {
                       child: ElevatedButton(
                         onPressed: () {
                           // Action to accept the sentence
+                          String sentence =
+                              "This is the sentence to be recited"; // Replace with your dynamic sentence
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => const RecitePage()),
+                              builder: (context) => RecitePage(
+                                  sentence: sentence), // Pass sentence here
+                            ),
                           );
                         },
                         style: ElevatedButton.styleFrom(
