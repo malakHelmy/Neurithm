@@ -3,6 +3,7 @@ import 'package:neurithm_frontend/screens/userProfile.dart';
 import '../screens/homePage.dart';
 import '../screens/wordBank.dart';
 import '../screens/feedback.dart';
+import '../screens/help.dart';
 
 Drawer sideAppBar(context) {
   return Drawer(
@@ -49,7 +50,7 @@ Drawer sideAppBar(context) {
               Navigator.pop(context);
             }),
         ListTile(
-          title: const Text('Feedback',
+          title: const Text('Help and Support',
               style: TextStyle(
                 color: Color.fromARGB(255, 206, 206, 206),
                 fontSize: 25,
@@ -60,7 +61,7 @@ Drawer sideAppBar(context) {
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => FeedbackPage(),
+                  builder: (context) => helpPage(),
                 ));
           },
         ),

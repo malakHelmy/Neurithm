@@ -26,6 +26,7 @@ class _LoginPageState extends State<LoginPage> {
     double spacing(double size) => size * screenHeight / 800;
 
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       key: _scaffoldKey,
       drawer: sideAppBar(context),
       body: Container(
