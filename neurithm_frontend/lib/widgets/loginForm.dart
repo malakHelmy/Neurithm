@@ -130,14 +130,14 @@ AnimatedOpacity loginForm(
                     width: 24,
                   ),
                   label: const Text(
-                    "Sign In with Google",
+                    "Sign Up using Google",
                     style: TextStyle(
                       fontSize: 20,
-                      color: Color(0xFF1A2A3A),
+                      color: Color.fromARGB(255, 255, 255, 255),
                     ),
                   ),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color.fromARGB(255, 255, 255, 255),
+                    backgroundColor: Colors.transparent,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(30),
                     ),

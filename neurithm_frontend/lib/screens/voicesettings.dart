@@ -98,10 +98,8 @@ class _VoiceSettingsState extends State<VoiceSettingsPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   // Drawer appBar
-                  Padding(
-                    padding: EdgeInsets.only(top: screenHeight * 0.075),
-                    child: appBar(_scaffoldKey),
-                  ),
+                  appBar(_scaffoldKey),
+                  
                   SizedBox(height: spacing(15)),
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: spacing(10)),
@@ -116,7 +114,7 @@ class _VoiceSettingsState extends State<VoiceSettingsPage> {
                           child: Text(
                             "Adjust Pitch (Tone)",
                             style: TextStyle(
-                              fontSize: fontSize(15),
+                              fontSize: fontSize(20),
                               fontWeight: FontWeight.bold,
                               color: Colors.white,
                             ),
@@ -139,7 +137,7 @@ class _VoiceSettingsState extends State<VoiceSettingsPage> {
                           child: Text(
                             "Select Gender",
                             style: TextStyle(
-                              fontSize: fontSize(15),
+                              fontSize: fontSize(20),
                               fontWeight: FontWeight.bold,
                               color: Colors.white,
                             ),
@@ -182,7 +180,7 @@ class _VoiceSettingsState extends State<VoiceSettingsPage> {
                           child: Text(
                             "Select Accent",
                             style: TextStyle(
-                              fontSize: fontSize(15),
+                              fontSize: fontSize(20),
                               fontWeight: FontWeight.bold,
                               color: Colors.white,
                             ),

@@ -4,6 +4,7 @@ import '../screens/homePage.dart';
 import '../screens/wordBank.dart';
 import '../screens/feedback.dart';
 import '../screens/help.dart';
+import '../screens/aboutUs.dart';
 
 Drawer sideAppBar(context) {
   return Drawer(
@@ -34,21 +35,24 @@ Drawer sideAppBar(context) {
                 fontFamily: 'Lato',
                 fontWeight: FontWeight.bold,
               )),
-          onTap: () {
-            Navigator.pop(context);
+          onTap: () {Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => AboutPage(),
+                ));
           },
         ),
-        ListTile(
-            title: const Text('Contact',
-                style: TextStyle(
-                  color: Color.fromARGB(255, 206, 206, 206),
-                  fontSize: 25,
-                  fontFamily: 'Lato',
-                  fontWeight: FontWeight.bold,
-                )),
-            onTap: () {
-              Navigator.pop(context);
-            }),
+        // ListTile(
+        //     title: const Text('Contact',
+        //         style: TextStyle(
+        //           color: Color.fromARGB(255, 206, 206, 206),
+        //           fontSize: 25,
+        //           fontFamily: 'Lato',
+        //           fontWeight: FontWeight.bold,
+        //         )),
+        //     onTap: () {
+        //       Navigator.pop(context);
+        //     }),
         ListTile(
           title: const Text('Help and Support',
               style: TextStyle(
@@ -155,7 +159,7 @@ Row loginPageAppBar(_scaffoldKey) {
 
 Padding appBar(GlobalKey<ScaffoldState> scaffoldKey) {
   return Padding(
-    padding: EdgeInsets.only(top: 15),
+    padding: EdgeInsets.only(top: 17),
     child: Appbar(scaffoldKey),
   );
 }

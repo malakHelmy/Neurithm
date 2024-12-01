@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:neurithm_frontend/screens/homePage.dart';
 import '../widgets/wavesBackground.dart';
 import '../widgets/appbar.dart';
+import 'settings.dart';
 
 class UserProfileSettingsPage extends StatefulWidget {
   const UserProfileSettingsPage({super.key});
@@ -49,7 +50,7 @@ class _UserProfileSettingsPageState extends State<UserProfileSettingsPage> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => HomePage(),
+                        builder: (context) => SettingsPage(),
                       ),
                     );
                   },

@@ -68,7 +68,6 @@ class HelpPage extends StatelessWidget {
                             decoration: customTextFieldDecoration('Email'),
                             // validator: _validateEmail,
                           ),
-                          const SizedBox(height: 20),
                           TextFormField(
                               keyboardType: TextInputType.number,
                               style: const TextStyle(
@@ -78,7 +77,7 @@ class HelpPage extends StatelessWidget {
                               // validator: _validateAge,
                               ),
 
-                          const SizedBox(height: 20),
+                          const SizedBox(height: 30),
 
                           // Sign In Button
                           SizedBox(
@@ -86,10 +85,10 @@ class HelpPage extends StatelessWidget {
                             child: ElevatedButton(
                               onPressed: () {
                                 ScaffoldMessenger.of(context)
-                                    .showSnackBar(SnackBar(
+                                    .showSnackBar(const SnackBar(
                                   content: Text(
                                       'Your message has been submitted successfully!'),
-                                  backgroundColor: const Color.fromARGB(255, 255, 255, 255),
+                                  backgroundColor: Color.fromARGB(255, 255, 255, 255),
                                   duration: Duration(seconds: 3),
                                 ));
                               },

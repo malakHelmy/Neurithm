@@ -68,7 +68,6 @@ class _RecitePageState extends State<RecitePage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: false,
       body: Container(
         decoration: gradientBackground,
         child: Stack(children: [

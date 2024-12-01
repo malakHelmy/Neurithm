@@ -51,18 +51,11 @@ class HistoryPage extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   // Drawer appBar
-                  Padding(
-                    padding: EdgeInsets.only(top: screenHeight * 0.075),
-                    child: appBar(_scaffoldKey),
-                  ),
-                  SizedBox(height: spacing(15)),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: spacing(10)),
-                    child: Center(
+                   appBar(_scaffoldKey),
+                   Center(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          SizedBox(height: spacing(10)),
                           // Scrollable content area for conversation history
                           ListView.builder(
                             shrinkWrap: true, // Ensures it works with the rest of the content
@@ -84,7 +77,7 @@ class HistoryPage extends StatelessWidget {
                                       Text(
                                         history['date'] ?? '',
                                         style: TextStyle(
-                                          fontSize: fontSize(12),
+                                          fontSize: fontSize(15),
                                           color: Colors.white54,
                                           fontWeight: FontWeight.w500,
                                         ),
@@ -93,7 +86,7 @@ class HistoryPage extends StatelessWidget {
                                       Text(
                                         history['content'] ?? '',
                                         style: TextStyle(
-                                          fontSize: fontSize(15),
+                                          fontSize: fontSize(20),
                                           color: Colors.white,
                                           fontWeight: FontWeight.normal,
                                         ),
@@ -107,7 +100,7 @@ class HistoryPage extends StatelessWidget {
                         ],
                       ),
                     ),
-                  ),
+                  
                 ],
               ),
             ),
