@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "49235168369",
+    "project_id": "neurithm-8ac92",
+    "storage_bucket": "neurithm-8ac92.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:49235168369:android:b283ac169a67724e455fd0",
+        "android_client_info": {
+          "package_name": "com.example.neurithm"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "49235168369-5el4t6ks6s55l3ijhs1vdbespgqk1v7v.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB_ZfiJIMRQv1mHBLOyM9hxnXqRn9A7DC8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "49235168369-5el4t6ks6s55l3ijhs1vdbespgqk1v7v.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
