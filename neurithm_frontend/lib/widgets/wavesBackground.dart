@@ -12,13 +12,9 @@ const BoxDecoration gradientBackground = BoxDecoration(
 );
 const BoxDecoration darkGradientBackground = BoxDecoration(
   gradient: LinearGradient(
-    begin: Alignment.bottomCenter,
-    end: Alignment.topCenter,
-    colors: [
-      Color.fromARGB(255, 79, 114, 190), // start color
-
-      Color(0xFF1A2A3A), // end color
-    ],
+    colors: [Color(0xFF1A2A3A), Color(0xFF243B4D)],
+    begin: Alignment.topCenter,
+    end: Alignment.bottomCenter,
   ),
 );
 

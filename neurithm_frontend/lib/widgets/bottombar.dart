@@ -35,7 +35,7 @@ BottomNavigationBar bottomappBar(BuildContext context) {
   }
 
   return BottomNavigationBar(
-    backgroundColor: Color.fromARGB(255, 70, 100, 166),
+    backgroundColor: Color(0xFF1A2A3A),
     selectedItemColor: Color.fromARGB(255, 255, 255, 255),
     unselectedItemColor: Color.fromARGB(255, 168, 167, 167),
     onTap: _onItemTapped, // Use the onItemTapped method here

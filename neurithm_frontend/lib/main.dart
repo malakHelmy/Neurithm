@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'screens/loginPage.dart';
+import 'screens/welcomeScreen.dart';
 
 void main() {
   runApp(ThoughtToSpeechApp());
@@ -14,7 +14,7 @@ class ThoughtToSpeechApp extends StatelessWidget {
         scaffoldBackgroundColor: Color(0xFF1A2A3A),
         primaryColor: Color(0xFF394B58),
       ),
-      home: LoginPage(),
+      home: WelcomeScreen(),
     );
   }
 }
