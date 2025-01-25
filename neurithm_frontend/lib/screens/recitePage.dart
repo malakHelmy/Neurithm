@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
-import 'package:neurithm_frontend/widgets/wavesBackground.dart';
+import 'package:neurithm/widgets/wavesBackground.dart';
 
 class RecitePage extends StatefulWidget {
   final String sentence;

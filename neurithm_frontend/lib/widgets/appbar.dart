@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:neurithm_frontend/screens/userProfile.dart';
+import 'package:neurithm/screens/userProfile.dart';
 import '../screens/homePage.dart';
 import '../screens/wordBank.dart';
 import '../screens/feedback.dart';

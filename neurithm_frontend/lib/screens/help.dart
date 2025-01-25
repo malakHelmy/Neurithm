@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:neurithm_frontend/screens/homepage.dart';
+import 'package:neurithm/screens/homepage.dart';
 import '../widgets/appbar.dart';
 import '../widgets/bottombar.dart';
 import '../widgets/wavesBackground.dart';

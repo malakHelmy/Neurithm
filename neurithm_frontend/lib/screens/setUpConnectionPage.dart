@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:neurithm_frontend/screens/confirmationPage.dart';
 import '../widgets/appBar.dart';
 import '../widgets/wavesBackground.dart';
 import 'homePage.dart';
