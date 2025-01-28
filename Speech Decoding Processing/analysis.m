@@ -86,14 +86,14 @@ for i = 1:length(participants)
         disp(['Dataset saved for subject: ' char(subject) ' after removing bad channels.']);  % Confirmation message for saving the dataset
 
 
-        %% EVENTS SETTINGS AND DATA REJECTION
+         %% EVENTS SETTINGS AND DATA REJECTION
 
         sample_frequency = EEG.srate;                                               % Gets the sampling frequency in Hz (indicates how many times the EEG signal was measured in one second)
         info_table_file = main_folder_subject + subject +"_Tab.csv";                % info table file path (ex: P01_Tab.csv in P01 folder)
 
-        info_table = readtable(info_table_file);                                    % Gets the info table
-        phonemes_task_rows = find(string(info_table.Task) == "phonemes");           % Gets the "phonemes" index
-        info_table = info_table(phonemes_task_rows,:);                              % Keep only the rows that correspond to "phonemes" tasks
+        opts = detectImportOptions(info_table_file); % Detect options for the input file
+        opts = setvartype(opts, {'Phoneme1', 'Phoneme2', 'Phoneme3'}, 'char'); % Set specific columns to char
+        info_table = readtable(info_table_file, opts); % Read the table with updated options
 
         info_table.Base_Line = info_table.P1_TSidx - 0.5*sample_frequency;          % The base line interval is 500ms before the first audiotry stimulus (P1_TSidx)
         info_table.Onset_TSidx = info_table.P1_TSidx - 0.2*sample_frequency;        % The onset is 200ms before the first audiotry stimulus (P1_TSidx)
@@ -101,13 +101,15 @@ for i = 1:length(participants)
         info_table.TMS_TSidx = info_table.P1_TSidx - 0.05*sample_frequency;         % The first TMS is 100ms the first audiotry stimulus (P1_TSidx)
         info_table.Final_TSidx = info_table.P1_TSidx + sample_frequency;            % Each trial ends 1 second after the first audiotry stimulus (P1_TSidx)
 
-        %EEG = create_events(EEG, info_table, 'True', 'Tongue', 'None');            % TMS on Tongue target
-        EEG = create_events(EEG, info_table, 'True', 'Tongue', 'Bilabial');         % Creates events: TMS on TONGUE target to "bilabial" tasks
-        EEG = create_events(EEG, info_table, 'True', 'Tongue', 'Alveolar');         % Creates events: TMS on TONGUE target to "alveolar" tasks
+        EEG = create_events(EEG, info_table, 'True', 'BA06', 'real');               % Creates events: TMS on TONGUE target to "bilabial" tasks
+        EEG = create_events(EEG, info_table, 'True', 'BA06', 'nonce');              % Creates events: TMS on TONGUE target to "alveolar" tasks
 
-        %EEG = create_events(EEG, info_table, 'True', 'Lip', 'None');              % TMS on Lip target
         EEG = create_events(EEG, info_table, 'True', 'Lip', 'Bilabial');           % Creates events: TMS on LIP target to "bilabial" tasks
         EEG = create_events(EEG, info_table, 'True', 'Lip', 'Alveolar');           % Creates events: TMS on tongue target to "alveolar" tasks
+
+        EEG = create_events(EEG, info_table, 'True', 'Tongue', 'Bilabial');           % Creates events: TMS on TONGUE target to "bilabial" tasks
+        EEG = create_events(EEG, info_table, 'True', 'Tongue', 'Alveolar');           % Creates events: TMS on TONGUE target to "alveolar" tasks
+
 
         % Create new .set file after creating events
         [ALLEEG, EEG, ~] = pop_newset(ALLEEG, EEG, 2, 'setname', ...
@@ -115,43 +117,22 @@ for i = 1:length(participants)
 
         disp(['Events set for subject: ' char(subject)]);                           % (ex: "Events set for subject: S01")
 
-        % Print all the created events
+        % Print all the created events with latencies and decoded phonemes
         disp('All events created:');
         for i = 1:length(EEG.event)
-            disp(['Event ', num2str(i), ': Type = ', EEG.event(i).type, ', Latency = ', num2str(EEG.event(i).latency)]);
+           % Access the concatenated phoneme from the event
+           if isfield(EEG.event(i), 'phoneme') && ~isempty(EEG.event(i).phoneme)
+               decoded_phoneme = EEG.event(i).phoneme;  % Get the concatenated phoneme
+           else
+               decoded_phoneme = 'N/A';  % In case phoneme is not available
         end
+        % Display the event type, latency, and decoded phoneme
+        disp(['Event ', num2str(i), ': Type = ', EEG.event(i).type, ', Latency = ', num2str(EEG.event(i).latency), ', Decoded Phoneme = ', decoded_phoneme]);
+       end
+
+
 
         eeglab redraw;   % Updates the EEGLAB interface
-
-        % BAD TMS SEGMENTS INTERPOLATION
-        % Interpolates a part of the signal (relatives to setted events)
-
-        tms_true_rows = find(info_table.TMS == 1);  % Gets only the TMS true index from info table
-        tms_true_index = info_table.TMS0_TSidx(tms_true_rows);  % Gets only the first TMS stimulation
-        tms_true_index = [tms_true_index; info_table.TMS_TSidx(tms_true_rows)];  % Both TMS stimulations
-
-        if isempty(tms_true_index) || any(tms_true_index <= 0)
-            error('No valid TMS indices to process.');
-        end
-
-        for index = tms_true_index'  % Runs through all TMS events
-            tms_interval = max(1, index - 0.005 * sample_frequency) : min(size(EEG.data, 2), index + 0.025 * sample_frequency);
-
-            if any(tms_interval < 1) || any(tms_interval > size(EEG.data, 2))
-                error('Invalid tms_interval: ' + mat2str(tms_interval));
-            end
-
-            EEG.data(:, tms_interval) = nan;  % Fills with NaNs
-        end
-
-        for channel = 1:EEG.nbchan
-            disp("Bad TMS ringing/step artifect removed from channel " + string(channel));
-            EEG.data(channel,:) = fillgaps(double(EEG.data(channel,:)), 0.25*sample_frequency, 25);
-        end
-
-        [ALLEEG, EEG, ~] = pop_newset(ALLEEG, EEG, 3,'setname','Interpolate TMS true','savenew', char(save_folder + subject + "_2_tms_interpolated.set"),'gui','off');
-
-        eeglab redraw;
         %% RESAMPLE, NOTCH FILTER, AND BANDPASS FILTER
         % Applies filters and resample the data
 
