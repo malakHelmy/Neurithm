@@ -134,35 +134,35 @@ for i = 1:length(participants)
 
         eeglab redraw;   % Updates the EEGLAB interface
 
-        % %% BAD TMS SEGMENTS INTERPOLATION
-        % % Interpolates a part of the signal (relatives to setted events)
-        %
-        % tms_true_rows = find(info_table.TMS == 1);  % Gets only the TMS true index from info table
-        % tms_true_index = info_table.TMS0_TSidx(tms_true_rows);  % Gets only the first TMS stimulation
-        % tms_true_index = [tms_true_index; info_table.TMS_TSidx(tms_true_rows)];  % Both TMS stimulations
-        %
-        % if isempty(tms_true_index) || any(tms_true_index <= 0)
-        %     error('No valid TMS indices to process.');
-        % end
-        %
-        % for index = tms_true_index'  % Runs through all TMS events
-        %     tms_interval = max(1, index - 0.005 * sample_frequency) : min(size(EEG.data, 2), index + 0.025 * sample_frequency);
-        %
-        %     if any(tms_interval < 1) || any(tms_interval > size(EEG.data, 2))
-        %         error('Invalid tms_interval: ' + mat2str(tms_interval));
-        %     end
-        %
-        %     EEG.data(:, tms_interval) = nan;  % Fills with NaNs
-        % end
-        %
-        % for channel = 1:EEG.nbchan
-        %     disp("Bad TMS ringing/step artifect removed from channel " + string(channel));
-        %     EEG.data(channel,:) = fillgaps(double(EEG.data(channel,:)), 0.25*sample_frequency, 25);
-        % end
-        %
-        % [ALLEEG, EEG, ~] = pop_newset(ALLEEG, EEG, 3,'setname','Interpolate TMS true','savenew', char(save_folder + subject + "_2_tms_interpolated.set"),'gui','off');
-        %
-        % eeglab redraw;
+        %% BAD TMS SEGMENTS INTERPOLATION
+        % Interpolates a part of the signal (relatives to setted events)
+
+        tms_true_rows = find(info_table.TMS == 1);  % Gets only the TMS true index from info table
+        tms_true_index = info_table.TMS0_TSidx(tms_true_rows);  % Gets only the first TMS stimulation
+        tms_true_index = [tms_true_index; info_table.TMS_TSidx(tms_true_rows)];  % Both TMS stimulations
+
+        if isempty(tms_true_index) || any(tms_true_index <= 0)
+            error('No valid TMS indices to process.');
+        end
+
+        for index = tms_true_index'  % Runs through all TMS events
+            tms_interval = max(1, index - 0.005 * sample_frequency) : min(size(EEG.data, 2), index + 0.025 * sample_frequency);
+
+            if any(tms_interval < 1) || any(tms_interval > size(EEG.data, 2))
+                error('Invalid tms_interval: ' + mat2str(tms_interval));
+            end
+
+            EEG.data(:, tms_interval) = nan;  % Fills with NaNs
+        end
+
+        for channel = 1:EEG.nbchan
+            disp("Bad TMS ringing/step artifect removed from channel " + string(channel));
+            EEG.data(channel,:) = fillgaps(double(EEG.data(channel,:)), 0.25*sample_frequency, 25);
+        end
+
+        [ALLEEG, EEG, ~] = pop_newset(ALLEEG, EEG, 3,'setname','Interpolate TMS true','savenew', char(save_folder + subject + "_2_tms_interpolated.set"),'gui','off');
+
+        eeglab redraw;
 
         %% RESAMPLE, NOTCH FILTER, AND BANDPASS FILTER
         % Applies filters and resample the data
@@ -217,7 +217,7 @@ for i = 1:length(participants)
         % Perform epoching and baseline removal
         EEG = pop_epoch(EEG, available_events, [0 1], 'newname', 'Epochs', 'epochinfo', 'yes');
         EEG = pop_rmbase(EEG, [], []);
-        
+
         % Print all the created events with latencies and decoded phonemes
         disp('All events created after trials segmentation: ');
         for i = 1:length(EEG.event)
@@ -231,7 +231,7 @@ for i = 1:length(participants)
             % Display the event type, latency, and decoded phoneme
             disp(['Event ', num2str(i), ': Type = ', EEG.event(i).type, ', Latency = ', num2str(EEG.event(i).latency), ', Decoded Phoneme = ', decoded_phoneme]);
         end
-        
+
         disp(EEG);
 
         % Save the dataset
@@ -285,7 +285,7 @@ for i = 1:length(participants)
             disp(['Size of ICLabelFile.icaweights: ', mat2str(size(ICLabelFile.icaweights))]);
 
             % Reshape or process data2D as needed
-            % Example: Average across time (samples) to get [channels x trials]
+            % Average across time (samples) to get [channels x trials]
             data2D = squeeze(mean(double_data, 2));  % [channels x trials]
 
             % Verify the dimensions
@@ -301,8 +301,8 @@ for i = 1:length(participants)
             % Initialize trial rejection flags
             trialRejection = false(1, size(ICAfile.data, 3));  % [1 x trials]
 
-            % Set a correlation threshold for trial rejection (adjust if needed)
-            trialCorrelationThreshold = 0.3;  % For example, reject trials with >30% correlation to rejected components
+            % Set a correlation threshold for trial rejection
+            trialCorrelationThreshold = 0.3;  % reject trials with >30% correlation to rejected components
 
             % Loop through remaining components and mark trials for rejection based on correlation
             for i = 1:size(ICLabelFile.icaweights, 1)  % Loop through remaining components
@@ -318,7 +318,7 @@ for i = 1:length(participants)
             disp(['Size of ICLabelFile.icaweights: ', mat2str(size(ICLabelFile.icaweights))]);
 
             % Step 1: Remove bad trials from the EEG data
-            % Assuming trialRejection is already defined (e.g., trialRejection = ~bad_trials)
+            % Assuming trialRejection is already defined ( trialRejection = bad_trials)
             TrialsCleanedFile = pop_rejepoch(ICAfile, trialRejection);  % Reject the identified bad trials
 
             % Step 3: Ensure the number of trials is properly defined after rejection
