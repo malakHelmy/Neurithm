@@ -368,14 +368,12 @@ for i = 1:length(participants)
                 disp(EEG.epoch(i).eventphoneme)
             end
 
-            [ALLEEG, EEG, CURRENTSET] = pop_newset(ALLEEG,EEG, 7,'setname','Removed ICA bad components','savenew', char(save_folder + save_subfolder + subject + "_5_ica_cleaned" + sufix + ".set"),'gui','off');
-            EEG = pop_mergeset(EEG, TrialsCleanedFile);
-            [ALLEEG, EEG, CURRENTSET] = pop_newset(ALLEEG,EEG, 8,'setname','Removed ICA bad components and trials','savenew', char(save_folder + save_subfolder + subject + "_6_ica_and_trials_cleaned" + sufix + ".set"),'gui','off');
+            [ALLEEG, ICLabelCleanedFile, CURRENTSET] = pop_newset(ALLEEG,ICLabelCleanedFile, 7,'setname','Removed ICA bad components','savenew', char(save_folder + subject + "_5_ica_cleaned" + ".set"),'gui','off');
+
+            [ALLEEG, EEG, CURRENTSET] = pop_newset(ALLEEG,EEG, 8,'setname','Removed ICA bad components and trials','savenew', char(save_folder + subject + "_6_ica_and_trials_cleaned"+ ".set"),'gui','off');
 
         end
 
-
-        % disp(['Skipping category ', category, ' because events were not found: ', strjoin(events, ', ')]);
 
 
 
