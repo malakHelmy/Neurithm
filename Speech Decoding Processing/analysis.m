@@ -209,28 +209,7 @@ for i = 1:length(participants)
         end
 
         %% TRIAL SEGMENTATION
-        % Define parameters
-        with_tms = "True";
-        with_task = "True";
-        categories = {"LA", "LB", "TA", "TB"};
-
-        EEG1 = EEG;
-        EEG=[];
-
-        % Loop through each category
-        for i = 1:length(categories)
-            file = EEG1;
-            category = categories{i};
-
-            % Call select_trials_subset to get subfolder, suffix, and events
-            [save_subfolder, sufix, events] = select_trials_subset(category, with_tms, with_task);
-
-            % Check if each event exists in EEG.event
-            available_events = {file.event.type};
-
-            % Print the events found in EEG for this category
-            disp(['Category: ', category]);
-            disp(['Defined events for category: ', strjoin(events, ', ')]);
+        
             disp(['Available events in EEG: ', strjoin(available_events, ', ')]);
 
             if all(ismember(events, available_events))
@@ -243,8 +222,6 @@ for i = 1:length(participants)
 
                 % Save the dataset
                 [ALLEEG, EEG, ~] = pop_newset(ALLEEG, file, 5,'setname','Set trials','savenew', char(save_folder + subject + "_4_set_trials"+ sufix +".set"),'gui','off');
-               
-                % [ALLEEG, file, CURRENTSET] = pop_newset(ALLEEG, file, 5,'setname','Set trials','savenew', char(save_folder + save_subfolder + subject + "_4_set_trials" + sufix + ".set"),'gui','off');
                 original_file = file;             % Copy the original structure
                 file = eeg_checkset(file);        % Run eeg_checkset to possibly update the structure
 
@@ -366,7 +343,7 @@ for i = 1:length(participants)
             else
                 disp(['Skipping category ', category, ' because events were not found: ', strjoin(events, ', ')]);
             end
-        end
+        
 
 
         % Print final details about EEG to confirm everything is correct
