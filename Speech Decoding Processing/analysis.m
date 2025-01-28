@@ -236,16 +236,16 @@ for i = 1:length(participants)
 
         % Save the dataset
         [ALLEEG, EEG, ~] = pop_newset(ALLEEG, EEG, 5,'setname','Set trials','savenew', char(save_folder + subject + "_4_set_trials"+".set"),'gui','off');
-        original_file = file;             % Copy the original structure
-        file = eeg_checkset(file);        % Run eeg_checkset to possibly update the structure
+        original_file = EEG;             % Copy the original structure
+        EEG = eeg_checkset(EEG);        % Run eeg_checkset to possibly update the structure
 
         % Check if fields are the same
-        if isequal(original_file, file)
+        if isequal(original_file, EEG)
             disp('No changes were made.');
         else
             disp('The file was updated by eeg_checkset.');
         end
-        disp(['Saved dataset for category ', category, ' at: ', fullfile(save_folder, save_subfolder, subject + "_4_set_trials" + sufix + ".set")]);
+        disp(['Saved dataset for participant ', subject, ' at: ', fullfile(save_folder, subject + "_4_set_trials" + ".set")]);
 
         %%  ICA DECOMPOSITION
         %% Perform ICA decomposition on the EEG data
