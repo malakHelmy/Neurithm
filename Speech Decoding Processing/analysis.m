@@ -348,17 +348,25 @@ for i = 1:length(participants)
             disp(['Size of TrialsandComponentsCleanedFile.icaweights: ', mat2str(size(TrialsandComponentsCleanedFile.icaweights))]);
             disp(['Size of TrialsandComponentsCleanedFile.icasphere: ', mat2str(size(TrialsandComponentsCleanedFile.icasphere))]);
 
-            % After epoching, concatenate the epochs into EEG
-            if isempty(EEG)
-                % If EEG is empty, initialize it with the first set of epochs
-                EEG = ICLabelFile;
-            else
-                % Otherwise, append the new epochs to the existing EEG
-                EEG = pop_mergeset(EEG, ICLabelFile);  % This function appends the epochs from 'file' to EEG
-            end
+            EEG = TrialsandComponentsCleanedFile;
 
             % Check and verify the dataset
-            EEG = eeg_checkset(EEG);
+            original_file = EEG;             % Copy the original structure
+            EEG = eeg_checkset(EEG);        % Run eeg_checkset to possibly update the structure
+
+            % Check if fields are the same
+            if isequal(original_file, EEG)
+                disp('No changes were made.');
+            else
+                disp('The file was updated by eeg_checkset.');
+            end
+
+            for i = 1:length(EEG.epoch)
+                disp(['Epoch ' num2str(i) ':'])
+                disp(EEG.epoch(i).eventtype)
+                disp(EEG.epoch(i).eventlatency)
+                disp(EEG.epoch(i).eventphoneme)
+            end
 
             [ALLEEG, EEG, CURRENTSET] = pop_newset(ALLEEG,EEG, 7,'setname','Removed ICA bad components','savenew', char(save_folder + save_subfolder + subject + "_5_ica_cleaned" + sufix + ".set"),'gui','off');
             EEG = pop_mergeset(EEG, TrialsCleanedFile);
