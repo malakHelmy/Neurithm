@@ -173,6 +173,21 @@ for i = 1:length(participants)
         %EEG = pop_eegfiltnew(EEG, 'locutoff',59,'hicutoff',61,'revfilt',1);
         EEG = pop_eegfiltnew(EEG, 'locutoff',0.1,'hicutoff',40);
 
+        % Print all the created events with latencies and decoded phonemes
+        disp('All events created after resampling: ');
+        for i = 1:length(EEG.event)
+            % Access the concatenated phoneme from the event
+            if isfield(EEG.event(i), 'phoneme') && ~isempty(EEG.event(i).phoneme)
+                decoded_phoneme = EEG.event(i).phoneme;  % Get the concatenated phoneme
+            else
+                decoded_phoneme = 'N/A';  % In case phoneme is not available
+            end
+
+            % Display the event type, latency, and decoded phoneme
+            disp(['Event ', num2str(i), ': Type = ', EEG.event(i).type, ', Latency = ', num2str(EEG.event(i).latency), ', Decoded Phoneme = ', decoded_phoneme]);
+        end
+
+
         [ALLEEG, EEG, ~] = pop_newset(ALLEEG, EEG, 4,'setname','Resampled data','savenew', char(save_folder + subject + "_3_resampled.set"),'gui','off');
         EEG = eeg_checkset( EEG );
 
