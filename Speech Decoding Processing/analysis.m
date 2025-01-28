@@ -327,14 +327,26 @@ for i = 1:length(participants)
             disp(num_trials);  % Display remaining trials
 
             % Step 4: Automatically remove marked components based on rejection in ICLabelFile
-            TrialsCleanedFile = pop_subcomp(TrialsCleanedFile, find(ICLabelFile.reject.gcompreject));  % Reject bad components
-            ICLabelFile = pop_subcomp(ICLabelFile, find(ICLabelFile.reject.gcompreject));  % Reject bad components
+            TrialsandComponentsCleanedFile = pop_subcomp(TrialsCleanedFile, find(ICLabelFile.reject.gcompreject));  % Reject bad components in nonlabelled file
+            ICLabelCleanedFile = pop_subcomp(ICLabelFile, find(ICLabelFile.reject.gcompreject));  % Reject bad components in labelled file but no trials
 
+            % Print all the eventss
+            disp('All events after removing bad trials and components:');
+            for i = 1:length(TrialsandComponentsCleanedFile.event)
+                % Access the concatenated phoneme from the event
+                if isfield(TrialsandComponentsCleanedFile.event(i), 'phoneme') && ~isempty(TrialsCleanedFile.event(i).phoneme)
+                    decoded_phoneme = TrialsandComponentsCleanedFile.event(i).phoneme;  % Get the concatenated phoneme
+                else
+                    decoded_phoneme = 'N/A';  % In case phoneme is not available
+                end
 
+                % Display the event type, latency, and decoded phoneme
+                disp(['Event ', num2str(i), ': Type = ', TrialsandComponentsCleanedFile.event(i).type, ', Latency = ', num2str(TrialsandComponentsCleanedFile.event(i).latency), ', Decoded Phoneme = ', decoded_phoneme]);
+            end
             % Final checks: Print the sizes of the cleaned dataset and ICA fields
-            disp(['Size of TrialsCleanedFile.data: ', mat2str(size(TrialsCleanedFile.data))]);
-            disp(['Size of TrialsCleanedFile.icaweights: ', mat2str(size(TrialsCleanedFile.icaweights))]);
-            disp(['Size of TrialsCleanedFile.icasphere: ', mat2str(size(TrialsCleanedFile.icasphere))]);
+            disp(['Size of TrialsandComponentsCleanedFile.data: ', mat2str(size(TrialsandComponentsCleanedFile.data))]);
+            disp(['Size of TrialsandComponentsCleanedFile.icaweights: ', mat2str(size(TrialsandComponentsCleanedFile.icaweights))]);
+            disp(['Size of TrialsandComponentsCleanedFile.icasphere: ', mat2str(size(TrialsandComponentsCleanedFile.icasphere))]);
 
             % After epoching, concatenate the epochs into EEG
             if isempty(EEG)
