@@ -8,20 +8,32 @@ function EEG = create_events(EEG, info_table, tms, target, category)
         sufix = '_f';
     end
 
-    if target == "Tongue"
-        info_table = info_table(strcmpi(info_table.TMStarget, 'tongue'),:);
-        sufix = [sufix 't'];
+    if target == "BA06"
+        info_table = info_table(strcmpi(info_table.TMStarget, 'BA06'),:);
+        sufix = [sufix 'b'];
+    elseif target == "control_BA06"
+        info_table = info_table(strcmpi(info_table.TMStarget, 'control_BA06'),:);
+        sufix = [sufix 'c'];
     elseif target == "Lip"
         info_table = info_table(strcmpi(info_table.TMStarget, 'lip'),:);
         sufix = [sufix 'l'];
+    elseif target == "Tongue"
+        info_table = info_table(strcmpi(info_table.TMStarget, 'tongue'),:);
+        sufix = [sufix 't'];
     end
     
-    if category == "Bilabial"
-        info_table = info_table(strcmpi(info_table.Category, 'bilabial'),:);
-        sufix = [sufix 'b'];
+    if category == "real"
+        info_table = info_table(strcmpi(info_table.Category, 'real'),:);
+        sufix = [sufix 'r'];
+    elseif category == "nonce"
+        info_table = info_table(strcmpi(info_table.Category, 'nonce'),:);
+        sufix = [sufix 'n'];
     elseif category == "Alveolar"
         info_table = info_table(strcmpi(info_table.Category, 'alveolar'),:);
         sufix = [sufix 'a'];
+    elseif category == "Bilabial"
+        info_table = info_table(strcmpi(info_table.Category, 'bilabial'),:);
+        sufix = [sufix 'b'];
     end
 
     table_size = size(info_table);
@@ -37,12 +49,46 @@ function EEG = create_events(EEG, info_table, tms, target, category)
     events.task_final = info_table.Final_TSidx;
 
     events_types = fieldnames(events);
-    for index = 1:number_events
-        for type = 1:length(events_types)
+
+    for type = 1:length(events_types)
+        for index = 1:number_events
             EEG.event(end+1).latency = events.(events_types{type})(index);
             EEG.event(end).type = string(events_types{type}) + sufix;
+            
+            % Concatenate phonemes (Phoneme1, Phoneme2, Phoneme3)
+            phoneme = '';
+            
+            % Debugging: Print the current index and phoneme column values
+            disp(['Processing event ', num2str(index)]);
+            disp(['Phoneme1: ', num2str(info_table.Phoneme1{index})]);
+            disp(['Phoneme2: ', num2str(info_table.Phoneme2{index})]);
+            disp(['Phoneme3: ', categorical(info_table.Phoneme3(index))])
+
+
+            % Add Phoneme1 if available
+            if ~isempty(info_table.Phoneme1{index})
+                phoneme = strcat(phoneme, info_table.Phoneme1{index});
+            end
+
+            % Add Phoneme2 if available
+            if ~isempty(info_table.Phoneme2{index})
+                phoneme = strcat(phoneme, info_table.Phoneme2{index});
+            end
+
+            % Add Phoneme3 if available
+            if ~isempty(info_table.Phoneme3{index})
+                phoneme = strcat(phoneme, info_table.Phoneme3{index});
+            end
+
+            % If phoneme is not empty, assign it to the event
+            if ~isempty(phoneme)
+                disp(['Concatenated Phoneme for event ', num2str(index), ': ', phoneme]);
+                EEG.event(end).phoneme = phoneme; % Assign the concatenated phoneme to the event
+            else
+                disp(['No phoneme for event ', num2str(index)]);
+            end
         end
     end
-   
+
     EEG = eeg_checkset(EEG, 'eventconsistency'); % Check all events for consistency
 end
