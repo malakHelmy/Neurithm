@@ -249,7 +249,7 @@ for i = 1:length(participants)
 
         %%  ICA DECOMPOSITION
         %% Perform ICA decomposition on the EEG data
-        ICAfile = pop_runica(file, 'icatype', 'runica', 'extended', 1, 'interrupt', 'on');
+        ICAfile = pop_runica(EEG, 'icatype', 'runica', 'extended', 1, 'interrupt', 'on');
 
         % Check if ICA was successful by inspecting the ICA weights and sphere matrices
         if isempty(ICAfile.icaweights) || isempty(ICAfile.icasphere)
