@@ -129,9 +129,6 @@ for i = 1:length(participants)
             % Display the event type, latency, and decoded phoneme
             disp(['Event ', num2str(i), ': Type = ', EEG.event(i).type, ', Latency = ', num2str(EEG.event(i).latency), ', Decoded Phoneme = ', decoded_phoneme]);
         end
-        % Display the event type, latency, and decoded phoneme
-        disp(['Event ', num2str(i), ': Type = ', EEG.event(i).type, ', Latency = ', num2str(EEG.event(i).latency), ', Decoded Phoneme = ', decoded_phoneme]);
-       end
 
 
 
@@ -140,7 +137,9 @@ for i = 1:length(participants)
         %% BAD TMS SEGMENTS INTERPOLATION
         % Interpolates a part of the signal (relatives to setted events)
 
-
+        tms_true_rows = find(info_table.TMS == 1);  % Gets only the TMS true index from info table
+        tms_true_index = info_table.TMS0_TSidx(tms_true_rows);  % Gets only the first TMS stimulation
+        tms_true_index = [tms_true_index; info_table.TMS_TSidx(tms_true_rows)];  % Both TMS stimulations
 
         if isempty(tms_true_index) || any(tms_true_index <= 0)
             error('No valid TMS indices to process.');
