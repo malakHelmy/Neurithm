@@ -63,3 +63,34 @@ y_data = string(y_data); % Convert labels to string array
 % Print dataset info
 fprintf('Total EEG samples: %d\n', size(X_data, 3));
 fprintf('Total labels: %d\n', length(y_data));
+
+% Normalize the data (scale between 0 and 1)
+X_data_normalized = (X_data - min(X_data(:))) / (max(X_data(:)) - min(X_data(:)));
+
+% Encode labels (convert to numeric values)
+[~, ~, y_encoded] = unique(y_data); % Convert categorical labels to numeric values
+
+% One-hot encode the labels
+n_classes = length(unique(y_encoded));  % Number of classes
+y_one_hot = full(ind2vec(y_encoded', n_classes))';  % One-hot encoding (transpose for consistency)
+
+% Split the data into training & testing sets (80% training, 20% testing)
+n_epochs = size(X_data_normalized, 3);
+train_ratio = 0.8;
+n_train = floor(n_epochs * train_ratio);
+n_test = n_epochs - n_train;
+
+% Randomly shuffle the data
+rng(42);  % Set random seed for reproducibility
+indices = randperm(n_epochs);
+
+% Split the data
+X_train = X_data_normalized(:, :, indices(1:n_train));
+y_train = y_one_hot(indices(1:n_train), :);
+X_test = X_data_normalized(:, :, indices(n_train+1:end));
+y_test = y_one_hot(indices(n_train+1:end), :);
+
+% Display the results
+fprintf('Training Data Shape: [%d, %d, %d]\n', size(X_train));
+fprintf('Testing Data Shape: [%d, %d, %d]\n', size(X_test));
+fprintf('Number of Classes: %d\n', n_classes);
