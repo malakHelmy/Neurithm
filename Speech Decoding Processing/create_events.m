@@ -8,11 +8,11 @@ function EEG = create_events(EEG, info_table, tms, target, category)
         sufix = '_f';
     end
 
-    if target == "BAO6"
-        info_table = info_table(strcmpi(info_table.TMStarget, 'BAO6'),:);
+    if target == "BA06"
+        info_table = info_table(strcmpi(info_table.TMStarget, 'BA06'),:);
         sufix = [sufix 'b'];
-    elseif target == "control_BAO6"
-        info_table = info_table(strcmpi(info_table.TMStarget, 'control_BAO6'),:);
+    elseif target == "control_BA06"
+        info_table = info_table(strcmpi(info_table.TMStarget, 'control_BA06'),:);
         sufix = [sufix 'c'];
     elseif target == "Lip"
         info_table = info_table(strcmpi(info_table.TMStarget, 'lip'),:);

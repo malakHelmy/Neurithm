@@ -85,8 +85,7 @@ for i = 1:length(participants)
 
         disp(['Dataset saved for subject: ' char(subject) ' after removing bad channels.']);  % Confirmation message for saving the dataset
 
-
-         %% EVENTS SETTINGS AND DATA REJECTION
+        %% EVENTS SETTINGS AND DATA REJECTION
 
         sample_frequency = EEG.srate;                                               % Gets the sampling frequency in Hz (indicates how many times the EEG signal was measured in one second)
         info_table_file = main_folder_subject + subject +"_Tab.csv";                % info table file path (ex: P01_Tab.csv in P01 folder)
@@ -120,11 +119,15 @@ for i = 1:length(participants)
         % Print all the created events with latencies and decoded phonemes
         disp('All events created:');
         for i = 1:length(EEG.event)
-           % Access the concatenated phoneme from the event
-           if isfield(EEG.event(i), 'phoneme') && ~isempty(EEG.event(i).phoneme)
-               decoded_phoneme = EEG.event(i).phoneme;  % Get the concatenated phoneme
-           else
-               decoded_phoneme = 'N/A';  % In case phoneme is not available
+            % Access the concatenated phoneme from the event
+            if isfield(EEG.event(i), 'phoneme') && ~isempty(EEG.event(i).phoneme)
+                decoded_phoneme = EEG.event(i).phoneme;  % Get the concatenated phoneme
+            else
+                decoded_phoneme = 'N/A';  % In case phoneme is not available
+            end
+
+            % Display the event type, latency, and decoded phoneme
+            disp(['Event ', num2str(i), ': Type = ', EEG.event(i).type, ', Latency = ', num2str(EEG.event(i).latency), ', Decoded Phoneme = ', decoded_phoneme]);
         end
         % Display the event type, latency, and decoded phoneme
         disp(['Event ', num2str(i), ': Type = ', EEG.event(i).type, ', Latency = ', num2str(EEG.event(i).latency), ', Decoded Phoneme = ', decoded_phoneme]);
@@ -133,6 +136,35 @@ for i = 1:length(participants)
 
 
         eeglab redraw;   % Updates the EEGLAB interface
+
+        %% BAD TMS SEGMENTS INTERPOLATION
+        % Interpolates a part of the signal (relatives to setted events)
+
+
+
+        if isempty(tms_true_index) || any(tms_true_index <= 0)
+            error('No valid TMS indices to process.');
+        end
+
+        for index = tms_true_index'  % Runs through all TMS events
+            tms_interval = max(1, index - 0.005 * sample_frequency) : min(size(EEG.data, 2), index + 0.025 * sample_frequency);
+
+            if any(tms_interval < 1) || any(tms_interval > size(EEG.data, 2))
+                error('Invalid tms_interval: ' + mat2str(tms_interval));
+            end
+
+            EEG.data(:, tms_interval) = nan;  % Fills with NaNs
+        end
+
+        for channel = 1:EEG.nbchan
+            disp("Bad TMS ringing/step artifect removed from channel " + string(channel));
+            EEG.data(channel,:) = fillgaps(double(EEG.data(channel,:)), 0.25*sample_frequency, 25);
+        end
+
+        [ALLEEG, EEG, ~] = pop_newset(ALLEEG, EEG, 3,'setname','Interpolate TMS true','savenew', char(save_folder + subject + "_2_tms_interpolated.set"),'gui','off');
+
+        eeglab redraw;
+
         %% RESAMPLE, NOTCH FILTER, AND BANDPASS FILTER
         % Applies filters and resample the data
 
@@ -141,6 +173,21 @@ for i = 1:length(participants)
 
         %EEG = pop_eegfiltnew(EEG, 'locutoff',59,'hicutoff',61,'revfilt',1);
         EEG = pop_eegfiltnew(EEG, 'locutoff',0.1,'hicutoff',40);
+
+        % Print all the created events with latencies and decoded phonemes
+        disp('All events created after resampling: ');
+        for i = 1:length(EEG.event)
+            % Access the concatenated phoneme from the event
+            if isfield(EEG.event(i), 'phoneme') && ~isempty(EEG.event(i).phoneme)
+                decoded_phoneme = EEG.event(i).phoneme;  % Get the concatenated phoneme
+            else
+                decoded_phoneme = 'N/A';  % In case phoneme is not available
+            end
+
+            % Display the event type, latency, and decoded phoneme
+            disp(['Event ', num2str(i), ': Type = ', EEG.event(i).type, ', Latency = ', num2str(EEG.event(i).latency), ', Decoded Phoneme = ', decoded_phoneme]);
+        end
+
 
         [ALLEEG, EEG, ~] = pop_newset(ALLEEG, EEG, 4,'setname','Resampled data','savenew', char(save_folder + subject + "_3_resampled.set"),'gui','off');
         EEG = eeg_checkset( EEG );
@@ -163,165 +210,173 @@ for i = 1:length(participants)
         end
 
         %% TRIAL SEGMENTATION
-        % Define parameters
-        with_tms = "True";
-        with_task = "True";
-        categories = {"LA", "LB", "TA", "TB"};
 
-        EEG1 = EEG;
-        EEG=[];
+        available_events = {EEG.event.type};
+        disp(['Available events in EEG: ', strjoin(available_events, ', ')]);
+        disp(['Epoching for events: ', strjoin(available_events, ', ')]);
 
-        % Loop through each category
-        for i = 1:length(categories)
-            file = EEG1;
-            category = categories{i};
+        % Perform epoching and baseline removal
+        EEG = pop_epoch(EEG, available_events, [0 1], 'newname', 'Epochs', 'epochinfo', 'yes');
+        EEG = pop_rmbase(EEG, [], []);
 
-            % Call select_trials_subset to get subfolder, suffix, and events
-            [save_subfolder, sufix, events] = select_trials_subset(category, with_tms, with_task);
-
-            % Check if each event exists in EEG.event
-            available_events = {file.event.type};
-
-            % Print the events found in EEG for this category
-            disp(['Category: ', category]);
-            disp(['Defined events for category: ', strjoin(events, ', ')]);
-            disp(['Available events in EEG: ', strjoin(available_events, ', ')]);
-
-            if all(ismember(events, available_events))
-                disp(['Epoching for category: ', category, ' with events: ', strjoin(events, ', ')]);
-
-                % Perform epoching and baseline removal
-                file = pop_epoch(file, events, [0 1], 'newname', 'Epochs', 'epochinfo', 'yes');
-                file = pop_rmbase(file, [], []);
-                disp(file);
-
-                % Save the dataset
-                [ALLEEG, EEG, ~] = pop_newset(ALLEEG, file, 5,'setname','Set trials','savenew', char(save_folder + subject + "_4_set_trials"+ sufix +".set"),'gui','off');
-               
-                % [ALLEEG, file, CURRENTSET] = pop_newset(ALLEEG, file, 5,'setname','Set trials','savenew', char(save_folder + save_subfolder + subject + "_4_set_trials" + sufix + ".set"),'gui','off');
-                original_file = file;             % Copy the original structure
-                file = eeg_checkset(file);        % Run eeg_checkset to possibly update the structure
-
-                % Check if fields are the same
-                if isequal(original_file, file)
-                    disp('No changes were made.');
-                else
-                    disp('The file was updated by eeg_checkset.');
-                end
-                disp(['Saved dataset for category ', category, ' at: ', fullfile(save_folder, save_subfolder, subject + "_4_set_trials" + sufix + ".set")]);
-
-                %%  ICA DECOMPOSITION
-                %% Perform ICA decomposition on the EEG data
-                ICAfile = pop_runica(file, 'icatype', 'runica', 'extended', 1, 'interrupt', 'on');
-
-                % Check if ICA was successful by inspecting the ICA weights and sphere matrices
-                if isempty(ICAfile.icaweights) || isempty(ICAfile.icasphere)
-                    disp('ICA decomposition failed. The icaweights or icasphere matrices are empty.');
-                else
-                    disp('ICA decomposition was successful. The icaweights and icasphere matrices are populated.');
-                    disp(['icaweights size: ', mat2str(size(ICAfile.icaweights))]);
-                    disp(['icasphere size: ', mat2str(size(ICAfile.icasphere))]);
-
-                    %% Apply ICLabel to classify components
-                    ICLabelFile = iclabel(ICAfile);
-                    % Set threshold to retain only "Brain" components
-                    brainThreshold = 0.5;  % Adjust this if needed
-
-                    % Loop through each component and mark for rejection
-                    for i = 1:size(ICLabelFile.icaweights, 1)
-                        classification = ICLabelFile.etc.ic_classification.ICLabel.classifications(i, :);
-                        if classification(1) >= brainThreshold
-                            ICLabelFile.reject.gcompreject(i) = 0;  % Keep component
-                        else
-                            ICLabelFile.reject.gcompreject(i) = 1;  % Mark component for rejection
-                        end
-                    end
-
-                    %% Now, remove bad trials based on rejected ICA components
-
-                    % Convert data to double precision
-                    double_icaweights = double(ICLabelFile.icaweights);
-                    double_data = double(ICAfile.data);
-
-                    % Ensure ICAfile.data is 3D: [channels x samples x trials]
-                    disp(['Size of ICAfile.data: ', mat2str(size(ICAfile.data))]);
-                    disp(['Size of ICLabelFile.icaweights: ', mat2str(size(ICLabelFile.icaweights))]);
-
-                    % Reshape or process data2D as needed
-                    % Example: Average across time (samples) to get [channels x trials]
-                    data2D = squeeze(mean(double_data, 2));  % [channels x trials]
-
-                    % Verify the dimensions
-                    disp(['Size of data2D: ', mat2str(size(data2D))]);
-
-                    % Ensure the correlation is computed between ICA components and trials
-                    % Transpose data2D so it has components (rows) and trials (columns)
-                    data2D = data2D';  % Now it's [trials x channels], transpose to [channels x trials]
-
-                    % Compute correlation between ICA components and EEG data
-                    correlations = corr(double_icaweights', data2D');  % [components x trials] correlation matrix
-
-                    % Initialize trial rejection flags
-                    trialRejection = false(1, size(ICAfile.data, 3));  % [1 x trials]
-
-                    % Set a correlation threshold for trial rejection (adjust if needed)
-                    trialCorrelationThreshold = 0.3;  % For example, reject trials with >30% correlation to rejected components
-
-                    % Loop through remaining components and mark trials for rejection based on correlation
-                    for i = 1:size(ICLabelFile.icaweights, 1)  % Loop through remaining components
-                        if ICLabelFile.reject.gcompreject(i) == 1  % If this component is rejected
-                            badTrials = abs(correlations(i, :)) > trialCorrelationThreshold;
-                            trialRejection = trialRejection | badTrials;  % Mark trials affected by this component
-                        end
-                    end
-
-                    % Validate that the input files are correctly loaded
-                    disp('Initial checks for ICAfile and ICLabelFile:');
-                    disp(['Size of ICAfile.data: ', mat2str(size(ICAfile.data))]);
-                    disp(['Size of ICLabelFile.icaweights: ', mat2str(size(ICLabelFile.icaweights))]);
-
-                    % Step 1: Remove bad trials from the EEG data
-                    % Assuming trialRejection is already defined (e.g., trialRejection = ~bad_trials)
-                    TrialsCleanedFile = pop_rejepoch(ICAfile, trialRejection);  % Reject the identified bad trials
-
-                    % Step 3: Ensure the number of trials is properly defined after rejection
-                    num_trials = size(TrialsCleanedFile.data, 3);  % Number of remaining trials
-                    disp('Number of trials remaining after automatic rejection:');
-                    disp(num_trials);  % Display remaining trials
-
-                    % Step 4: Automatically remove marked components based on rejection in ICLabelFile
-                    TrialsCleanedFile = pop_subcomp(TrialsCleanedFile, find(ICLabelFile.reject.gcompreject));  % Reject bad components
-                    ICLabelFile = pop_subcomp(ICLabelFile, find(ICLabelFile.reject.gcompreject));  % Reject bad components
-
-
-                    % Final checks: Print the sizes of the cleaned dataset and ICA fields
-                    disp(['Size of TrialsCleanedFile.data: ', mat2str(size(TrialsCleanedFile.data))]);
-                    disp(['Size of TrialsCleanedFile.icaweights: ', mat2str(size(TrialsCleanedFile.icaweights))]);
-                    disp(['Size of TrialsCleanedFile.icasphere: ', mat2str(size(TrialsCleanedFile.icasphere))]);
-
-                    [ALLEEG, ICLabelFile, CURRENTSET] = pop_newset(ALLEEG,ICLabelFile, 7,'setname','Removed ICA bad components','savenew', char(save_folder + save_subfolder + subject + "_5_ica_cleaned" + sufix + ".set"),'gui','off');
-
-                    [ALLEEG, TrialsCleanedFile, CURRENTSET] = pop_newset(ALLEEG,TrialsCleanedFile, 8,'setname','Removed ICA bad components and trials','savenew', char(save_folder + save_subfolder + subject + "_6_ica_and_trials_cleaned" + sufix + ".set"),'gui','off');
-
-                end
-
-
-                % After epoching, concatenate the epochs into EEG
-                if isempty(EEG)
-                    % If EEG is empty, initialize it with the first set of epochs
-                    EEG = ICLabelFile;
-                else
-                    % Otherwise, append the new epochs to the existing EEG
-                    EEG = pop_mergeset(EEG, ICLabelFile);  % This function appends the epochs from 'file' to EEG
-                end
-
-                % Check and verify the dataset
-                EEG = eeg_checkset(EEG);
-
+        % Print all the created events with latencies and decoded phonemes
+        disp('All events created after trials segmentation: ');
+        for i = 1:length(EEG.event)
+            % Access the concatenated phoneme from the event
+            if isfield(EEG.event(i), 'phoneme') && ~isempty(EEG.event(i).phoneme)
+                decoded_phoneme = EEG.event(i).phoneme;  % Get the concatenated phoneme
             else
-                disp(['Skipping category ', category, ' because events were not found: ', strjoin(events, ', ')]);
+                decoded_phoneme = 'N/A';  % In case phoneme is not available
             end
+
+            % Display the event type, latency, and decoded phoneme
+            disp(['Event ', num2str(i), ': Type = ', EEG.event(i).type, ', Latency = ', num2str(EEG.event(i).latency), ', Decoded Phoneme = ', decoded_phoneme]);
         end
+
+        disp(EEG);
+
+        % Save the dataset
+        [ALLEEG, EEG, ~] = pop_newset(ALLEEG, EEG, 5,'setname','Set trials','savenew', char(save_folder + subject + "_4_set_trials"+".set"),'gui','off');
+        original_file = EEG;             % Copy the original structure
+        EEG = eeg_checkset(EEG);        % Run eeg_checkset to possibly update the structure
+
+        % Check if fields are the same
+        if isequal(original_file, EEG)
+            disp('No changes were made.');
+        else
+            disp('The file was updated by eeg_checkset.');
+        end
+        disp(['Saved dataset for participant ', subject, ' at: ', fullfile(save_folder, subject + "_4_set_trials" + ".set")]);
+
+        %%  ICA DECOMPOSITION
+        %% Perform ICA decomposition on the EEG data
+        ICAfile = pop_runica(EEG, 'icatype', 'runica', 'extended', 1, 'interrupt', 'on');
+
+        % Check if ICA was successful by inspecting the ICA weights and sphere matrices
+        if isempty(ICAfile.icaweights) || isempty(ICAfile.icasphere)
+            disp('ICA decomposition failed. The icaweights or icasphere matrices are empty.');
+        else
+            disp('ICA decomposition was successful. The icaweights and icasphere matrices are populated.');
+            disp(['icaweights size: ', mat2str(size(ICAfile.icaweights))]);
+            disp(['icasphere size: ', mat2str(size(ICAfile.icasphere))]);
+
+            %% Apply ICLabel to classify components
+            ICLabelFile = iclabel(ICAfile);
+            % Set threshold to retain only "Brain" components
+            brainThreshold = 0.5;  % Adjust this if needed
+
+            % Loop through each component and mark for rejection
+            for i = 1:size(ICLabelFile.icaweights, 1)
+                classification = ICLabelFile.etc.ic_classification.ICLabel.classifications(i, :);
+                if classification(1) >= brainThreshold
+                    ICLabelFile.reject.gcompreject(i) = 0;  % Keep component
+                else
+                    ICLabelFile.reject.gcompreject(i) = 1;  % Mark component for rejection
+                end
+            end
+
+            %% Now, remove bad trials based on rejected ICA components
+
+            % Convert data to double precision
+            double_icaweights = double(ICLabelFile.icaweights);
+            double_data = double(ICAfile.data);
+
+            % Ensure ICAfile.data is 3D: [channels x samples x trials]
+            disp(['Size of ICAfile.data: ', mat2str(size(ICAfile.data))]);
+            disp(['Size of ICLabelFile.icaweights: ', mat2str(size(ICLabelFile.icaweights))]);
+
+            % Reshape or process data2D as needed
+            % Average across time (samples) to get [channels x trials]
+            data2D = squeeze(mean(double_data, 2));  % [channels x trials]
+
+            % Verify the dimensions
+            disp(['Size of data2D: ', mat2str(size(data2D))]);
+
+            % Ensure the correlation is computed between ICA components and trials
+            % Transpose data2D so it has components (rows) and trials (columns)
+            data2D = data2D';  % Now it's [trials x channels], transpose to [channels x trials]
+
+            % Compute correlation between ICA components and EEG data
+            correlations = corr(double_icaweights', data2D');  % [components x trials] correlation matrix
+
+            % Initialize trial rejection flags
+            trialRejection = false(1, size(ICAfile.data, 3));  % [1 x trials]
+
+            % Set a correlation threshold for trial rejection
+            trialCorrelationThreshold = 0.3;  % reject trials with >30% correlation to rejected components
+
+            % Loop through remaining components and mark trials for rejection based on correlation
+            for i = 1:size(ICLabelFile.icaweights, 1)  % Loop through remaining components
+                if ICLabelFile.reject.gcompreject(i) == 1  % If this component is rejected
+                    badTrials = abs(correlations(i, :)) > trialCorrelationThreshold;
+                    trialRejection = trialRejection | badTrials;  % Mark trials affected by this component
+                end
+            end
+
+            % Validate that the input files are correctly loaded
+            disp('Initial checks for ICAfile and ICLabelFile:');
+            disp(['Size of ICAfile.data: ', mat2str(size(ICAfile.data))]);
+            disp(['Size of ICLabelFile.icaweights: ', mat2str(size(ICLabelFile.icaweights))]);
+
+            % Step 1: Remove bad trials from the EEG data
+            % Assuming trialRejection is already defined ( trialRejection = bad_trials)
+            TrialsCleanedFile = pop_rejepoch(ICAfile, trialRejection);  % Reject the identified bad trials
+
+            % Step 3: Ensure the number of trials is properly defined after rejection
+            num_trials = size(TrialsCleanedFile.data, 3);  % Number of remaining trials
+            disp('Number of trials remaining after automatic rejection:');
+            disp(num_trials);  % Display remaining trials
+
+            % Step 4: Automatically remove marked components based on rejection in ICLabelFile
+            TrialsandComponentsCleanedFile = pop_subcomp(TrialsCleanedFile, find(ICLabelFile.reject.gcompreject));  % Reject bad components in nonlabelled file
+            ICLabelCleanedFile = pop_subcomp(ICLabelFile, find(ICLabelFile.reject.gcompreject));  % Reject bad components in labelled file but no trials
+
+            % Print all the eventss
+            disp('All events after removing bad trials and components:');
+            for i = 1:length(TrialsandComponentsCleanedFile.event)
+                % Access the concatenated phoneme from the event
+                if isfield(TrialsandComponentsCleanedFile.event(i), 'phoneme') && ~isempty(TrialsCleanedFile.event(i).phoneme)
+                    decoded_phoneme = TrialsandComponentsCleanedFile.event(i).phoneme;  % Get the concatenated phoneme
+                else
+                    decoded_phoneme = 'N/A';  % In case phoneme is not available
+                end
+
+                % Display the event type, latency, and decoded phoneme
+                disp(['Event ', num2str(i), ': Type = ', TrialsandComponentsCleanedFile.event(i).type, ', Latency = ', num2str(TrialsandComponentsCleanedFile.event(i).latency), ', Decoded Phoneme = ', decoded_phoneme]);
+            end
+            % Final checks: Print the sizes of the cleaned dataset and ICA fields
+            disp(['Size of TrialsandComponentsCleanedFile.data: ', mat2str(size(TrialsandComponentsCleanedFile.data))]);
+            disp(['Size of TrialsandComponentsCleanedFile.icaweights: ', mat2str(size(TrialsandComponentsCleanedFile.icaweights))]);
+            disp(['Size of TrialsandComponentsCleanedFile.icasphere: ', mat2str(size(TrialsandComponentsCleanedFile.icasphere))]);
+
+            EEG = TrialsandComponentsCleanedFile;
+
+            % Check and verify the dataset
+            original_file = EEG;             % Copy the original structure
+            EEG = eeg_checkset(EEG);        % Run eeg_checkset to possibly update the structure
+
+            % Check if fields are the same
+            if isequal(original_file, EEG)
+                disp('No changes were made.');
+            else
+                disp('The file was updated by eeg_checkset.');
+            end
+
+            for i = 1:length(EEG.epoch)
+                disp(['Epoch ' num2str(i) ':'])
+                disp(EEG.epoch(i).eventtype)
+                disp(EEG.epoch(i).eventlatency)
+                disp(EEG.epoch(i).eventphoneme)
+            end
+
+            [ALLEEG, ICLabelCleanedFile, CURRENTSET] = pop_newset(ALLEEG,ICLabelCleanedFile, 7,'setname','Removed ICA bad components','savenew', char(save_folder + subject + "_5_ica_cleaned" + ".set"),'gui','off');
+
+            [ALLEEG, EEG, CURRENTSET] = pop_newset(ALLEEG,EEG, 8,'setname','Removed ICA bad components and trials','savenew', char(save_folder + subject + "_6_ica_and_trials_cleaned"+ ".set"),'gui','off');
+
+        end
+
+
+
 
 
         % Print final details about EEG to confirm everything is correct
@@ -334,10 +389,18 @@ for i = 1:length(participants)
         disp(['Epochs details (first 5 epochs):']);
         disp(EEG.epoch(1:min(5, length(EEG.epoch))));  % Print details of the first 5 epochs
 
-        % Additional sanity check for EEG event information
-        disp('=== Event Information ===');
+        % Print all the created events with latencies and decoded phonemes
+        disp('All events created:');
         for i = 1:length(EEG.event)
-            disp(['Event ', num2str(i), ': Type = ', EEG.event(i).type, ', Latency = ', num2str(EEG.event(i).latency)]);
+            % Access the concatenated phoneme from the event
+            if isfield(EEG.event(i), 'phoneme') && ~isempty(EEG.event(i).phoneme)
+                decoded_phoneme = EEG.event(i).phoneme;  % Get the concatenated phoneme
+            else
+                decoded_phoneme = 'N/A';  % In case phoneme is not available
+            end
+
+            % Display the event type, latency, and decoded phoneme
+            disp(['Event ', num2str(i), ': Type = ', EEG.event(i).type, ', Latency = ', num2str(EEG.event(i).latency), ', Decoded Phoneme = ', decoded_phoneme]);
         end
 
     catch ME
@@ -345,4 +408,4 @@ for i = 1:length(participants)
     end
 end
 
-msgbox("All participants processed successfully!", "Done", "help");  % Show a message when all subjects are done
+msgbox("All participants processed successfully!", "Done", "help");  % Show a message when all subjects are done
