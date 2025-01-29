@@ -32,16 +32,19 @@ for i = 1:length(participants)
     epochs_data = EEG.data; % Shape: (n_channels, n_times, n_epochs)
     
     % Extract event info
-    events = EEG.event;
-    labels = cell(1, length(events));
+    labels = cell(1, length(EEG.event));
 
     % Loop through each event to extract the phoneme
-    for j = 1:length(events)
-        if isfield(events(j), 'eventphoneme')
-            labels{j} = events(j).eventphoneme;
+    disp('All events created:');
+    for j = 1:length(EEG.event)
+        if isfield(EEG.event(j), 'phoneme') && ~isempty(EEG.event(j).phoneme)
+            labels{j} = EEG.event(j).phoneme; % Access the concatenated phoneme
         else
-            labels{j} = 'unknown';
+            labels{j} = 'unknown';  % If no phoneme, mark as 'unknown'
         end
+
+        % Display event info for debugging
+        disp(['Event ', num2str(j), ': Type = ', EEG.event(j).type, ', Latency = ', num2str(EEG.event(j).latency), ', Phoneme = ', labels{j}]);
     end
 
     % Store the data
