@@ -2,13 +2,13 @@ clear; clc;
 eeglab; % Start EEGLAB
 
 % Define root path
-root_dir = 'C:\Users\User\Documents\Speech Decoding 1\Study 2\Data Descriptors\EEG_Data';
+root_dir = 'C:\Users\Dell\Documents\Speech Decoding\Study2\Data Descriptors\EEG_Data';
 
 % Define participant IDs
 participants = {'P01', 'P02', 'P04', 'P05', 'P06'};
 
 % Initialize data storage
-X_data = {};
+X_data = [];
 y_data = {};
 
 % Loop through each participant
@@ -30,33 +30,13 @@ for i = 1:length(participants)
 
     % Extract EEG data
     epochs_data = EEG.data; % Shape: (n_channels, n_times, n_epochs)
+    num_epochs = size(epochs_data, 3);
     
-    % Extract event info
-    labels = cell(1, length(EEG.event));
-
-    % Loop through each event to extract the phoneme
-    disp('All events created:');
-    for j = 1:length(EEG.event)
-        if isfield(EEG.event(j), 'phoneme') && ~isempty(EEG.event(j).phoneme)
-            labels{j} = EEG.event(j).phoneme; % Access the concatenated phoneme
-        else
-            labels{j} = 'unknown';  % If no phoneme, mark as 'unknown'
-        end
-
-        % Display event info for debugging
-        disp(['Event ', num2str(j), ': Type = ', EEG.event(j).type, ', Latency = ', num2str(EEG.event(j).latency), ', Phoneme = ', labels{j}]);
-    end
-
-    for i = 1:length(EEG.epoch)
-        disp(['Epoch ' num2str(i) ':'])
-        disp(EEG.epoch(i).eventtype)
-        disp(EEG.epoch(i).eventlatency)
-        disp(EEG.epoch(i).eventphoneme)
-    end
-
-    % Group epochs based on phonemes
+    % Initialize phoneme group mapping
     phoneme_groups = containers.Map();
-    for e = 1:length(EEG.epoch)
+    
+    % Iterate over epochs to group by phonemes
+    for e = 1:num_epochs
         if isfield(EEG.epoch(e), 'eventphoneme')
             epoch_phonemes = EEG.epoch(e).eventphoneme;
             unique_phoneme = unique(epoch_phonemes); % Get unique phonemes in epoch
@@ -65,61 +45,94 @@ for i = 1:length(participants)
             if ~isKey(phoneme_groups, key)
                 phoneme_groups(key) = [];
             end
-            phoneme_groups(key) = [phoneme_groups(key), e];
+            phoneme_groups(key) = [phoneme_groups(key), e]; % Store epoch indices
         end
     end
 
-    % Store the data
-    X_data{end+1} = epochs_data;
-    y_data = [y_data, labels];
+    % Store EEG epochs in X_data
+    fprintf('Processing participant: %s\n', participant);
+    fprintf('Number of epochs: %d\n', num_epochs);
 
-    % Debugging: Print sample phonemes
-    disp("Sample phoneme labels:");
-    disp(labels(1:min(10, length(labels))));
+    if isempty(X_data)
+        X_data = epochs_data; % Initialize with first participant's data
+    else
+        X_data = cat(3, X_data, epochs_data); % Concatenate epochs along the 3rd dimension
+    end
+    fprintf('Total stored epochs so far: %d\n', size(X_data, 3));
 
-    % Display grouped epochs
+    % Assign correct phoneme label to each epoch
+    for e = 1:num_epochs
+        assigned_phoneme = "unknown"; % Default label
+
+        % Find the epoch's corresponding phoneme group
+        phoneme_keys = keys(phoneme_groups);
+        for k = 1:length(phoneme_keys)
+            key = phoneme_keys{k};
+            if ismember(e, phoneme_groups(key)) % Check if epoch e belongs to this group
+                assigned_phoneme = key;
+                break;
+            end
+        end
+        y_data{end+1} = assigned_phoneme; % Store label
+
+        % Debugging print statements
+        fprintf('Epoch %d assigned to phoneme group: %s\n', e, assigned_phoneme);
+    end
+    fprintf('Total stored labels in y_data: %d\n', length(y_data));
+
+
+    % Display grouped epochs info
     disp("Grouped Epochs:");
-    phoneme_keys = keys(phoneme_groups);
     for k = 1:length(phoneme_keys)
-        disp(['Group ', phoneme_keys{k}, ': Epochs = ', num2str(phoneme_groups(phoneme_keys{k}))]);
+        disp(['Group ', phoneme_keys{k}, ': Epoch Count = ', num2str(length(phoneme_groups(phoneme_keys{k}))) ]);
     end
 end
 
-% Convert cell arrays to matrices if possible
-X_data = cat(3, X_data{:}); % Combine across epochs
-y_data = string(y_data); % Convert labels to string array
 
-% Print dataset info
-fprintf('Total EEG samples: %d\n', size(X_data, 3));
-fprintf('Total labels: %d\n', length(y_data));
+% Convert y_data to string array
+y_data = string(y_data);
 
-% Normalize the data (scale between 0 and 1)
-X_data_normalized = (X_data - min(X_data(:))) / (max(X_data(:)) - min(X_data(:)));
+% Print dataset summary
+fprintf('Total EEG epochs: %d\n', size(X_data, 3));
+fprintf('Total phonemes: %d\n', length(y_data));
 
-% Encode labels (convert to numeric values)
-[~, ~, y_encoded] = unique(y_data); % Convert categorical labels to numeric values
+% Display all X_data (size and sample values)
+fprintf('Final size of X_data: [%d, %d, %d]\n', size(X_data,1), size(X_data,2), size(X_data,3));
+disp('Sample of X_data (first 5 epochs):');
+disp(X_data(:,:,1:min(5, size(X_data,3)))); % Display up to 5 epochs
 
-% One-hot encode the labels
-n_classes = length(unique(y_encoded));  % Number of classes
-y_one_hot = full(ind2vec(y_encoded', n_classes))';  % One-hot encoding (transpose for consistency)
+% Display all y_data
+disp('All y_data labels:');
+disp(y_data);
 
-% Split the data into training & testing sets (80% training, 20% testing)
-n_epochs = size(X_data_normalized, 3);
-train_ratio = 0.8;
-n_train = floor(n_epochs * train_ratio);
-n_test = n_epochs - n_train;
-
-% Randomly shuffle the data
-rng(42);  % Set random seed for reproducibility
-indices = randperm(n_epochs);
-
-% Split the data
-X_train = X_data_normalized(:, :, indices(1:n_train));
-y_train = y_one_hot(indices(1:n_train), :);
-X_test = X_data_normalized(:, :, indices(n_train+1:end));
-y_test = y_one_hot(indices(n_train+1:end), :);
-
-% Display the results
-fprintf('Training Data Shape: [%d, %d, %d]\n', size(X_train));
-fprintf('Testing Data Shape: [%d, %d, %d]\n', size(X_test));
-fprintf('Number of Classes: %d\n', n_classes);
+% 
+% % Normalize the data (scale between 0 and 1)
+% X_data_normalized = (X_data - min(X_data(:))) / (max(X_data(:)) - min(X_data(:)));
+% 
+% % Encode labels (convert to numeric values)
+% [~, ~, y_encoded] = unique(y_data); % Convert categorical labels to numeric values
+% 
+% % One-hot encode the labels
+% n_classes = length(unique(y_encoded));  % Number of classes
+% y_one_hot = full(ind2vec(y_encoded', n_classes))';  % One-hot encoding (transpose for consistency)
+% 
+% % Split the data into training & testing sets (80% training, 20% testing)
+% n_epochs = size(X_data_normalized, 3);
+% train_ratio = 0.8;
+% n_train = floor(n_epochs * train_ratio);
+% n_test = n_epochs - n_train;
+% 
+% % Randomly shuffle the data
+% rng(42);  % Set random seed for reproducibility
+% indices = randperm(n_epochs);
+% 
+% % Split the data
+% X_train = X_data_normalized(:, :, indices(1:n_train));
+% y_train = y_one_hot(indices(1:n_train), :);
+% X_test = X_data_normalized(:, :, indices(n_train+1:end));
+% y_test = y_one_hot(indices(n_train+1:end), :);
+% 
+% % Display the results
+% fprintf('Training Data Shape: [%d, %d, %d]\n', size(X_train));
+% fprintf('Testing Data Shape: [%d, %d, %d]\n', size(X_test));
+% fprintf('Number of Classes: %d\n', n_classes);
