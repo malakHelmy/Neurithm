@@ -2,7 +2,7 @@ clear; clc;
 eeglab; % Start EEGLAB
 
 % Define root path
-root_dir = 'C:\Users\Dell\Documents\Speech Decoding\Study2\Data Descriptors\EEG_Data';
+root_dir = 'C:\Users\User\Documents\Speech Decoding 1\Study 2\Data Descriptors\EEG_Data';
 
 % Define participant IDs
 participants = {'P01', 'P02', 'P04', 'P05', 'P06'};
@@ -47,6 +47,28 @@ for i = 1:length(participants)
         disp(['Event ', num2str(j), ': Type = ', EEG.event(j).type, ', Latency = ', num2str(EEG.event(j).latency), ', Phoneme = ', labels{j}]);
     end
 
+    for i = 1:length(EEG.epoch)
+        disp(['Epoch ' num2str(i) ':'])
+        disp(EEG.epoch(i).eventtype)
+        disp(EEG.epoch(i).eventlatency)
+        disp(EEG.epoch(i).eventphoneme)
+    end
+
+    % Group epochs based on phonemes
+    phoneme_groups = containers.Map();
+    for e = 1:length(EEG.epoch)
+        if isfield(EEG.epoch(e), 'eventphoneme')
+            epoch_phonemes = EEG.epoch(e).eventphoneme;
+            unique_phoneme = unique(epoch_phonemes); % Get unique phonemes in epoch
+            key = strjoin(unique_phoneme, '_'); % Create a unique key for the group
+            
+            if ~isKey(phoneme_groups, key)
+                phoneme_groups(key) = [];
+            end
+            phoneme_groups(key) = [phoneme_groups(key), e];
+        end
+    end
+
     % Store the data
     X_data{end+1} = epochs_data;
     y_data = [y_data, labels];
@@ -54,6 +76,13 @@ for i = 1:length(participants)
     % Debugging: Print sample phonemes
     disp("Sample phoneme labels:");
     disp(labels(1:min(10, length(labels))));
+
+    % Display grouped epochs
+    disp("Grouped Epochs:");
+    phoneme_keys = keys(phoneme_groups);
+    for k = 1:length(phoneme_keys)
+        disp(['Group ', phoneme_keys{k}, ': Epochs = ', num2str(phoneme_groups(phoneme_keys{k}))]);
+    end
 end
 
 % Convert cell arrays to matrices if possible
