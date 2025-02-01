@@ -5,7 +5,7 @@ eeglab; % Start EEGLAB
 root_dir = 'C:\Users\User\Documents\Speech Decoding 1\Study 2\Data Descriptors\EEG_Data';
 
 % Define participant IDs
-participants = {'P01', 'P02', 'P04', 'P05', 'P06'};
+participants = {'P01', 'P02', 'P04', 'P05', 'P06','P08','P09','P10','P11','P12','P13','P14','P15','P16'};
 
 % Initialize data storage
 X_data = [];

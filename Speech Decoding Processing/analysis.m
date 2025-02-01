@@ -6,7 +6,7 @@ clc;    % Clear command window
 % Define the main folder containing participant data
 main_folder = "C:\Users\User\Documents\Speech Decoding 1\Study 2\Data Descriptors\EEG_Data\";  % Main folder path
 layout_file = 'C:\Users\User\Documents\Speech Decoding 1\Study 2\Data Descriptors\Sensors\sensors_layout_eeglab_without_bad_ch.ced';
-participants = ["P01","P02","P04", "P05","P06","P08","P09","P10"];  % List of participant IDs
+participants = ["P01","P02","P04", "P05","P06","P08","P09","P10","P11","P12","P13","P14","P15","P16"];  % List of participant IDs
 
 % MUST FIRST run eeglab command in command window
 % File > Import Data > EEGLAB functions and plugins > From ANT EEProbe .CNT
