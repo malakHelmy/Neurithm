@@ -1,30 +1,45 @@
 import 'package:flutter/material.dart';
+import 'package:neurithm/services/addwordBank.dart';
+import 'package:neurithm/models/wordBankCategories.dart';
 import '../widgets/appbar.dart';
 import '../widgets/bottombar.dart';
 import '../widgets/wavesBackground.dart';
+import "../widgets/wordBankPhrases.dart";
 
-class wordBankPage extends StatefulWidget {
-  const wordBankPage({super.key});
+class WordBankPage extends StatefulWidget {
+  const WordBankPage({super.key});
 
   @override
-  State<wordBankPage> createState() => _wordBankPageState();
+  State<WordBankPage> createState() => _WordBankPageState();
 }
 
-class _wordBankPageState extends State<wordBankPage> {
+class _WordBankPageState extends State<WordBankPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  final FirestoreService _firestoreService = FirestoreService();
   TextEditingController searchController = TextEditingController();
+  List<WordBankCategory> categories = [];
+  bool isLoading = true;
 
-  // Categories for the grid
-  final List<Map<String, dynamic>> categories = [
-    {"title": "Food", "icon": Icons.fastfood},
-    {"title": "Work", "icon": Icons.work},
-    {"title": "Family", "icon": Icons.family_restroom},
-    {"title": "Emergency", "icon": Icons.warning},
-    {"title": "Greetings", "icon": Icons.handshake},
-    {"title": "Travel", "icon": Icons.flight},
-    {"title": "Health", "icon": Icons.local_hospital},
-    {"title": "Daily Needs", "icon": Icons.shopping_basket},
-  ];
+  @override
+  void initState() {
+    super.initState();
+    _fetchCategories();
+  }
+
+  Future<void> _fetchCategories() async {
+    try {
+      final fetchedCategories = await _firestoreService.fetchCategories();
+      setState(() {
+        categories = fetchedCategories;
+        isLoading = false;
+      });
+    } catch (e) {
+      print("Error fetching categories: $e");
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -52,19 +67,15 @@ class _wordBankPageState extends State<wordBankPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Drawer appBar
                     appBar(_scaffoldKey),
-
                     SizedBox(height: spacing(15, getScreenHeight(context))),
+
                     TextField(
                       controller: searchController,
                       decoration: InputDecoration(
-                        hintText: "Search words...",
-                        hintStyle: TextStyle(
-                          color: Color(0xFF1A2A3A),
-                        ),
-                        prefixIcon: Icon(Icons.search),
-                        prefixIconColor: Color(0xFF1A2A3A),
+                        hintText: "Search categories...",
+                        hintStyle: TextStyle(color: Color(0xFF1A2A3A)),
+                        prefixIcon: Icon(Icons.search, color: Color(0xFF1A2A3A)),
                         filled: true,
                         fillColor: Colors.white.withOpacity(0.8),
                         border: OutlineInputBorder(
@@ -72,47 +83,11 @@ class _wordBankPageState extends State<wordBankPage> {
                           borderSide: BorderSide.none,
                         ),
                       ),
-                      onChanged: (value) {
-                        setState(() {});
-                      },
+                      onChanged: (value) => setState(() {}),
                     ),
 
                     SizedBox(height: spacing(30, getScreenHeight(context))),
-                    const Text(
-                      "Frequently Accessed Words",
-                      style: TextStyle(
-                        fontFamily: 'Lato',
-                        fontSize: 25,
-                        fontWeight: FontWeight.bold,
-                        color: Color.fromARGB(255, 206, 206, 206),
-                      ),
-                    ),
-                    SizedBox(height: spacing(30, getScreenHeight(context))),
 
-                    SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Row(
-                        children: List.generate(
-                          4,
-                          (index) => Padding(
-                            padding: EdgeInsets.symmetric(
-                                horizontal:
-                                    spacing(5, getScreenHeight(context))),
-                            child: Container(
-                              height: spacing(100, getScreenHeight(context)),
-                              width: getScreenWidth(context) * 0.35,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                color: Colors.black.withOpacity(0.12),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: spacing(30, getScreenHeight(context))),
-
-                    // Grid Title
                     const Text(
                       "Categories",
                       style: TextStyle(
@@ -122,61 +97,63 @@ class _wordBankPageState extends State<wordBankPage> {
                         color: Color.fromARGB(255, 206, 206, 206),
                       ),
                     ),
-                    // Grid of Categories
-                    GridView.builder(
-                      shrinkWrap: true, // Ensures it doesn't expand infinitely
-                      physics: NeverScrollableScrollPhysics(),
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2, // Two items per row
-                        crossAxisSpacing: spacing(25, getScreenWidth(context)),
-                        mainAxisSpacing: spacing(10, getScreenHeight(context)),
-                        childAspectRatio: 1.5, // Square items
-                      ),
-                      itemCount: categories.length,
-                      itemBuilder: (context, index) {
-                        final category = categories[index];
-                        return GestureDetector(
-                          onTap: () {
-                            // Navigate to the word bank for the selected category
-                            print("Selected category: ${category['title']}");
-                          },
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(15),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withOpacity(0.2),
-                                  blurRadius: 5,
-                                  offset: Offset(0, 3),
-                                ),
-                              ],
+
+                    SizedBox(height: spacing(10, getScreenHeight(context))),
+
+                    isLoading
+                        ? Center(child: CircularProgressIndicator())
+                        : GridView.builder(
+                            shrinkWrap: true,
+                            physics: NeverScrollableScrollPhysics(),
+                            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 2,
+                              crossAxisSpacing: spacing(25, getScreenWidth(context)),
+                              mainAxisSpacing: spacing(10, getScreenHeight(context)),
+                              childAspectRatio: 1.5,
                             ),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(
-                                  category['icon'],
-                                  size: 40,
-                                  color: Color(0xFF1A2A3A),
-                                ),
-                                SizedBox(
-                                    height:
-                                        spacing(5, getScreenHeight(context))),
-                                Text(
-                                  category['title'],
-                                  style: TextStyle(
-                                    fontSize: 20,
-                                    color: Color(0xFF1A2A3A),
-                                    fontWeight: FontWeight.bold,
+                            itemCount: categories.length,
+                            itemBuilder: (context, index) {
+                              final category = categories[index];
+                              return GestureDetector(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => WordBankPhrases(category: category),
+                                    ),
+                                  );
+                                },
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(15),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black.withOpacity(0.2),
+                                        blurRadius: 5,
+                                        offset: Offset(0, 3),
+                                      ),
+                                    ],
+                                  ),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(Icons.category, size: 40, color: Color(0xFF1A2A3A)),
+                                      SizedBox(height: spacing(5, getScreenHeight(context))),
+                                      Text(
+                                        category.name,
+                                        style: TextStyle(
+                                          fontSize: 20,
+                                          color: Color(0xFF1A2A3A),
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
-                              ],
-                            ),
+                              );
+                            },
                           ),
-                        );
-                      },
-                    ),
 
                     SizedBox(height: spacing(20, getScreenHeight(context))),
                   ],
