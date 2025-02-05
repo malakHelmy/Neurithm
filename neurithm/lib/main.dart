@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:neurithm/screens/welcomeScreen.dart';
-import 'package:neurithm/screens/wordBank.dart';
+import 'package:neurithm/screens/voicesettings.dart';
 import 'package:neurithm/services/addWordBank.dart';
 import 'screens/loginPage.dart';
 
@@ -39,7 +39,7 @@ class ThoughtToSpeechApp extends StatelessWidget {
         scaffoldBackgroundColor: const Color(0xFF1A2A3A),
         primaryColor: const Color(0xFF394B58),
       ),
-      home: WordBankPage(),
+      home: VoiceSettingsPage(),
     );
   }
 }
