@@ -12,6 +12,8 @@ AnimatedOpacity signUpForm(BuildContext context, bool _showLoginForm,
   final _ageController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
+  String? _selectedGender;
+
 
   String? _validateName(String? value) {
     if (value == null || value.isEmpty) {
@@ -89,6 +91,8 @@ AnimatedOpacity signUpForm(BuildContext context, bool _showLoginForm,
                   decoration: customTextFieldDecoration('Email'),
                   // validator: _validateEmail,
                 ),
+                const SizedBox(height: 20),
+                
                 const SizedBox(height: 20),
                 TextFormField(
                     controller: _ageController,

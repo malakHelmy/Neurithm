@@ -11,6 +11,7 @@ Future<void> main() async {
 
 // Initialize Firebase with provided options
   await Firebase.initializeApp(
+    name: 'neurithm',
     options: const FirebaseOptions(
       apiKey: "AIzaSyB_ZfiJIMRQv1mHBLOyM9hxnXqRn9A7DC8", // From "api_key"
       authDomain:

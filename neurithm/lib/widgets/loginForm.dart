@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:crypto/crypto.dart';
+import 'dart:convert';
+//screens
 import '../screens/homePage.dart';
+//widgets
 import 'appBar.dart';
 import 'inputDecoration.dart';
 
 AnimatedOpacity loginForm(
     context, _showLoginForm, _showSignUpForm, VoidCallback toggleToSignUpForm) {
+
   return AnimatedOpacity(
     opacity: _showLoginForm ? 1.0 : 0.0,
     duration: const Duration(milliseconds: 600),
@@ -89,7 +95,6 @@ AnimatedOpacity loginForm(
               ),
               const SizedBox(height: 20),
 
-              // ---OR--- divider
               Row(
                 children: [
                   const Expanded(
