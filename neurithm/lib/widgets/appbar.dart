@@ -97,7 +97,7 @@ Drawer sideAppBar(context) {
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => wordBankPage(),
+                  builder: (context) => WordBankPage(),
                 ));
           },
         ),

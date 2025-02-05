@@ -16,7 +16,7 @@ BottomNavigationBar bottomappBar(BuildContext context) {
       case 1:
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => wordBankPage()),
+          MaterialPageRoute(builder: (context) => WordBankPage()),
         );
         break;
       case 2:
