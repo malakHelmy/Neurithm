@@ -107,8 +107,8 @@ class _WordBankPageState extends State<WordBankPage> {
                             physics: NeverScrollableScrollPhysics(),
                             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                               crossAxisCount: 2,
-                              crossAxisSpacing: spacing(25, getScreenWidth(context)),
-                              mainAxisSpacing: spacing(10, getScreenHeight(context)),
+                              crossAxisSpacing: spacing(30, getScreenWidth(context)),
+                              mainAxisSpacing: spacing(20, getScreenHeight(context)),
                               childAspectRatio: 1.5,
                             ),
                             itemCount: categories.length,
@@ -125,7 +125,7 @@ class _WordBankPageState extends State<WordBankPage> {
                                 },
                                 child: Container(
                                   decoration: BoxDecoration(
-                                    color: Colors.white,
+                                    color: const Color.fromARGB(255, 226, 226, 226),
                                     borderRadius: BorderRadius.circular(15),
                                     boxShadow: [
                                       BoxShadow(
