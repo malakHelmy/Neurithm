@@ -6,7 +6,6 @@ class UserPreferences {
   static const String _genderKey = 'gender';
   static const String _accentKey = 'accent';
 
-  // Save voice settings
   static Future<void> saveVoiceSettings({
     required double pitch,
     required String gender,
@@ -18,13 +17,13 @@ class UserPreferences {
     await prefs.setString(_accentKey, accent);
   }
 
-  // Load voice settings
   static Future<VoiceSettings> loadVoiceSettings() async {
     final prefs = await SharedPreferences.getInstance();
     return VoiceSettings(
-      pitch: prefs.getDouble(_pitchKey) ?? 1.0,  // Default pitch
-      gender: prefs.getString(_genderKey) ?? 'male',  // Default gender
-      accent: prefs.getString(_accentKey) ?? 'en-US',  // Default accent
+      pitch: prefs.getDouble(_pitchKey) ?? 1.0,
+      gender: prefs.getString(_genderKey) ?? 'male',
+      accent: prefs.getString(_accentKey) ?? 'en', // Change this to "en"
     );
   }
+
 }
