@@ -1,23 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:neurithm/screens/welcomeScreen.dart';
+import 'package:neurithm/screens/wordBank.dart';
+import 'package:neurithm/services/addWordBank.dart';
 import 'screens/loginPage.dart';
 
 Future<void> main() async {
   // Ensure Flutter bindings are initialized
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Initialize Firebase
+// Initialize Firebase with provided options
   await Firebase.initializeApp(
-    name: 'neurithm',
     options: const FirebaseOptions(
       apiKey: "AIzaSyB_ZfiJIMRQv1mHBLOyM9hxnXqRn9A7DC8", // From "api_key"
       authDomain:
           "neurithm-8ac92.firebaseapp.com", // Usually "project_id.firebaseapp.com"
       databaseURL:
-          "https://neurithm-8ac92-default-rtdb.firebaseio.com/", // Constructed URL
-      projectId: "egywanders", // From "project_id"
-      storageBucket: "neurithm-8ac92.firebasestorage.app", // From "storage_bucket"
+          "https://neurithm-8ac92-default-rtdb.firebaseio.com", // Constructed URL
+      projectId: "neurithm-8ac92", // From "project_id"
+      storageBucket:
+          "neurithm-8ac92.firebasestorage.app", // From "storage_bucket"
       messagingSenderId: "49235168369", // From "project_number"
       appId:
           "1:49235168369:android:b283ac169a67724e455fd0", // From "mobilesdk_app_id"
@@ -36,7 +38,7 @@ class ThoughtToSpeechApp extends StatelessWidget {
         scaffoldBackgroundColor: const Color(0xFF1A2A3A),
         primaryColor: const Color(0xFF394B58),
       ),
-      home: WelcomeScreen(),
+      home: WordBankPage(),
     );
   }
 }
