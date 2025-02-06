@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "49235168369",
+    "firebase_url": "https://neurithm-8ac92-default-rtdb.firebaseio.com",
     "project_id": "neurithm-8ac92",
     "storage_bucket": "neurithm-8ac92.firebasestorage.app"
   },
@@ -13,6 +14,14 @@
         }
       },
       "oauth_client": [
+        {
+          "client_id": "49235168369-0tnptahegng9h6jsfkac206v4dp9gh55.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.neurithm",
+            "certificate_hash": "6ec7213004d696b49d34271cae5ad9dec95b5933"
+          }
+        },
         {
           "client_id": "49235168369-5el4t6ks6s55l3ijhs1vdbespgqk1v7v.apps.googleusercontent.com",
           "client_type": 3

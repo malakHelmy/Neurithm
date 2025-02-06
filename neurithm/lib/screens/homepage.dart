@@ -6,9 +6,13 @@ import '../screens/devices.dart';
 import '../screens/settings.dart';
 import '../widgets/wavesBackground.dart';
 import 'setUpConnectionPage.dart';
+import '../services/auth.dart';
+
 
 class HomePage extends StatelessWidget {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
+    final AuthMethods _authMethods = AuthMethods();
 
   @override
   Widget build(BuildContext context) {
@@ -80,7 +84,7 @@ class HomePage extends StatelessWidget {
                             ),
                             SizedBox(height: spacing(10)),
                             Text(
-                              "Welcome, Potential User",
+                              // "Welcome, ${_authMethods.currentUser?.firstName} ${_authMethods.currentUser?.lastName}" ,
                               style: TextStyle(
                                 fontSize: fontSize(28),
                                 color: Colors.white,
