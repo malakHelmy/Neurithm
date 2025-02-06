@@ -1,17 +1,18 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:neurithm/models/users.dart';
+// import 'package:neurithm/models/users.dart';
+import 'package:neurithm/models/patient.dart';
 
 class AuthMethods {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  Users? get currentUser {
+  Patient? get currentUser {
     try {
       User? user = _auth.currentUser;
       if (user != null) {
-        return Users(
+        return Patient(
           uid: user.uid,
           firstName: user.displayName?.split(' ')[0] ?? '',
           lastName: user.displayName!.split(' ').length > 1
@@ -37,16 +38,16 @@ class AuthMethods {
 
       if (user != null) {
         // Create the Users model object
-        Users newUser = Users(
+        Patient newUser = Patient(
           uid: user.uid,
           firstName: firstName,
           lastName: lastName,
           email: email,
-          password: password,
+          password: "",
         );
 
         // Add the user data to Firestore
-        await _firestore.collection('users').doc(user.uid).set(newUser.toMap());
+        await _firestore.collection('patients').doc(user.uid).set(newUser.toMap());
 
         // Ensure user is authenticated before proceeding
         if (_auth.currentUser != null) {
@@ -104,7 +105,7 @@ class AuthMethods {
       if (user != null) {
         if (userCredential.additionalUserInfo!.isNewUser) {
           // Add the data to Firestore
-          await _firestore.collection('users').doc(user.uid).set({
+          await _firestore.collection('patients').doc(user.uid).set({
             'firstName': user.displayName?.split(' ')[0] ?? '',
             'lastName': user.displayName!.split(' ').length > 1
                 ? user.displayName!.split(' ')[1]
