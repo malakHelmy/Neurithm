@@ -84,7 +84,7 @@ class HomePage extends StatelessWidget {
                             ),
                             SizedBox(height: spacing(10)),
                             Text(
-                              // "Welcome, ${_authMethods.currentUser?.firstName} ${_authMethods.currentUser?.lastName}" ,
+                              "Welcome, ${_authMethods.currentUser?.firstName} ${_authMethods.currentUser?.lastName}" ,
                               style: TextStyle(
                                 fontSize: fontSize(28),
                                 color: Colors.white,
