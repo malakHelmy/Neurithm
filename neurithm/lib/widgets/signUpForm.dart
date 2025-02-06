@@ -3,14 +3,18 @@ import '../screens/loginPage.dart';
 import 'inputDecoration.dart';
 import '../screens/homePage.dart';
 import '../services/auth.dart';
+import '../models/users.dart'; // Import the Users model
 
-AnimatedOpacity signUpForm(BuildContext context, bool _showLoginForm,
-    bool _showSignUpForm, VoidCallback toggleToLoginForm) {
+AnimatedOpacity signUpForm(
+  BuildContext context,
+  bool _showLoginForm,
+  bool _showSignUpForm,
+  VoidCallback toggleToLoginForm,
+) {
   final _formKey = GlobalKey<FormState>();
   final _firstNameController = TextEditingController();
   final _lastNameController = TextEditingController();
   final _emailController = TextEditingController();
-  final _ageController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
 
@@ -27,20 +31,11 @@ AnimatedOpacity signUpForm(BuildContext context, bool _showLoginForm,
 
   String? _validateEmail(String? value) {
     final emailRegExp =
-        RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$');
+        RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zAZ0-9.-]+\.[a-zA-Z]{2,}$');
     if (value == null || value.isEmpty) {
       return 'Please enter an email';
     } else if (!emailRegExp.hasMatch(value)) {
       return 'Enter a valid email';
-    }
-    return null;
-  }
-
-  String? _validateAge(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'Please enter your age';
-    } else if (!RegExp(r'^[0-9]+$').hasMatch(value)) {
-      return 'Age should be a number';
     }
     return null;
   }
@@ -73,50 +68,36 @@ AnimatedOpacity signUpForm(BuildContext context, bool _showLoginForm,
               children: [
                 TextFormField(
                   controller: _firstNameController,
-                  style: const TextStyle(
-                      fontSize: 20, color: Color.fromARGB(255, 255, 255, 255)),
+                  style: const TextStyle(fontSize: 20, color: Colors.white),
                   decoration: customTextFieldDecoration('First Name'),
-                  // validator: _validateName,
+                  validator: _validateName,
                 ),
                 const SizedBox(height: 20),
                 TextFormField(
                   controller: _lastNameController,
                   style: const TextStyle(fontSize: 20, color: Colors.white),
                   decoration: customTextFieldDecoration('Last Name'),
-                  // validator: _validateName,
+                  validator: _validateName,
                 ),
                 const SizedBox(height: 20),
                 TextFormField(
                   controller: _emailController,
                   style: const TextStyle(fontSize: 20, color: Colors.white),
                   decoration: customTextFieldDecoration('Email'),
-                  // validator: _validateEmail,
+                  validator: _validateEmail,
                 ),
-                const SizedBox(height: 20),
-                TextFormField(
-                    controller: _ageController,
-                    keyboardType: TextInputType.number,
-                    style: const TextStyle(fontSize: 20, color: Colors.white),
-                    decoration: customTextFieldDecoration('Age')
-                    // validator: _validateAge,
-                    ),
-
                 const SizedBox(height: 20),
                 // Password Field
                 TextFormField(
                   controller: _passwordController,
                   obscureText: true,
-                  style: const TextStyle(
-                    fontSize: 18,
-                    color: Colors.black,
-                  ),
+                  style: const TextStyle(fontSize: 18, color: Colors.black),
                   decoration: InputDecoration(
                     labelText: "Password",
                     labelStyle: const TextStyle(
                         color: Color.fromARGB(115, 255, 255, 255)),
                     focusedBorder: const UnderlineInputBorder(
-                      borderSide: BorderSide(
-                          color: Color.fromARGB(255, 255, 255, 255), width: 2),
+                      borderSide: BorderSide(color: Colors.white, width: 2),
                     ),
                     enabledBorder: const UnderlineInputBorder(
                       borderSide: BorderSide(color: Colors.grey, width: 1),
@@ -126,19 +107,51 @@ AnimatedOpacity signUpForm(BuildContext context, bool _showLoginForm,
                       onPressed: () {},
                     ),
                   ),
+                  validator: _validatePassword,
+                ),
+                const SizedBox(height: 20),
+                // Confirm Password Field
+                TextFormField(
+                  controller: _confirmPasswordController,
+                  obscureText: true,
+                  style: const TextStyle(fontSize: 18, color: Colors.black),
+                  decoration: InputDecoration(
+                    labelText: "Confirm Password",
+                    labelStyle: const TextStyle(
+                        color: Color.fromARGB(115, 255, 255, 255)),
+                    focusedBorder: const UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.white, width: 2),
+                    ),
+                    enabledBorder: const UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.grey, width: 1),
+                    ),
+                  ),
+                  validator: _validateConfirmPassword,
                 ),
                 const SizedBox(height: 40),
-                // Sign In Button
+                // Sign Up Button
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => HomePage(),
-                        ),
-                      );
+                    onPressed: () async {
+                      if (_formKey.currentState?.validate() ?? false) {
+                        bool result =
+                            await _authMethods.signUpWithEmailPassword(
+                          _firstNameController.text,
+                          _lastNameController.text,
+                          _emailController.text,
+                          _passwordController.text,
+                        );
+
+                        if (result) {
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(builder: (context) => HomePage()),
+                          );
+                        } else {
+                          print("Sign-up failed. Please try again.");
+                        }
+                      }
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color.fromARGB(255, 255, 255, 255),
@@ -164,11 +177,9 @@ AnimatedOpacity signUpForm(BuildContext context, bool _showLoginForm,
                     onPressed: () async {
                       bool result = await _authMethods.signInWithGoogle();
                       if (result) {
-                        Navigator.push(
+                        Navigator.pushReplacement(
                           context,
-                          MaterialPageRoute(
-                            builder: (context) => HomePage(),
-                          ),
+                          MaterialPageRoute(builder: (context) => HomePage()),
                         );
                       }
                     },
@@ -193,7 +204,6 @@ AnimatedOpacity signUpForm(BuildContext context, bool _showLoginForm,
                     ),
                   ),
                 ),
-
                 const SizedBox(height: 20),
                 // Register Link
                 Row(
