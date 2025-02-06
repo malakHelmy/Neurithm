@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import '../screens/homePage.dart';
 import 'appBar.dart';
 import 'inputDecoration.dart';
+import '../services/auth.dart';
 
 AnimatedOpacity loginForm(
     context, _showLoginForm, _showSignUpForm, VoidCallback toggleToSignUpForm) {
+  final AuthMethods _authMethods = AuthMethods();
   return AnimatedOpacity(
     opacity: _showLoginForm ? 1.0 : 0.0,
     duration: const Duration(milliseconds: 600),
@@ -123,14 +125,24 @@ AnimatedOpacity loginForm(
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton.icon(
-                  onPressed: () {},
+                  onPressed: () async {
+                    bool result = await _authMethods.signInWithGoogle();
+                    if (result) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => HomePage(),
+                        ),
+                      );
+                    }
+                  },
                   icon: Image.asset(
                     'assets/images/google_logo.png',
                     height: 24,
                     width: 24,
                   ),
                   label: const Text(
-                    "Sign Up using Google",
+                    "Continue with Google",
                     style: TextStyle(
                       fontSize: 20,
                       color: Color.fromARGB(255, 255, 255, 255),
