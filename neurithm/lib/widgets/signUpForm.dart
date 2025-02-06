@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import '../screens/loginPage.dart';
+import 'package:neurithm/widgets/loginForm.dart';
 import 'inputDecoration.dart';
 import '../screens/homePage.dart';
 import '../services/auth.dart';
-import '../models/users.dart'; // Import the Users model
 
 AnimatedOpacity signUpForm(
   BuildContext context,
@@ -23,8 +22,8 @@ AnimatedOpacity signUpForm(
       return 'Please enter a name';
     } else if (value.length < 3) {
       return 'Name should be at least 3 characters';
-    } else if (RegExp(r'\d').hasMatch(value)) {
-      return 'Name should not contain numbers';
+    } if (!RegExp(r"^[a-zA-Z]+$").hasMatch(value)) {
+      return 'Name must contain only letters';
     }
     return null;
   }
@@ -144,12 +143,14 @@ AnimatedOpacity signUpForm(
                         );
 
                         if (result) {
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(builder: (context) => HomePage()),
-                          );
+                          toggleToLoginForm();
                         } else {
-                          print("Sign-up failed. Please try again.");
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('This is a repeated email, try another email', style:TextStyle(color: Color.fromARGB(255, 255, 255, 255))),
+                              backgroundColor: Colors.red,
+                            ),
+                          );
                         }
                       }
                     },
