@@ -38,7 +38,7 @@ class ThoughtToSpeechApp extends StatelessWidget {
         scaffoldBackgroundColor: const Color(0xFF1A2A3A),
         primaryColor: const Color(0xFF394B58),
       ),
-      home: WordBankPage(),
+      home: LoginPage(),
     );
   }
 }

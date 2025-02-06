@@ -1,12 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:neurithm/screens/loginPage.dart';
 import 'package:neurithm/screens/userProfile.dart';
+import 'package:neurithm/widgets/logInForm.dart';
 import '../screens/homePage.dart';
 import '../screens/wordBank.dart';
 import '../screens/feedback.dart';
 import '../screens/help.dart';
 import '../screens/aboutUs.dart';
+import '../services/auth.dart';
 
 Drawer sideAppBar(context) {
+  
+    final AuthMethods _authMethods = AuthMethods();
+
   return Drawer(
     child: ListView(
       padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 60.0),
@@ -99,6 +105,24 @@ Drawer sideAppBar(context) {
                 MaterialPageRoute(
                   builder: (context) => WordBankPage(),
                 ));
+          },
+        ),
+        ListTile(
+          title: const Text('Log out',
+              style: TextStyle(
+                color: Color.fromARGB(255, 206, 206, 206),
+                fontSize: 25,
+                fontFamily: 'Lato',
+                fontWeight: FontWeight.bold,
+              )),
+          onTap: () {
+            _authMethods.signOut();
+            Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => LoginPage(),
+                      ),
+                    );
           },
         ),
       ],
