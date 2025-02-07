@@ -59,7 +59,10 @@ class _WordBankPageState extends State<WordBankPage> {
           decoration: gradientBackground,
           child: Stack(
             children: [
-              waveBackground,
+              Positioned.fill(
+                // Ensures it takes full width and height
+                child: waveBackground,
+              ),
               Padding(
                 padding: EdgeInsets.symmetric(
                   horizontal: spacing(15, getScreenHeight(context)),
@@ -69,13 +72,13 @@ class _WordBankPageState extends State<WordBankPage> {
                   children: [
                     appBar(_scaffoldKey),
                     SizedBox(height: spacing(15, getScreenHeight(context))),
-
                     TextField(
                       controller: searchController,
                       decoration: InputDecoration(
                         hintText: "Search categories...",
                         hintStyle: TextStyle(color: Color(0xFF1A2A3A)),
-                        prefixIcon: Icon(Icons.search, color: Color(0xFF1A2A3A)),
+                        prefixIcon:
+                            Icon(Icons.search, color: Color(0xFF1A2A3A)),
                         filled: true,
                         fillColor: Colors.white.withOpacity(0.8),
                         border: OutlineInputBorder(
@@ -85,9 +88,7 @@ class _WordBankPageState extends State<WordBankPage> {
                       ),
                       onChanged: (value) => setState(() {}),
                     ),
-
                     SizedBox(height: spacing(30, getScreenHeight(context))),
-
                     const Text(
                       "Categories",
                       style: TextStyle(
@@ -97,18 +98,19 @@ class _WordBankPageState extends State<WordBankPage> {
                         color: Color.fromARGB(255, 206, 206, 206),
                       ),
                     ),
-
                     SizedBox(height: spacing(10, getScreenHeight(context))),
-
                     isLoading
                         ? Center(child: CircularProgressIndicator())
                         : GridView.builder(
                             shrinkWrap: true,
                             physics: NeverScrollableScrollPhysics(),
-                            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                            gridDelegate:
+                                SliverGridDelegateWithFixedCrossAxisCount(
                               crossAxisCount: 2,
-                              crossAxisSpacing: spacing(30, getScreenWidth(context)),
-                              mainAxisSpacing: spacing(20, getScreenHeight(context)),
+                              crossAxisSpacing:
+                                  spacing(30, getScreenWidth(context)),
+                              mainAxisSpacing:
+                                  spacing(20, getScreenHeight(context)),
                               childAspectRatio: 1.5,
                             ),
                             itemCount: categories.length,
@@ -119,13 +121,15 @@ class _WordBankPageState extends State<WordBankPage> {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) => WordBankPhrases(category: category),
+                                      builder: (context) =>
+                                          WordBankPhrases(category: category),
                                     ),
                                   );
                                 },
                                 child: Container(
                                   decoration: BoxDecoration(
-                                    color: const Color.fromARGB(255, 226, 226, 226),
+                                    color: const Color.fromARGB(
+                                        255, 226, 226, 226),
                                     borderRadius: BorderRadius.circular(15),
                                     boxShadow: [
                                       BoxShadow(
@@ -138,8 +142,11 @@ class _WordBankPageState extends State<WordBankPage> {
                                   child: Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
-                                      Icon(Icons.category, size: 40, color: Color(0xFF1A2A3A)),
-                                      SizedBox(height: spacing(5, getScreenHeight(context))),
+                                      Icon(Icons.category,
+                                          size: 40, color: Color(0xFF1A2A3A)),
+                                      SizedBox(
+                                          height: spacing(
+                                              5, getScreenHeight(context))),
                                       Text(
                                         category.name,
                                         style: TextStyle(
@@ -154,7 +161,6 @@ class _WordBankPageState extends State<WordBankPage> {
                               );
                             },
                           ),
-
                     SizedBox(height: spacing(20, getScreenHeight(context))),
                   ],
                 ),
