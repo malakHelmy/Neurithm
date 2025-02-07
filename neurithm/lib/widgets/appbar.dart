@@ -4,7 +4,6 @@ import 'package:neurithm/screens/userProfile.dart';
 import 'package:neurithm/widgets/logInForm.dart';
 import '../screens/homePage.dart';
 import '../screens/wordBank.dart';
-import '../screens/feedback.dart';
 import '../screens/help.dart';
 import '../screens/aboutUs.dart';
 import '../services/auth.dart';
