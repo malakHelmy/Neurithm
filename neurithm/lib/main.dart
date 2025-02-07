@@ -4,12 +4,13 @@ import 'package:neurithm/screens/welcomeScreen.dart';
 import 'package:neurithm/screens/voicesettings.dart';
 import 'package:neurithm/services/addWordBank.dart';
 import 'screens/loginPage.dart';
+import 'services/addFeedback.dart'; // Import the FeedbackService
 
 Future<void> main() async {
   // Ensure Flutter bindings are initialized
   WidgetsFlutterBinding.ensureInitialized();
 
-// Initialize Firebase with provided options
+  // Initialize Firebase with provided options
   await Firebase.initializeApp(
     options: const FirebaseOptions(
       apiKey: "AIzaSyB_ZfiJIMRQv1mHBLOyM9hxnXqRn9A7DC8", // From "api_key"
@@ -38,7 +39,7 @@ class ThoughtToSpeechApp extends StatelessWidget {
         scaffoldBackgroundColor: const Color(0xFF1A2A3A),
         primaryColor: const Color(0xFF394B58),
       ),
-      home: LoginPage(),
+      home: WelcomeScreen(),
     );
   }
 }
