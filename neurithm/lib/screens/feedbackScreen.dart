@@ -62,36 +62,40 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
   }
 
   void _submitFeedback() async {
-    if (_selectedComments.isEmpty || _currentUser == null) return;
+  if (_selectedComments.isEmpty || _currentUser == null) return;
 
-    List<String> feedbackIds = [];
+  List<String> feedbackIds = [];
 
-    for (var comment in _selectedComments) {
-      String category = _feedbackData.keys.firstWhere(
-        (key) => _feedbackData[key]!.contains(comment),
-        orElse: () => "Unknown",
-      );
+  for (var comment in _selectedComments) {
+    String category = _feedbackData.keys.firstWhere(
+      (key) => _feedbackData[key]!.contains(comment),
+      orElse: () => "Unknown",
+    );
 
-      var feedbackId =
-          FirebaseFirestore.instance.collection('feedback').doc().id;
-      await _feedbackService.addFeedback(
-        FeedbackModel(id: feedbackId, category: category, comment: comment),
-      );
-      feedbackIds.add(feedbackId);
-    }
+    // ✅ Add feedback to Firestore and get the correct generated ID
+    DocumentReference feedbackRef = 
+        await FirebaseFirestore.instance.collection('feedback').add({
+      'category': category,
+      'comment': comment,
+    });
 
-    for (var feedbackId in feedbackIds) {
-      await FirebaseFirestore.instance.collection('patient_feedback').add({
-        'id':
-            FirebaseFirestore.instance.collection('patient_feedback').doc().id,
-        'patientId': _currentUser?.uid,
-        'feedbackId': feedbackId,
-      });
-    }
+    feedbackIds.add(feedbackRef.id); // ✅ Store the correct Firestore-generated ID
+  }
 
+  // ✅ Link feedback to patient in 'patient_feedback'
+  for (var feedbackId in feedbackIds) {
+    await FirebaseFirestore.instance.collection('patient_feedback').add({
+      'patientId': _currentUser?.uid,
+      'feedbackId': feedbackId,
+    });
+  }
+
+  // ✅ Navigate back to Home Page after submission
+  if (mounted) {
     Navigator.pushReplacement(
         context, MaterialPageRoute(builder: (context) => HomePage()));
   }
+}
 
   @override
   Widget build(BuildContext context) {
