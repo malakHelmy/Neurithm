@@ -38,7 +38,6 @@ class FeedbackService {
     for (var feedback in predefinedFeedback) {
       var feedbackRef = _db.collection('feedback').doc();
       await feedbackRef.set({
-        'id': feedbackRef.id,
         'category': feedback['category'],
         'comment': feedback['comment'],
       });
