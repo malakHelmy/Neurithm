@@ -10,7 +10,7 @@ BottomNavigationBar bottomappBar(BuildContext context) {
       case 0:
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => HomePage()),
+          MaterialPageRoute(builder: (context) => HomePage(showRatingPopup: false)),
         );
         break;
       case 1:
