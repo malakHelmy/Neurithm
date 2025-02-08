@@ -5,8 +5,9 @@ import 'package:neurithm/models/feedback.dart';
 import 'package:neurithm/models/patient.dart';
 import 'package:neurithm/services/addFeedback.dart';
 import 'package:neurithm/services/auth.dart';
+import 'package:shared_preferences/shared_preferences.dart';  // Import shared_preferences
 import '../widgets/wavesBackground.dart';
-import 'homePage.dart';
+import 'homePage.dart'; // Import HomePage
 
 class FeedbackScreen extends StatefulWidget {
   const FeedbackScreen({super.key});
@@ -62,40 +63,62 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
   }
 
   void _submitFeedback() async {
-  if (_selectedComments.isEmpty || _currentUser == null) return;
+    if (_selectedComments.isEmpty || _currentUser == null) return;
 
-  List<String> feedbackIds = [];
+    List<String> feedbackIds = [];
 
-  for (var comment in _selectedComments) {
-    String category = _feedbackData.keys.firstWhere(
-      (key) => _feedbackData[key]!.contains(comment),
-      orElse: () => "Unknown",
-    );
+    for (var comment in _selectedComments) {
+      String category = _feedbackData.keys.firstWhere(
+        (key) => _feedbackData[key]!.contains(comment),
+        orElse: () => "Unknown",
+      );
 
-    // ✅ Add feedback to Firestore and get the correct generated ID
-    DocumentReference feedbackRef = 
-        await FirebaseFirestore.instance.collection('feedback').add({
-      'category': category,
-      'comment': comment,
-    });
+      // ✅ Add feedback to Firestore and get the correct generated ID
+      DocumentReference feedbackRef =
+          await FirebaseFirestore.instance.collection('feedback').add({
+        'category': category,
+        'comment': comment,
+      });
 
-    feedbackIds.add(feedbackRef.id); // ✅ Store the correct Firestore-generated ID
+      feedbackIds.add(feedbackRef.id); // ✅ Store the correct Firestore-generated ID
+    }
+
+    // ✅ Link feedback to patient in 'patient_feedback'
+    for (var feedbackId in feedbackIds) {
+      await FirebaseFirestore.instance.collection('patient_feedback').add({
+        'patientId': _currentUser?.uid,
+        'feedbackId': feedbackId,
+      });
+    }
+
+    // Track app open count in SharedPreferences
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    int openCount = prefs.getInt('open_count') ?? 0;
+    print("Current openCount: $openCount");  // Debugging: Print the current open count
+    
+    openCount++;
+    await prefs.setInt('open_count', openCount);
+
+    // Debugging: Print after updating
+    print("Updated openCount: $openCount");
+
+    // Show rating pop-up if it's the 3rd time or randomly
+    bool showRatingPopup = (openCount % 10 == 0);  // Modify this for your frequency
+
+    // Debugging: Print whether the pop-up will show or not
+    print("Show rating popup: $showRatingPopup");
+
+    // Navigate back to HomePage with flag to trigger rating pop-up
+    if (mounted) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) =>
+              HomePage(showRatingPopup: showRatingPopup), // Passing the flag
+        ),
+      );
+    }
   }
-
-  // ✅ Link feedback to patient in 'patient_feedback'
-  for (var feedbackId in feedbackIds) {
-    await FirebaseFirestore.instance.collection('patient_feedback').add({
-      'patientId': _currentUser?.uid,
-      'feedbackId': feedbackId,
-    });
-  }
-
-  // ✅ Navigate back to Home Page after submission
-  if (mounted) {
-    Navigator.pushReplacement(
-        context, MaterialPageRoute(builder: (context) => HomePage()));
-  }
-}
 
   @override
   Widget build(BuildContext context) {
@@ -195,7 +218,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                   children: [
                     ElevatedButton(
                       onPressed: () => Navigator.pushReplacement(context,
-                          MaterialPageRoute(builder: (context) => HomePage())),
+                          MaterialPageRoute(builder: (context) => HomePage(showRatingPopup: false))),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.redAccent,
                         foregroundColor: Colors.white,
