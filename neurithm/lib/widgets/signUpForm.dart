@@ -180,7 +180,7 @@ AnimatedOpacity signUpForm(
                       if (result) {
                         Navigator.pushReplacement(
                           context,
-                          MaterialPageRoute(builder: (context) => HomePage()),
+                          MaterialPageRoute(builder: (context) => HomePage(showRatingPopup: false)),
                         );
                       }
                     },
