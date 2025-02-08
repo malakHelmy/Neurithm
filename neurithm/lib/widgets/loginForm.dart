@@ -1,11 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:crypto/crypto.dart';
-import 'dart:convert';
-//screens
 import '../screens/homePage.dart';
-//widgets
-import 'appBar.dart';
 import 'inputDecoration.dart';
 import '../services/auth.dart';
 

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../widgets/signUpForm.dart';
-import '../widgets/logInForm.dart';
+import '../widgets/loginForm.dart';
 import '../widgets/appbar.dart';
 import '../widgets/wavesBackground.dart';
 import 'homePage.dart';
