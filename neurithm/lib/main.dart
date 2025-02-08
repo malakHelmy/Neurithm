@@ -12,7 +12,6 @@ Future<void> main() async {
 
   // Initialize Firebase with provided options
   await Firebase.initializeApp(
-    name: 'neurithm',
     options: const FirebaseOptions(
       apiKey: "AIzaSyB_ZfiJIMRQv1mHBLOyM9hxnXqRn9A7DC8", // From "api_key"
       authDomain:
@@ -40,7 +39,7 @@ class ThoughtToSpeechApp extends StatelessWidget {
         scaffoldBackgroundColor: const Color(0xFF1A2A3A),
         primaryColor: const Color(0xFF394B58),
       ),
-      home: VoiceSettingsPage(),
+      home: WelcomeScreen(),
     );
   }
 }
