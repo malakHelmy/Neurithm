@@ -60,7 +60,6 @@ class _WordBankPageState extends State<WordBankPage> {
           child: Stack(
             children: [
               Positioned.fill(
-                // Ensures it takes full width and height
                 child: waveBackground,
               ),
               Padding(

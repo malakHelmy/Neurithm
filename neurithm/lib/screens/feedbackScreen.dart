@@ -5,9 +5,9 @@ import 'package:neurithm/models/feedback.dart';
 import 'package:neurithm/models/patient.dart';
 import 'package:neurithm/services/addFeedback.dart';
 import 'package:neurithm/services/auth.dart';
-import 'package:shared_preferences/shared_preferences.dart';  // Import shared_preferences
+import 'package:shared_preferences/shared_preferences.dart'; 
 import '../widgets/wavesBackground.dart';
-import 'homePage.dart'; // Import HomePage
+import 'homePage.dart'; 
 
 class FeedbackScreen extends StatefulWidget {
   const FeedbackScreen({super.key});
@@ -91,30 +91,25 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
       });
     }
 
-    // Track app open count in SharedPreferences
     SharedPreferences prefs = await SharedPreferences.getInstance();
     int openCount = prefs.getInt('open_count') ?? 0;
-    print("Current openCount: $openCount");  // Debugging: Print the current open count
+    print("Current openCount: $openCount");  
     
     openCount++;
     await prefs.setInt('open_count', openCount);
 
-    // Debugging: Print after updating
     print("Updated openCount: $openCount");
 
-    // Show rating pop-up if it's the 3rd time or randomly
-    bool showRatingPopup = (openCount % 10 == 0);  // Modify this for your frequency
+    bool showRatingPopup = (openCount % 10 == 0);  
 
-    // Debugging: Print whether the pop-up will show or not
     print("Show rating popup: $showRatingPopup");
 
-    // Navigate back to HomePage with flag to trigger rating pop-up
     if (mounted) {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
           builder: (context) =>
-              HomePage(showRatingPopup: showRatingPopup), // Passing the flag
+              HomePage(showRatingPopup: showRatingPopup), 
         ),
       );
     }

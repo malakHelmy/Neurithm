@@ -5,7 +5,6 @@ class WordBankPhrase {
 
   WordBankPhrase({required this.id, required this.categoryId, required this.phrase});
 
-  // Convert Phrase object to Firestore document
   Map<String, dynamic> toMap() {
     return {
       'id': id,
@@ -14,7 +13,6 @@ class WordBankPhrase {
     };
   }
 
-  // Create Phrase object from Firestore document
   factory WordBankPhrase.fromMap(Map<String, dynamic> map, String documentId) {
     return WordBankPhrase(
       id: documentId,

@@ -9,7 +9,6 @@ class PatientFeedback {
     required this.feedbackId,
   });
 
-  // Convert to Firestore document
   Map<String, dynamic> toMap() {
     return {
       'id': id,
@@ -18,7 +17,6 @@ class PatientFeedback {
     };
   }
 
-  // Create object from Firestore document
   factory PatientFeedback.fromMap(Map<String, dynamic> map, String documentId) {
     return PatientFeedback(
       id: documentId,

@@ -8,12 +8,11 @@ import 'package:neurithm/services/auth.dart';
 import 'package:neurithm/widgets/appbar.dart';
 import 'package:neurithm/widgets/bottombar.dart';
 import 'package:neurithm/widgets/wavesBackground.dart';
-import 'package:shared_preferences/shared_preferences.dart'; // Import SharedPreferences
+import 'package:shared_preferences/shared_preferences.dart'; 
 
 class HomePage extends StatefulWidget {
   bool showRatingPopup;
 
-  // Ensure the constructor accepts 'showRatingPopup' parameter
   HomePage({Key? key, required this.showRatingPopup}) : super(key: key);
 
   @override
@@ -41,40 +40,35 @@ class _HomePageState extends State<HomePage> {
         _isLoading = false;
       });
 
-      // If the flag is set and random logic triggers the rating pop-up
       if (widget.showRatingPopup) {
-        _showRatingPopup(); // Show rating pop-up if flag is true
+        _showRatingPopup(); 
       }
 
-      // Track app open count using SharedPreferences
       SharedPreferences prefs = await SharedPreferences.getInstance();
       int openCount = prefs.getInt('open_count') ?? 0;
       openCount++;
       await prefs.setInt('open_count', openCount);
 
-      // Show rating pop-up every 3rd app open
       if (openCount % 10 == 0) {
         _showRatingPopup();
 
-        // Reset the open count to 0 after 3rd time
         await prefs.setInt('open_count', 0);
       }
     }
   }
 
-  // Show the rating pop-up with star rating
   void _showRatingPopup() {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          backgroundColor: Color(0xFF1A2A3A), // Dark-themed background
+          backgroundColor: Color(0xFF1A2A3A), 
           title: Text(
             'Rate Our App',
             style: TextStyle(
-              fontSize: 24, // Larger font size for the title
+              fontSize: 24, 
               fontWeight: FontWeight.bold,
-              color: Colors.white, // Title color (light)
+              color: Colors.white,
             ),
           ),
           content: Column(
@@ -83,8 +77,8 @@ class _HomePageState extends State<HomePage> {
               Text(
                 "Please rate our app by selecting stars!",
                 style: TextStyle(
-                  fontSize: 18, // Larger font size for the content
-                  color: Colors.white, // Content color (light)
+                  fontSize: 18, 
+                  color: Colors.white, 
                 ),
               ),
               SizedBox(height: 20),
@@ -94,12 +88,12 @@ class _HomePageState extends State<HomePage> {
                 direction: Axis.horizontal,
                 allowHalfRating: true,
                 itemCount: 5,
-                itemSize: 50, // Bigger stars
+                itemSize: 50,
                 itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
                 itemBuilder: (context, _) => Icon(
-                  Icons.star_border, // Use border for unselected stars
-                  color: Colors.amber, // Border color for unselected stars
-                  size: 50, // Ensure the stars are large enough
+                  Icons.star_border, 
+                  color: Colors.amber,
+                  size: 50, 
                 ),
                 onRatingUpdate: (rating) {
                   setState(() {
@@ -113,17 +107,16 @@ class _HomePageState extends State<HomePage> {
             TextButton(
               style: TextButton.styleFrom(
                 padding: EdgeInsets.symmetric(vertical: 15, horizontal: 30),
-                backgroundColor: Colors.blue, // Button color
+                backgroundColor: Colors.blue, 
               ),
               child: Text(
                 'Submit',
                 style: TextStyle(
-                  fontSize: 20, // Larger button text size
-                  color: Colors.white, // Button text color (light)
+                  fontSize: 20, 
+                  color: Colors.white,
                 ),
               ),
               onPressed: () async {
-                // Save the rating to the database or model
                 if (_currentUser != null && _userRating > 0) {
                   await _saveRatingToDatabase();
                 }
@@ -133,13 +126,13 @@ class _HomePageState extends State<HomePage> {
             TextButton(
               style: TextButton.styleFrom(
                 padding: EdgeInsets.symmetric(vertical: 15, horizontal: 30),
-                backgroundColor: Colors.grey, // Button color
+                backgroundColor: Colors.grey, 
               ),
               child: Text(
                 'Later',
                 style: TextStyle(
-                  fontSize: 20, // Larger button text size
-                  color: Colors.white, // Button text color (light)
+                  fontSize: 20,
+                  color: Colors.white, 
                 ),
               ),
               onPressed: () {
@@ -152,16 +145,14 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  // Save the rating to Firestore in the rating collection
   Future<void> _saveRatingToDatabase() async {
     if (_currentUser != null) {
-      // Generate a custom ratingId (like feedbackId)
       String ratingId = FirebaseFirestore.instance.collection('ratings').doc().id;
 
       try {
         await FirebaseFirestore.instance.collection('ratings').add({
-          'patientId': _currentUser!.uid, // Store the patient's ID
-          'rating': _userRating.toInt(), // Rating as a number (1-5)
+          'patientId': _currentUser!.uid, 
+          'rating': _userRating.toInt(), 
         });
 
         print("Rating saved with ratingId: $ratingId");
