@@ -6,9 +6,35 @@ import '../screens/devices.dart';
 import '../screens/settings.dart';
 import '../widgets/wavesBackground.dart';
 import 'setUpConnectionPage.dart';
+import '../services/auth.dart';
+import '../models/patient.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
+  @override
+  _HomePageState createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  final AuthMethods _authMethods = AuthMethods();
+  Patient? _currentUser;
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchUser();
+  }
+
+  Future<void> _fetchUser() async {
+    Patient? user = await _authMethods.getCurrentUser();
+    if (mounted) {
+      setState(() {
+        _currentUser = user;
+        _isLoading = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -36,9 +62,7 @@ class HomePage extends StatelessWidget {
             children: [
               wavesBackground(screenWidth, screenHeight),
               Padding(
-                padding: EdgeInsets.symmetric(
-                  horizontal: spacing(15),
-                ),
+                padding: EdgeInsets.symmetric(horizontal: spacing(15)),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -79,14 +103,19 @@ class HomePage extends StatelessWidget {
                               ),
                             ),
                             SizedBox(height: spacing(10)),
-                            Text(
-                              "Welcome, Potential User",
-                              style: TextStyle(
-                                fontSize: fontSize(28),
-                                color: Colors.white,
-                                fontWeight: FontWeight.normal,
-                              ),
-                            ),
+
+                            // Show loading or user name
+                            _isLoading
+                                ? CircularProgressIndicator()
+                                : Text(
+                                    "Welcome, ${_currentUser?.firstName ?? ''} ${_currentUser?.lastName ?? ''}",
+                                    style: TextStyle(
+                                      fontSize: fontSize(28),
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.normal,
+                                    ),
+                                  ),
+
                             Text(
                               "Voice Your Mind Effortlessly",
                               style: TextStyle(

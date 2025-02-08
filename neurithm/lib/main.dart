@@ -4,12 +4,13 @@ import 'package:neurithm/screens/welcomeScreen.dart';
 import 'package:neurithm/screens/voicesettings.dart';
 import 'package:neurithm/services/addWordBank.dart';
 import 'screens/loginPage.dart';
+import 'services/addFeedback.dart'; // Import the FeedbackService
 
 Future<void> main() async {
   // Ensure Flutter bindings are initialized
   WidgetsFlutterBinding.ensureInitialized();
 
-// Initialize Firebase with provided options
+  // Initialize Firebase with provided options
   await Firebase.initializeApp(
     name: 'neurithm',
     options: const FirebaseOptions(
@@ -39,7 +40,7 @@ class ThoughtToSpeechApp extends StatelessWidget {
         scaffoldBackgroundColor: const Color(0xFF1A2A3A),
         primaryColor: const Color(0xFF394B58),
       ),
-      home: VoiceSettingsPage(),
+      home: WelcomeScreen(),
     );
   }
 }

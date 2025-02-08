@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:neurithm/screens/feedbackScreen.dart';
 
 import '../widgets/appBar.dart';
 import '../widgets/wavesBackground.dart';
@@ -114,47 +115,21 @@ class ConfirmationPage extends StatelessWidget {
                             padding: const EdgeInsets.all(8.0),
                             child: ElevatedButton(
                               onPressed: () {
-                                // Action to edit the sentence
-                                showDialog(
-                                  context: context,
-                                  builder: (context) {
-                                    TextEditingController _controller =
-                                        TextEditingController(
-                                            text: processedSentence);
-                                    return AlertDialog(
-                                      title: const Text("Edit Your Thought"),
-                                      content: TextField(
-                                        controller: _controller,
-                                        decoration: const InputDecoration(
-                                          border: OutlineInputBorder(),
-                                          labelText: "Edit Thought",
-                                        ),
-                                        maxLines: 3,
-                                      ),
-                                      actions: [
-                                        TextButton(
-                                          onPressed: () {
-                                            Navigator.pop(context);
-                                          },
-                                          child: const Text("Cancel"),
-                                        ),
-                                        TextButton(
-                                          onPressed: () {
-                                            // Save updated thought
-                                            String updatedThought =
-                                                _controller.text;
-                                            Navigator.pop(context);
-                                          },
-                                          child: const Text("Save"),
-                                        ),
-                                      ],
-                                    );
-                                  },
+                                // Action to accept the sentence
+                                String sentence =
+                                    "This is the sentence to be recited"; // Replace with your dynamic sentence
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => RecitePage(
+                                        sentence:
+                                            sentence), // Pass sentence here
+                                  ),
                                 );
                               },
                               style: ElevatedButton.styleFrom(
                                 backgroundColor:
-                                    const Color.fromARGB(255, 255, 255, 255),
+                                    const Color.fromARGB(255, 240, 240, 240),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(50),
                                 ),
@@ -166,17 +141,18 @@ class ConfirmationPage extends StatelessWidget {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   Icon(
-                                    Icons.edit,
+                                    Icons.volume_up,
                                     color: Color(0xFF1A2A3A),
                                     size: 20,
                                   ),
                                   SizedBox(width: 5),
                                   Text(
-                                    "Edit",
+                                    "Recite",
                                     style: TextStyle(
                                       fontSize: 20,
                                       fontWeight: FontWeight.normal,
-                                      color: Color(0xFF1A2A3A),
+                                      color: Color(
+                                          0xFF1A2A3A), // White text for contrast
                                     ),
                                   ),
                                 ],
@@ -190,14 +166,12 @@ class ConfirmationPage extends StatelessWidget {
                       padding: const EdgeInsets.all(8.0),
                       child: ElevatedButton(
                         onPressed: () {
-                          // Action to accept the sentence
-                          String sentence =
-                              "This is the sentence to be recited"; // Replace with your dynamic sentence
+                          // Action to finish the process
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => RecitePage(
-                                  sentence: sentence), // Pass sentence here
+                              builder: (context) =>
+                                  FeedbackScreen(), // Push to the FeedbackScreen
                             ),
                           );
                         },
@@ -213,7 +187,7 @@ class ConfirmationPage extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
-                              "Recite",
+                              "Finish",
                               style: TextStyle(
                                 fontSize: 20,
                                 fontWeight: FontWeight.normal,
