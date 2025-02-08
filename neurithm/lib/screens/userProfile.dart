@@ -34,7 +34,7 @@ class _userProfilePageState extends State<userProfilePage> {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => HomePage(),
+                            builder: (context) => HomePage(showRatingPopup: false),
                           ));
                     },
                   ),
