@@ -68,6 +68,7 @@ class _VoiceSettingsState extends State<VoiceSettingsPage> {
   
   String _textToSynthesize = "Hello, ahahahaha yes of course.";
   bool _isPlaying = false;
+  bool _isGenerating = false;
   final TextEditingController _textController = TextEditingController();
 
   @override
@@ -92,53 +93,81 @@ class _VoiceSettingsState extends State<VoiceSettingsPage> {
     );
   }
 
-  Future<void> synthesizeSpeech(String text, VoiceSettings settings) async {
-    final url = Uri.parse('http://192.168.100.26:5000/synthesize');
+Future<void> synthesizeSpeech(String text, VoiceSettings settings) async {
+  setState(() {
+    _isGenerating = true;
+  });
 
-    try {
-      final response = await http.post(
-        url,
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({
-          'text': text,
-          'pitch': settings.pitch,
-          'language': settings.accent,
-          'gender': settings.gender,
-        }),
-      );
+  final url = Uri.parse('http://192.168.1.3:5000/synthesize');
+  print("synthesizeSpeech");
+  try {
+    print("inside try");
+    final response = await http.post(
+      url,
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({
+        'text': text,
+        'pitch': settings.pitch,
+        'language': settings.accent,
+        'gender': settings.gender,
+      }),
+    );
 
-      if (response.statusCode == 200) {
-        final directory = await getTemporaryDirectory();
-        final filePath = '${directory.path}/output.wav';
-        File audioFile = File(filePath);
-        await audioFile.writeAsBytes(response.bodyBytes);
+    if (response.statusCode == 200) {
+      final directory = await getTemporaryDirectory();
+      final filePath = '${directory.path}/output.wav';
+      File audioFile = File(filePath);
+      await audioFile.writeAsBytes(response.bodyBytes);
 
-        print('Audio file saved at: $filePath');
+      print('Audio file saved at: $filePath');
+
+      // Verify the file exists
+      bool fileExists = await audioFile.exists();
+      print('File exists: $fileExists');
+
+      if (fileExists) {
         await _playAudio(filePath);
       } else {
-        print('Failed to generate speech: ${response.statusCode} - ${response.body}');
+        print('File does not exist at path: $filePath');
       }
-    } catch (e) {
-      print('Error: $e');
+    } else {
+      print('Failed to generate speech: ${response.statusCode} - ${response.body}');
     }
-  }
-
-  Future<void> _playAudio(String filePath) async {
+  } catch (e) {
+    print('Error: $e');
+  } finally {
     setState(() {
-      _isPlaying = true;
+      _isGenerating = false;
     });
+  }
+}
+ Future<void> _playAudio(String filePath) async {
+  setState(() {
+    _isPlaying = true;
+  });
 
+  print('Attempting to play audio from: $filePath');
+
+  try {
     await _audioPlayer.play(DeviceFileSource(filePath));
+    print('Audio playback started');
 
     _audioPlayer.onPlayerStateChanged.listen((state) {
+      print('Player state: $state');
       if (state == PlayerState.completed) {
         setState(() {
           _isPlaying = false;
         });
+        print('Audio playback completed');
       }
     });
+  } catch (e) {
+    print('Error playing audio: $e');
+    setState(() {
+      _isPlaying = false;
+    });
   }
-
+}
   @override
   void dispose() {
     _audioPlayer.dispose();
@@ -285,9 +314,11 @@ class _VoiceSettingsState extends State<VoiceSettingsPage> {
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
                           ElevatedButton.icon(
-                            onPressed: () {
-                              synthesizeSpeech(_textToSynthesize, _userSettings);
-                            },
+                            onPressed: _isGenerating
+                                ? null
+                                : () {
+                                    synthesizeSpeech(_textToSynthesize, _userSettings);
+                                  },
                             icon: Icon(Icons.record_voice_over),
                             label: Text("Generate & Play Voice"),
                             style: ElevatedButton.styleFrom(
@@ -295,7 +326,7 @@ class _VoiceSettingsState extends State<VoiceSettingsPage> {
                             ),
                           ),
                           ElevatedButton.icon(
-                            onPressed: _isPlaying
+                            onPressed: _isPlaying || _isGenerating
                                 ? null
                                 : () async {
                                     final directory = await getTemporaryDirectory();
@@ -303,7 +334,7 @@ class _VoiceSettingsState extends State<VoiceSettingsPage> {
                                     await _playAudio(filePath);
                                   },
                             icon: Icon(_isPlaying ? Icons.pause : Icons.play_arrow),
-                            label: _isPlaying ? Text("Playing...") : Text("Replay"),
+                            label: _isPlaying ? Text("Playing..") : Text("Replay"),
                             style: ElevatedButton.styleFrom(
                               padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                             ),
