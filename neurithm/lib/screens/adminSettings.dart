@@ -1,10 +1,11 @@
-
 import 'package:flutter/material.dart';
 import '../widgets/wavesBackground.dart';
 import '../widgets/appbar.dart';
 import '../screens/viewAppRatings.dart';
 import '../screens/viewPatients.dart';
 import '../screens/adminSettings.dart';
+import '../services/adminProfileMethods.dart';
+
 // admin_settings.dart
 class AdminSettingsPage extends StatefulWidget {
   const AdminSettingsPage({Key? key}) : super(key: key);
@@ -14,11 +15,66 @@ class AdminSettingsPage extends StatefulWidget {
 }
 
 class _AdminSettingsPageState extends State<AdminSettingsPage> {
-  final TextEditingController nameController =
-      TextEditingController(text: 'Admin User');
-  final TextEditingController emailController =
-      TextEditingController(text: 'admin@example.com');
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController lastNameController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  final AdminProfileMethods _adminProfileMethods = AdminProfileMethods();
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadAdminProfile();
+  }
+
+  Future<void> _loadAdminProfile() async {
+    setState(() => isLoading = true);
+    try {
+      final admin = await _adminProfileMethods.getAdminProfile();
+      if (admin != null) {
+        nameController.text = admin.firstName;
+        lastNameController.text = admin.lastName;
+        emailController.text = admin.email;
+      }
+    } catch (e) {
+      _showErrorSnackBar('Error loading profile');
+    }
+    setState(() => isLoading = false);
+  }
+
+  Future<void> _saveChanges() async {
+    setState(() => isLoading = true);
+
+    final result = await _adminProfileMethods.updateAdminProfile(
+      firstName: nameController.text,
+      lastName: lastNameController.text,
+      newEmail: emailController.text,
+      newPassword:
+          passwordController.text.isNotEmpty ? passwordController.text : null,
+    );
+
+    setState(() => isLoading = false);
+
+    if (!mounted) return;
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(result['message']),
+        backgroundColor: result['success'] ? Colors.green : Colors.red,
+      ),
+    );
+
+    if (result['success']) {
+      passwordController.clear();
+    }
+  }
+
+  void _showErrorSnackBar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message), backgroundColor: Colors.red),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -76,8 +132,12 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
                       children: [
                         _settingsField(
                           Icons.person,
-                          'Name',
+                          'First Name',
                           controller: nameController,
+                        ),_settingsField(
+                          Icons.person,
+                          'Last Name',
+                          controller: lastNameController,
                         ),
                         _settingsField(
                           Icons.email,
@@ -101,9 +161,8 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
                   Padding(
                     padding: const EdgeInsets.all(20),
                     child: ElevatedButton(
-                      onPressed: () {
-                        // Save settings logic
-                      },
+                      // save settings
+                      onPressed: isLoading ? null : _saveChanges,
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.white,
                         minimumSize: const Size(double.infinity, 50),
@@ -111,13 +170,16 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
                           borderRadius: BorderRadius.circular(25),
                         ),
                       ),
-                      child: const Text(
-                        'Save Changes',
-                        style: TextStyle(
-                          color: Color(0xFF1A2A3A),
-                          fontSize: 18,
-                        ),
-                      ),
+                      child: isLoading
+                          ? const CircularProgressIndicator(
+                              color: Color(0xFF1A2A3A))
+                          : const Text(
+                              'Save Changes',
+                              style: TextStyle(
+                                color: Color(0xFF1A2A3A),
+                                fontSize: 18,
+                              ),
+                            ),
                     ),
                   ),
                 ],
@@ -128,7 +190,8 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
       ),
     );
   }
-    Widget _settingsField(
+
+  Widget _settingsField(
     IconData icon,
     String label, {
     TextEditingController? controller,
@@ -181,4 +244,3 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
     );
   }
 }
-
