@@ -66,34 +66,33 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
     if (_selectedComments.isEmpty || _currentUser == null) return;
 
     List<String> feedbackIds = [];
-    DateTime today = DateTime.now(); // Get today's date and time
+    DateTime today = DateTime.now();
 
+    // Loop through selected comments
     for (var comment in _selectedComments) {
       String category = _feedbackData.keys.firstWhere(
         (key) => _feedbackData[key]!.contains(comment),
         orElse: () => "Unknown",
       );
 
-      // ✅ Add feedback to Firestore and get the correct generated ID
-      DocumentReference feedbackRef =
-          await FirebaseFirestore.instance.collection('feedback').add({
-        'category': category,
-        'comment': comment,
-        'submittedAt':
-            today.toIso8601String(),
-      });
+      // Query the 'feedback' collection to get the feedback ID for the existing comment
+      var querySnapshot = await FirebaseFirestore.instance
+          .collection('feedback')
+          .where('comment', isEqualTo: comment)
+          .get();
 
-      feedbackIds
-          .add(feedbackRef.id); 
+      if (querySnapshot.docs.isNotEmpty) {
+        feedbackIds.add(querySnapshot.docs.first.id);
+      }
     }
 
+    // Now we only create entries in 'patient_feedback' using the feedbackId
     for (var feedbackId in feedbackIds) {
       await FirebaseFirestore.instance.collection('patient_feedback').add({
         'patientId': _currentUser?.uid,
         'feedbackId': feedbackId,
-        'submittedAt':
-            today.toIso8601String(), 
-        'isResolved': false
+        'submittedAt': today.toIso8601String(),
+        'isResolved': false,
       });
     }
 

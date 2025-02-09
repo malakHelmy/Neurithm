@@ -28,6 +28,9 @@ Future<void> main() async {
     ),
   );
 
+  // FeedbackService fs = new FeedbackService();
+  // fs.addPredefinedFeedback();
+
   runApp(ThoughtToSpeechApp());
 }
 
@@ -40,7 +43,7 @@ class ThoughtToSpeechApp extends StatelessWidget {
         scaffoldBackgroundColor: const Color(0xFF1A2A3A),
         primaryColor: const Color(0xFF394B58),
       ),
-      home: WelcomeScreen(),
+      home: AdminDashboardPage(),
     );
   }
 }
