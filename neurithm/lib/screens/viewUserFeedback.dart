@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import '../widgets/wavesBackground.dart';
-import '../widgets/appbar.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:neurithm/widgets/appbar.dart';
+import 'package:neurithm/widgets/wavesBackground.dart';
 
 class ViewUserFeedbackPage extends StatefulWidget {
   const ViewUserFeedbackPage({Key? key}) : super(key: key);
@@ -10,16 +11,189 @@ class ViewUserFeedbackPage extends StatefulWidget {
 }
 
 class _FeedbackPageState extends State<ViewUserFeedbackPage> {
-  final List<Map<String, dynamic>> _feedbacks = List.generate(
-    10,
-    (index) => {
-      'userName': 'User ${index + 1}',
-      'date': DateTime.now().subtract(Duration(days: index)),
-      'rating': 4 + (index % 2),
-      'comment': 'This is a great app! Very helpful and user-friendly interface. Would recommend to others.',
-      'isResolved': false,
-    },
-  );
+  List<Map<String, dynamic>> _feedbacks = [];
+  int totalFeedbacks = 0;
+  int pendingFeedbacks = 0;
+  int resolvedFeedbacks = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _aggregateFeedbacks();
+  }
+
+  Future<void> _aggregateFeedbacks() async {
+    var feedbackQuery =
+        await FirebaseFirestore.instance.collection('feedback').get();
+    var patientFeedbackQuery =
+        await FirebaseFirestore.instance.collection('patient_feedback').get();
+    var patientQuery =
+        await FirebaseFirestore.instance.collection('patients').get();
+
+    Map<String, Set<DateTime>> uniqueFeedbacks = {};
+    Map<String, Map<DateTime, List<String>>> feedbackComments = {};
+
+    Set<String> totalFeedbackIds = {};
+
+    for (var feedbackDoc in patientFeedbackQuery.docs) {
+      var feedbackData = feedbackDoc.data();
+      var patientId = feedbackData['patientId'];
+      var feedbackId = feedbackData['feedbackId'];
+      var submittedAt = DateTime.parse(feedbackData['submittedAt']);
+      bool isResolved = feedbackData['isResolved'];
+
+      if (!uniqueFeedbacks.containsKey(patientId)) {
+        uniqueFeedbacks[patientId] = {};
+      }
+
+      uniqueFeedbacks[patientId]!.add(submittedAt);
+      totalFeedbackIds.add(feedbackId);
+
+      if (!feedbackComments.containsKey(patientId)) {
+        feedbackComments[patientId] = {};
+      }
+
+      if (!feedbackComments[patientId]!.containsKey(submittedAt)) {
+        feedbackComments[patientId]![submittedAt] = [];
+      }
+
+      var feedback =
+          feedbackQuery.docs.firstWhere((doc) => doc.id == feedbackId);
+      feedbackComments[patientId]![submittedAt]!
+          .add(feedback.data()['comment']);
+
+      if (!isResolved) {
+        pendingFeedbacks++;
+      }
+
+      if (isResolved) {
+        resolvedFeedbacks++;
+      }
+    }
+
+    totalFeedbacks =
+        uniqueFeedbacks.values.fold(0, (sum, dates) => sum + dates.length);
+
+    pendingFeedbacks = uniqueFeedbacks.entries.fold(0, (count, entry) {
+      return count +
+          entry.value.where((date) {
+            return patientFeedbackQuery.docs.any((doc) =>
+                doc['patientId'] == entry.key &&
+                DateTime.parse(doc['submittedAt']).isAtSameMomentAs(date) &&
+                doc['isResolved'] == false);
+          }).length;
+    });
+
+    resolvedFeedbacks = uniqueFeedbacks.entries.fold(0, (count, entry) {
+      return count +
+          entry.value.where((date) {
+            return patientFeedbackQuery.docs.any((doc) =>
+                doc['patientId'] == entry.key &&
+                DateTime.parse(doc['submittedAt']).isAtSameMomentAs(date) &&
+                doc['isResolved'] == true);
+          }).length;
+    });
+
+    List<Map<String, dynamic>> aggregatedFeedbackList = [];
+
+    for (var patientId in uniqueFeedbacks.keys) {
+      var user = patientQuery.docs.firstWhere((doc) => doc.id == patientId);
+      String firstName = user['firstName'];
+      String lastName = user['lastName'];
+      String fullName = '$firstName $lastName';
+
+      for (var date in uniqueFeedbacks[patientId]!) {
+        String feedbacks = uniqueFeedbacks[patientId]!.join(', ');
+        String comments = feedbackComments[patientId]![date]!.join(', ');
+
+        // Only add unresolved feedbacks to the list
+        var feedbackData = {
+          'userName': fullName,
+          'date': date,
+          'feedbacks': feedbacks,
+          'comments': comments,
+          'feedbackIds': feedbackComments[patientId]![date]!,
+          'isResolved': resolvedFeedbacks > 0 ? true : false,
+        };
+
+        // Add the feedback only if it is unresolved (i.e., isResolved == false)
+        if (feedbackData['isResolved'] == false) {
+          aggregatedFeedbackList.add(feedbackData);
+        }
+      }
+    }
+
+    setState(() {
+      _feedbacks
+          .addAll(aggregatedFeedbackList); // Display only unresolved feedbacks
+    });
+  }
+
+  Future<void> _markAsResolved(Map<String, dynamic> feedback) async {
+    var patientName = feedback['userName'];
+    var date = feedback['date'];
+
+    // Convert the date to DateTime if it's a string or already a DateTime object
+    DateTime firebaseDate;
+    if (date is String) {
+      firebaseDate = DateTime.parse(date);
+    } else if (date is DateTime) {
+      firebaseDate = date;
+    } else {
+      print('Invalid date format');
+      return;
+    }
+
+    List<String> nameParts = patientName.split(' ');
+    if (nameParts.length < 2) {
+      print('Invalid userName format');
+      return;
+    }
+
+    var firstName = nameParts[0];
+    var lastName = nameParts.sublist(1).join(' ');
+
+    var patientQuery = await FirebaseFirestore.instance
+        .collection('patients')
+        .where('firstName', isEqualTo: firstName)
+        .where('lastName', isEqualTo: lastName)
+        .get();
+
+    if (patientQuery.docs.isEmpty) {
+      print('No patient found with this name');
+      return;
+    }
+
+    var patientId = patientQuery.docs.first.id;
+
+    // Now compare the DateTime object directly in the query
+    await FirebaseFirestore.instance
+        .collection('patient_feedback')
+        .where('patientId', isEqualTo: patientId)
+        .get()
+        .then((querySnapshot) {
+      querySnapshot.docs.forEach((doc) {
+        var submittedAt;
+        if (doc['submittedAt'] is Timestamp) {
+          submittedAt = (doc['submittedAt'] as Timestamp).toDate();
+        } else if (doc['submittedAt'] is String) {
+          submittedAt = DateTime.parse(doc['submittedAt']);
+        }
+
+        if (submittedAt.isAtSameMomentAs(firebaseDate)) {
+          doc.reference.update({'isResolved': true});
+        }
+      });
+    });
+
+    setState(() {
+      _feedbacks.removeWhere((item) =>
+          item['date'] == firebaseDate && item['userName'] == patientName);
+
+      pendingFeedbacks--;
+      resolvedFeedbacks++;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -90,7 +264,8 @@ class _FeedbackPageState extends State<ViewUserFeedbackPage> {
                     child: ListView.builder(
                       itemCount: _feedbacks.length,
                       padding: const EdgeInsets.symmetric(horizontal: 20),
-                      itemBuilder: (context, index) => _buildFeedbackCard(_feedbacks[index]),
+                      itemBuilder: (context, index) =>
+                          _buildFeedbackCard(_feedbacks[index]),
                     ),
                   ),
                 ],
@@ -117,11 +292,11 @@ class _FeedbackPageState extends State<ViewUserFeedbackPage> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          _buildStatItem('Total', '156', Icons.message),
+          _buildStatItem('Total', '$totalFeedbacks', Icons.message),
           _verticalDivider(),
-          _buildStatItem('Pending', '23', Icons.pending),
+          _buildStatItem('Pending', '$pendingFeedbacks', Icons.pending),
           _verticalDivider(),
-          _buildStatItem('Resolved', '133', Icons.check_circle),
+          _buildStatItem('Resolved', '$resolvedFeedbacks', Icons.check_circle),
         ],
       ),
     );
@@ -207,45 +382,11 @@ class _FeedbackPageState extends State<ViewUserFeedbackPage> {
                     ],
                   ),
                 ),
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 10,
-                    vertical: 5,
-                  ),
-                  decoration: BoxDecoration(
-                    color: feedback['isResolved']
-                        ? Colors.green.withOpacity(0.2)
-                        : Colors.orange.withOpacity(0.2),
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Text(
-                    feedback['isResolved'] ? 'Resolved' : 'Pending',
-                    style: TextStyle(
-                      color: feedback['isResolved']
-                          ? Colors.green.shade300
-                          : Colors.orange.shade300,
-                      fontSize: 12,
-                    ),
-                  ),
-                ),
               ],
             ),
             const SizedBox(height: 15),
-            Row(
-              children: List.generate(
-                5,
-                (index) => Icon(
-                  Icons.star,
-                  size: 20,
-                  color: index < feedback['rating']
-                      ? Colors.amber
-                      : Colors.white.withOpacity(0.3),
-                ),
-              ),
-            ),
-            const SizedBox(height: 10),
             Text(
-              feedback['comment'],
+              feedback['comments'], // Display all comments combined
               style: TextStyle(
                 color: Colors.white.withOpacity(0.9),
                 fontSize: 14,
@@ -274,9 +415,7 @@ class _FeedbackPageState extends State<ViewUserFeedbackPage> {
                 const SizedBox(width: 15),
                 TextButton.icon(
                   onPressed: () {
-                    setState(() {
-                      feedback['isResolved'] = !feedback['isResolved'];
-                    });
+                    _markAsResolved(feedback);
                   },
                   icon: Icon(
                     feedback['isResolved']
