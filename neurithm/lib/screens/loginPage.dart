@@ -49,7 +49,7 @@ class _LoginPageState extends State<LoginPage> {
                 ? screenHeight * 0.15
                 : _showLoginForm
                     ? screenHeight * 0.25
-                    : screenHeight * 0.35, // Adjust positions
+                    : screenHeight * 0.35,
             left: 0,
             right: 0,
             child: Padding(
@@ -70,14 +70,12 @@ class _LoginPageState extends State<LoginPage> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          // Animated opacity for the "Login" and "Create an Account" buttons
                           AnimatedOpacity(
                             opacity:
                                 _showLoginForm || _showSignUpForm ? 0.0 : 1.0,
                             duration: const Duration(milliseconds: 500),
                             child: _showLoginForm || _showSignUpForm
-                                ? const SizedBox
-                                    .shrink() // Hide buttons if form is shown
+                                ? const SizedBox.shrink()
                                 : Column(
                                     children: [
                                       const Text(
@@ -140,19 +138,17 @@ class _LoginPageState extends State<LoginPage> {
                                     ],
                                   ),
                           ),
-                          loginForm(
-                            context,
-                            _showLoginForm,
-                            _showSignUpForm,
-                            () {
+                          LoginForm(
+                            showLoginForm: _showLoginForm,
+                            showSignUpForm: _showSignUpForm,
+                            toggleToSignUpForm: () {
                               setState(() {
                                 _showSignUpForm = true;
                                 _showLoginForm = false;
                               });
                             },
                           ),
-                          // Animated opacity for the login form
-                          signUpForm(
+                           signUpForm(
                             context,
                             _showLoginForm,
                             _showSignUpForm,
