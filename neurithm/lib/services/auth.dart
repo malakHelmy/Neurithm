@@ -2,24 +2,39 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:neurithm/models/patient.dart';
+import 'package:neurithm/models/admin.dart';
 
 class AuthMethods {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  Future<Patient?> getCurrentUser() async {
+  Future<dynamic> getCurrentUser() async {
     try {
       User? user = _auth.currentUser;
       if (user != null) {
-        // Fetch user details from Firestore
-        DocumentSnapshot userDoc =
-            await _firestore.collection('patients').doc(user.uid).get();
+        // Check admin collection first
+        DocumentSnapshot adminDoc = 
+            await _firestore.collection('admins').doc(user.uid).get();
+        
+        if (adminDoc.exists) {
+          return Admin(
+            uid: user.uid,
+            firstName: adminDoc['firstName'] ?? '',
+            lastName: adminDoc['lastName'] ?? '',
+            email: user.email ?? '',
+            password: '',
+          );
+        }
 
-        if (userDoc.exists) {
+        // If not admin, check patient collection
+        DocumentSnapshot patientDoc = 
+            await _firestore.collection('patients').doc(user.uid).get();
+        
+        if (patientDoc.exists) {
           return Patient(
             uid: user.uid,
-            firstName: userDoc['firstName'] ?? '',
-            lastName: userDoc['lastName'] ?? '',
+            firstName: patientDoc['firstName'] ?? '',
+            lastName: patientDoc['lastName'] ?? '',
             email: user.email ?? '',
             password: '',
           );
@@ -31,7 +46,7 @@ class AuthMethods {
     return null;
   }
 
-  // Sign-Up with Email and Password
+   // Sign-Up with Email and Password
   Future<bool> signUpWithEmailPassword(
       String firstName, String lastName, String email, String password) async {
     bool result = false;
@@ -60,24 +75,58 @@ class AuthMethods {
     return result;
   }
 
-  // Sign-In with Email and Password
-  Future<bool> signInWithEmailPassword(String email, String password) async {
-    bool result = false;
+
+  Future<Map<String, dynamic>> signInWithEmailPassword(String email, String password) async {
     try {
-      UserCredential userCredential =
+      UserCredential userCredential = 
           await _auth.signInWithEmailAndPassword(email: email, password: password);
       User? user = userCredential.user;
 
       if (user != null) {
-        result = true;
+        // Check if user is admin
+        DocumentSnapshot adminDoc = 
+            await _firestore.collection('admins').doc(user.uid).get();
+        
+        if (adminDoc.exists) {
+          return {
+            'success': true,
+            'isAdmin': true,
+            'user': Admin(
+              uid: user.uid,
+              firstName: adminDoc['firstName'] ?? '',
+              lastName: adminDoc['lastName'] ?? '',
+              email: user.email ?? '',
+              password: '',
+            )
+          };
+        }
+
+        // Check if user is patient
+        DocumentSnapshot patientDoc = 
+            await _firestore.collection('patients').doc(user.uid).get();
+        
+        if (patientDoc.exists) {
+          return {
+            'success': true,
+            'isAdmin': false,
+            'user': Patient(
+              uid: user.uid,
+              firstName: patientDoc['firstName'] ?? '',
+              lastName: patientDoc['lastName'] ?? '',
+              email: user.email ?? '',
+              password: '',
+            )
+          };
+        }
       }
     } catch (e) {
       print("Error during email sign-in: $e");
+      return {'success': false, 'error': e.toString()};
     }
-    return result;
+    return {'success': false, 'error': 'User not found'};
   }
 
-  // Google Sign-In Method
+  // Keep existing Google Sign-In method (will always create patient accounts)
   Future<bool> signInWithGoogle() async {
     bool result = false;
     try {
@@ -90,14 +139,14 @@ class AuthMethods {
       final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
       if (googleUser == null) return false;
 
-      final GoogleSignInAuthentication googleAuth =
+      final GoogleSignInAuthentication googleAuth = 
           await googleUser.authentication;
       final credential = GoogleAuthProvider.credential(
         accessToken: googleAuth.accessToken,
         idToken: googleAuth.idToken,
       );
 
-      UserCredential userCredential =
+      UserCredential userCredential = 
           await _auth.signInWithCredential(credential);
       User? user = userCredential.user;
 
@@ -122,7 +171,6 @@ class AuthMethods {
     return result;
   }
 
-  // Sign-Out Method
   Future<void> signOut() async {
     try {
       await _auth.signOut();
