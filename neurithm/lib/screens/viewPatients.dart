@@ -1,10 +1,11 @@
-
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import '../widgets/wavesBackground.dart';
 import '../widgets/appbar.dart';
 import '../screens/viewAppRatings.dart';
 import '../screens/viewPatients.dart';
 import '../screens/adminSettings.dart';
+import '../models/patient.dart'; 
 
 class PatientsListPage extends StatelessWidget {
   const PatientsListPage({Key? key}) : super(key: key);
@@ -64,38 +65,56 @@ class PatientsListPage extends StatelessWidget {
                   ),
                   const SizedBox(height: 20),
                   Expanded(
-                    child: ListView.builder(
-                      itemCount: 10,
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      itemBuilder: (context, index) {
-                        return Card(
-                          color: Colors.white.withOpacity(0.1),
-                          margin: const EdgeInsets.only(bottom: 10),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(15),
-                          ),
-                          child: ListTile(
-                            leading: const CircleAvatar(
-                              backgroundColor: Color.fromARGB(255, 62, 99, 135),
-                              child: Icon(Icons.person, color: Colors.white),
-                            ),
-                            title: Text(
-                              'Patient ${index + 1}',
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            subtitle: Text(
-                              'Last visit: ${DateTime.now().toString().substring(0, 10)}',
-                              style: const TextStyle(color: Colors.white70),
-                            ),
-                            trailing: IconButton(
-                              icon: const Icon(Icons.more_vert, color: Colors.white),
-                              onPressed: () {},
-                            ),
-                          ),
-                        );
+                    child: StreamBuilder<QuerySnapshot>(
+                      stream: FirebaseFirestore.instance.collection('patients').snapshots(),
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState == ConnectionState.waiting) {
+                          return const Center(child: CircularProgressIndicator());
+                        } else if (snapshot.hasError) {
+                          return Center(child: Text('Error: ${snapshot.error}'));
+                        } else if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                          return const Center(child: Text('No patients found.'));
+                        } else {
+                          final patients = snapshot.data!.docs.map((doc) {
+                            return Patient.fromMap(doc.data() as Map<String, dynamic>);
+                          }).toList();
+
+                          return ListView.builder(
+                            itemCount: patients.length,
+                            padding: const EdgeInsets.symmetric(horizontal: 20),
+                            itemBuilder: (context, index) {
+                              final patient = patients[index];
+                              return Card(
+                                color: Colors.white.withOpacity(0.1),
+                                margin: const EdgeInsets.only(bottom: 10),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(15),
+                                ),
+                                child: ListTile(
+                                  leading: const CircleAvatar(
+                                    backgroundColor: Color.fromARGB(255, 62, 99, 135),
+                                    child: Icon(Icons.person, color: Colors.white),
+                                  ),
+                                  title: Text(
+                                    '${patient.firstName} ${patient.lastName}',
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  subtitle: Text(
+                                    'Email: ${patient.email}',
+                                    style: const TextStyle(color: Colors.white70),
+                                  ),
+                                  trailing: IconButton(
+                                    icon: const Icon(Icons.more_vert, color: Colors.white),
+                                    onPressed: () {},
+                                  ),
+                                ),
+                              );
+                            },
+                          );
+                        }
                       },
                     ),
                   ),
