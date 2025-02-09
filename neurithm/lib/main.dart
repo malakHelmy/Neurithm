@@ -5,6 +5,7 @@ import 'package:neurithm/screens/voicesettings.dart';
 import 'package:neurithm/services/addWordBank.dart';
 import 'screens/loginPage.dart';
 import 'services/addFeedback.dart'; // Import the FeedbackService
+import 'screens/adminDashboard.dart';
 
 Future<void> main() async {
   // Ensure Flutter bindings are initialized
@@ -39,7 +40,7 @@ class ThoughtToSpeechApp extends StatelessWidget {
         scaffoldBackgroundColor: const Color(0xFF1A2A3A),
         primaryColor: const Color(0xFF394B58),
       ),
-      home: WelcomeScreen(),
+      home: AdminDashboardPage(),
     );
   }
 }
