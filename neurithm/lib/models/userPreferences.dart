@@ -22,7 +22,7 @@ class UserPreferences {
     return VoiceSettings(
       pitch: prefs.getDouble(_pitchKey) ?? 1.0,
       gender: prefs.getString(_genderKey) ?? 'male',
-      accent: prefs.getString(_accentKey) ?? 'en', // Change this to "en"
+      accent: prefs.getString(_accentKey) ?? 'en', 
     );
   }
 
