@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:audioplayers/audioplayers.dart';
@@ -5,6 +6,10 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:neurithm/widgets/wavesBackground.dart';
+import 'package:neurithm/widgets/appbar.dart';
+import 'package:neurithm/widgets/bottombar.dart';
+
 
 class VoiceSettings {
   double pitch;
@@ -58,6 +63,7 @@ class VoiceSettingsPage extends StatefulWidget {
 }
 
 class _VoiceSettingsState extends State<VoiceSettingsPage> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final AudioPlayer _audioPlayer = AudioPlayer();
   
   VoiceSettings _userSettings = VoiceSettings(
@@ -78,7 +84,7 @@ class _VoiceSettingsState extends State<VoiceSettingsPage> {
     _textController.text = _textToSynthesize;
   }
 
-  Future<void> _loadPreferences() async {
+ Future<void> _loadPreferences() async {
     final settings = await UserPreferences.loadVoiceSettings();
     setState(() {
       _userSettings = settings;
@@ -177,173 +183,252 @@ Future<void> synthesizeSpeech(String text, VoiceSettings settings) async {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+
+    double fontSize(double size) => size * screenWidth / 400;
+    double spacing(double size) => size * screenHeight / 800;
+
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Voice Settings"),
-        elevation: 0,
+      key: _scaffoldKey,
+      drawer: sideAppBar(context),
+      bottomNavigationBar: Padding(
+        padding: EdgeInsets.all(spacing(5)),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(15.0),
+          child: bottomappBar(context),
+        ),
       ),
       body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+        child: Container(
+          decoration: gradientBackground,
+          child: Stack(
             children: [
-              Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "Voice Options",
-                        style: Theme.of(context).textTheme.titleLarge,
-                      ),
-                      SizedBox(height: 20),
-                      Text(
-                        "Pitch",
-                        style: Theme.of(context).textTheme.titleMedium,
-                      ),
-                      Row(
-                        children: [
-                          Icon(Icons.height, color: Colors.grey),
-                          Expanded(
-                            child: Slider(
-                              value: _userSettings.pitch,
-                              min: 0.5,
-                              max: 2.0,
-                              onChanged: (value) {
-                                setState(() {
-                                  _userSettings.pitch = value;
-                                });
-                                _savePreferences();
-                              },
-                              divisions: 15,
-                              label: _userSettings.pitch.toStringAsFixed(2),
-                            ),
+              wavesBackground(screenWidth, screenHeight),
+              Column(
+                children: [
+                  appBar(_scaffoldKey),
+                  Padding(
+                    padding: EdgeInsets.all(spacing(16)),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          decoration: BoxDecoration(
+                            color: Color(0xFF1A2A3A).withOpacity(0.7),
+                            borderRadius: BorderRadius.circular(15),
                           ),
-                        ],
-                      ),
-                      SizedBox(height: 20),
-                      Text(
-                        "Language",
-                        style: Theme.of(context).textTheme.titleMedium,
-                      ),
-                      SizedBox(height: 8),
-                      Container(
-                        width: double.infinity,
-                        padding: EdgeInsets.symmetric(horizontal: 12),
-                        decoration: BoxDecoration(
-                          border: Border.all(color: Colors.grey),
-                          borderRadius: BorderRadius.circular(4),
-                        ),
-                        child: DropdownButton<String>(
-                          value: _userSettings.accent,
-                          onChanged: (value) {
-                            setState(() {
-                              _userSettings.accent = value!;
-                            });
-                            _savePreferences();
-                          },
-                          items: const [
-                            DropdownMenuItem(value: "en", child: Text("English")),
-                            DropdownMenuItem(value: "ar", child: Text("Arabic")),
-                          ],
-                          isExpanded: true,
-                          underline: SizedBox(),
-                        ),
-                      ),
-                      SizedBox(height: 20),
-                      Text(
-                        "Gender",
-                        style: Theme.of(context).textTheme.titleMedium,
-                      ),
-                      SizedBox(height: 8),
-                      Container(
-                        width: double.infinity,
-                        padding: EdgeInsets.symmetric(horizontal: 12),
-                        decoration: BoxDecoration(
-                          border: Border.all(color: Colors.grey),
-                          borderRadius: BorderRadius.circular(4),
-                        ),
-                        child: DropdownButton<String>(
-                          value: _userSettings.gender,
-                          onChanged: (value) {
-                            setState(() {
-                              _userSettings.gender = value!;
-                            });
-                            _savePreferences();
-                          },
-                          items: const [
-                            DropdownMenuItem(value: "male", child: Text("Male")),
-                            DropdownMenuItem(value: "female", child: Text("Female")),
-                          ],
-                          isExpanded: true,
-                          underline: SizedBox(),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              SizedBox(height: 16),
-              Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "Test Voice",
-                        style: Theme.of(context).textTheme.titleLarge,
-                      ),
-                      SizedBox(height: 16),
-                      TextField(
-                        controller: _textController,
-                        decoration: InputDecoration(
-                          border: OutlineInputBorder(),
-                          labelText: 'Text to speak',
-                          hintText: 'Enter text here...',
-                        ),
-                        maxLines: 3,
-                        onChanged: (value) {
-                          _textToSynthesize = value;
-                        },
-                      ),
-                      SizedBox(height: 16),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          ElevatedButton.icon(
-                            onPressed: _isGenerating
-                                ? null
-                                : () {
-                                    synthesizeSpeech(_textToSynthesize, _userSettings);
+                          padding: EdgeInsets.all(spacing(16)),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "Voice Options",
+                                style: TextStyle(
+                                  fontSize: fontSize(24),
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              SizedBox(height: spacing(20)),
+                              Text(
+                                "Pitch",
+                                style: TextStyle(
+                                  fontSize: fontSize(18),
+                                  color: Colors.white,
+                                ),
+                              ),
+                              Row(
+                                children: [
+                                  Icon(Icons.height, color: Colors.grey),
+                                  Expanded(
+                                    child: Slider(
+                                      value: _userSettings.pitch,
+                                      min: 0.5,
+                                      max: 2.0,
+                                      onChanged: (value) {
+                                        setState(() {
+                                          _userSettings.pitch = value;
+                                        });
+                                        _savePreferences();
+                                      },
+                                      divisions: 15,
+                                      label: _userSettings.pitch.toStringAsFixed(2),
+                                      activeColor: Colors.white,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(height: spacing(20)),
+                              Text(
+                                "Language",
+                                style: TextStyle(
+                                  fontSize: fontSize(18),
+                                  color: Colors.white,
+                                ),
+                              ),
+                              SizedBox(height: spacing(8)),
+                              Container(
+                                width: double.infinity,
+                                padding: EdgeInsets.symmetric(horizontal: spacing(12)),
+                                decoration: BoxDecoration(
+                                  border: Border.all(color: Colors.grey),
+                                  borderRadius: BorderRadius.circular(4),
+                                  color: Colors.white.withOpacity(0.1),
+                                ),
+                                child: DropdownButton<String>(
+                                  value: _userSettings.accent,
+                                  onChanged: (value) {
+                                    setState(() {
+                                      _userSettings.accent = value!;
+                                    });
+                                    _savePreferences();
                                   },
-                            icon: Icon(Icons.record_voice_over),
-                            label: Text("Generate & Play Voice"),
-                            style: ElevatedButton.styleFrom(
-                              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                            ),
-                          ),
-                          ElevatedButton.icon(
-                            onPressed: _isPlaying || _isGenerating
-                                ? null
-                                : () async {
-                                    final directory = await getTemporaryDirectory();
-                                    final filePath = '${directory.path}/output.wav';
-                                    await _playAudio(filePath);
+                                  items: const [
+                                    DropdownMenuItem(value: "en", child: Text("English", style: TextStyle(color: Colors.white))),
+                                    DropdownMenuItem(value: "ar", child: Text("Arabic", style: TextStyle(color: Colors.white))),
+                                  ],
+                                  isExpanded: true,
+                                  dropdownColor: Color(0xFF1A2A3A),
+                                  underline: SizedBox(),
+                                ),
+                              ),
+                              SizedBox(height: spacing(20)),
+                              Text(
+                                "Gender",
+                                style: TextStyle(
+                                  fontSize: fontSize(18),
+                                  color: Colors.white,
+                                ),
+                              ),
+                              SizedBox(height: spacing(8)),
+                              Container(
+                                width: double.infinity,
+                                padding: EdgeInsets.symmetric(horizontal: spacing(12)),
+                                decoration: BoxDecoration(
+                                  border: Border.all(color: Colors.grey),
+                                  borderRadius: BorderRadius.circular(4),
+                                  color: Colors.white.withOpacity(0.1),
+                                ),
+                                child: DropdownButton<String>(
+                                  value: _userSettings.gender,
+                                  onChanged: (value) {
+                                    setState(() {
+                                      _userSettings.gender = value!;
+                                    });
+                                    _savePreferences();
                                   },
-                            icon: Icon(_isPlaying ? Icons.pause : Icons.play_arrow),
-                            label: _isPlaying ? Text("Playing..") : Text("Replay"),
-                            style: ElevatedButton.styleFrom(
-                              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                            ),
+                                  items: const [
+                                    DropdownMenuItem(value: "male", child: Text("Male", style: TextStyle(color: Colors.white))),
+                                    DropdownMenuItem(value: "female", child: Text("Female", style: TextStyle(color: Colors.white))),
+                                  ],
+                                  isExpanded: true,
+                                  dropdownColor: Color(0xFF1A2A3A),
+                                  underline: SizedBox(),
+                                ),
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
-                    ],
+                        ),
+                        SizedBox(height: spacing(16)),
+                        Container(
+                          decoration: BoxDecoration(
+                            color: Color(0xFF1A2A3A).withOpacity(0.7),
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                          padding: EdgeInsets.all(spacing(16)),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "Test Voice",
+                                style: TextStyle(
+                                  fontSize: fontSize(24),
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              SizedBox(height: spacing(16)),
+                              TextField(
+                                controller: _textController,
+                                style: TextStyle(color: Colors.white),
+                                decoration: InputDecoration(
+                                  border: OutlineInputBorder(
+                                    borderSide: BorderSide(color: Colors.grey),
+                                  ),
+                                  labelText: 'Text to speak',
+                                  labelStyle: TextStyle(color: Colors.grey),
+                                  hintText: 'Enter text here...',
+                                  hintStyle: TextStyle(color: Colors.grey),
+                                  fillColor: Colors.white.withOpacity(0.1),
+                                  filled: true,
+                                ),
+                                maxLines: 3,
+                                onChanged: (value) {
+                                  _textToSynthesize = value;
+                                },
+                              ),
+                              SizedBox(height: spacing(16)),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  ElevatedButton.icon(
+                                    onPressed: _isGenerating
+                                        ? null
+                                        : () {
+                                            synthesizeSpeech(_textToSynthesize, _userSettings);
+                                          },
+                                    icon: Icon(Icons.record_voice_over),
+                                    label: Text(
+                                      "Generate & Play Voice",
+                                      style: TextStyle(fontSize: fontSize(16)),
+                                    ),
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.white,
+                                      foregroundColor: Color(0xFF1A2A3A),
+                                      padding: EdgeInsets.symmetric(
+                                        horizontal: spacing(20),
+                                        vertical: spacing(12),
+                                      ),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(50),
+                                      ),
+                                    ),
+                                  ),
+                                  ElevatedButton.icon(
+                                    onPressed: _isPlaying || _isGenerating
+                                        ? null
+                                        : () async {
+                                            final directory = await getTemporaryDirectory();
+                                            final filePath = '${directory.path}/output.wav';
+                                            await _playAudio(filePath);
+                                          },
+                                    icon: Icon(_isPlaying ? Icons.pause : Icons.play_arrow),
+                                    label: Text(
+                                      _isPlaying ? "Playing.." : "Replay",
+                                      style: TextStyle(fontSize: fontSize(16)),
+                                    ),
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.white,
+                                      foregroundColor: Color(0xFF1A2A3A),
+                                      padding: EdgeInsets.symmetric(
+                                        horizontal: spacing(20),
+                                        vertical: spacing(12),
+                                      ),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(50),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
+                ],
               ),
             ],
           ),

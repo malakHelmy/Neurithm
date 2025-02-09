@@ -1,13 +1,19 @@
-
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import '../widgets/wavesBackground.dart';
 import '../widgets/appbar.dart';
-import '../screens/viewAppRatings.dart';
-import '../screens/viewPatients.dart';
-import '../screens/adminSettings.dart';
+import '../models/patient.dart';
 
-class PatientsListPage extends StatelessWidget {
+class PatientsListPage extends StatefulWidget {
   const PatientsListPage({Key? key}) : super(key: key);
+
+  @override
+  _PatientsListPageState createState() => _PatientsListPageState();
+}
+
+class _PatientsListPageState extends State<PatientsListPage> {
+  final TextEditingController _searchController = TextEditingController();
+  String _searchQuery = "";
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +42,7 @@ class PatientsListPage extends StatelessWidget {
               child: Column(
                 children: [
                   const Text(
-                    'Patient List',
+                    'Patients List',
                     style: TextStyle(
                       fontSize: 25,
                       fontFamily: 'Lato',
@@ -45,11 +51,19 @@ class PatientsListPage extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 20),
+                  
+                  // Search Field
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
                     child: TextField(
+                      controller: _searchController,
+                      onChanged: (value) {
+                        setState(() {
+                          _searchQuery = value.toLowerCase(); // normalize case
+                        });
+                      },
                       decoration: InputDecoration(
-                        hintText: 'Search patients...',
+                        hintText: 'Search patients by name or email...',
                         hintStyle: const TextStyle(color: Colors.white70),
                         prefixIcon: const Icon(Icons.search, color: Colors.white70),
                         filled: true,
@@ -62,40 +76,66 @@ class PatientsListPage extends StatelessWidget {
                       style: const TextStyle(color: Colors.white),
                     ),
                   ),
+
                   const SizedBox(height: 20),
+
                   Expanded(
-                    child: ListView.builder(
-                      itemCount: 10,
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      itemBuilder: (context, index) {
-                        return Card(
-                          color: Colors.white.withOpacity(0.1),
-                          margin: const EdgeInsets.only(bottom: 10),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(15),
-                          ),
-                          child: ListTile(
-                            leading: const CircleAvatar(
-                              backgroundColor: Color.fromARGB(255, 62, 99, 135),
-                              child: Icon(Icons.person, color: Colors.white),
-                            ),
-                            title: Text(
-                              'Patient ${index + 1}',
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            subtitle: Text(
-                              'Last visit: ${DateTime.now().toString().substring(0, 10)}',
-                              style: const TextStyle(color: Colors.white70),
-                            ),
-                            trailing: IconButton(
-                              icon: const Icon(Icons.more_vert, color: Colors.white),
-                              onPressed: () {},
-                            ),
-                          ),
-                        );
+                    child: StreamBuilder<QuerySnapshot>(
+                      stream: FirebaseFirestore.instance.collection('patients').snapshots(),
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState == ConnectionState.waiting) {
+                          return const Center(child: CircularProgressIndicator());
+                        } else if (snapshot.hasError) {
+                          return Center(child: Text('Error: ${snapshot.error}'));
+                        } else if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                          return const Center(child: Text('No patients found.', style: TextStyle(color: Colors.white70)));
+                        } else {
+                          final patients = snapshot.data!.docs
+                              .map((doc) => Patient.fromMap(doc.data() as Map<String, dynamic>))
+                              .where((patient) {
+                                final fullName = '${patient.firstName} ${patient.lastName}'.toLowerCase();
+                                final email = patient.email.toLowerCase();
+                                return fullName.contains(_searchQuery) || email.contains(_searchQuery);
+                              }).toList();
+
+                          if (patients.isEmpty) {
+                            return const Center(
+                              child: Text('No matching patients found.', style: TextStyle(color: Colors.white70)),
+                            );
+                          }
+
+                          return ListView.builder(
+                            itemCount: patients.length,
+                            padding: const EdgeInsets.symmetric(horizontal: 20),
+                            itemBuilder: (context, index) {
+                              final patient = patients[index];
+                              return Card(
+                                color: Colors.white.withOpacity(0.1),
+                                margin: const EdgeInsets.only(bottom: 10),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(15),
+                                ),
+                                child: ListTile(
+                                  leading: const CircleAvatar(
+                                    backgroundColor: Color.fromARGB(255, 62, 99, 135),
+                                    child: Icon(Icons.person, color: Colors.white),
+                                  ),
+                                  title: Text(
+                                    '${patient.firstName} ${patient.lastName}',
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  subtitle: Text(
+                                    'Email: ${patient.email}',
+                                    style: const TextStyle(color: Colors.white70),
+                                  ),
+                                ),
+                              );
+                            },
+                          );
+                        }
                       },
                     ),
                   ),
