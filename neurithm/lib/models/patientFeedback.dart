@@ -2,11 +2,15 @@ class PatientFeedback {
   final String id;
   final String patientId;
   final String feedbackId;
+  final DateTime submittedAt;
+  final bool isResolved;
 
   PatientFeedback({
     required this.id,
     required this.patientId,
     required this.feedbackId,
+    required this.submittedAt, 
+    required this.isResolved,
   });
 
   Map<String, dynamic> toMap() {
@@ -14,6 +18,8 @@ class PatientFeedback {
       'id': id,
       'patientId': patientId,
       'feedbackId': feedbackId,
+      'submittedAt': submittedAt.toIso8601String(), 
+      'isResolved' : isResolved
     };
   }
 
@@ -22,6 +28,8 @@ class PatientFeedback {
       id: documentId,
       patientId: map['patientId'],
       feedbackId: map['feedbackId'],
+      submittedAt: DateTime.parse(map['submittedAt']), 
+      isResolved: map['isResolved']
     );
   }
 }

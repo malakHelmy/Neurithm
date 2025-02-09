@@ -5,9 +5,9 @@ import 'package:neurithm/models/feedback.dart';
 import 'package:neurithm/models/patient.dart';
 import 'package:neurithm/services/addFeedback.dart';
 import 'package:neurithm/services/auth.dart';
-import 'package:shared_preferences/shared_preferences.dart'; 
+import 'package:shared_preferences/shared_preferences.dart';
 import '../widgets/wavesBackground.dart';
-import 'homePage.dart'; 
+import 'homePage.dart';
 
 class FeedbackScreen extends StatefulWidget {
   const FeedbackScreen({super.key});
@@ -66,6 +66,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
     if (_selectedComments.isEmpty || _currentUser == null) return;
 
     List<String> feedbackIds = [];
+    DateTime today = DateTime.now(); // Get today's date and time
 
     for (var comment in _selectedComments) {
       String category = _feedbackData.keys.firstWhere(
@@ -78,29 +79,34 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
           await FirebaseFirestore.instance.collection('feedback').add({
         'category': category,
         'comment': comment,
+        'submittedAt':
+            today.toIso8601String(),
       });
 
-      feedbackIds.add(feedbackRef.id); // ✅ Store the correct Firestore-generated ID
+      feedbackIds
+          .add(feedbackRef.id); 
     }
 
-    // ✅ Link feedback to patient in 'patient_feedback'
     for (var feedbackId in feedbackIds) {
       await FirebaseFirestore.instance.collection('patient_feedback').add({
         'patientId': _currentUser?.uid,
         'feedbackId': feedbackId,
+        'submittedAt':
+            today.toIso8601String(), 
+        'isResolved': false
       });
     }
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
     int openCount = prefs.getInt('open_count') ?? 0;
-    print("Current openCount: $openCount");  
-    
+    print("Current openCount: $openCount");
+
     openCount++;
     await prefs.setInt('open_count', openCount);
 
     print("Updated openCount: $openCount");
 
-    bool showRatingPopup = (openCount % 10 == 0);  
+    bool showRatingPopup = (openCount % 3 == 0);
 
     print("Show rating popup: $showRatingPopup");
 
@@ -108,8 +114,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (context) =>
-              HomePage(showRatingPopup: showRatingPopup), 
+          builder: (context) => HomePage(showRatingPopup: showRatingPopup),
         ),
       );
     }
@@ -212,8 +217,11 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     ElevatedButton(
-                      onPressed: () => Navigator.pushReplacement(context,
-                          MaterialPageRoute(builder: (context) => HomePage(showRatingPopup: false))),
+                      onPressed: () => Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  HomePage(showRatingPopup: false))),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.redAccent,
                         foregroundColor: Colors.white,
