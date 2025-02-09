@@ -8,7 +8,7 @@ import 'package:neurithm/services/auth.dart';
 import 'package:neurithm/widgets/appbar.dart';
 import 'package:neurithm/widgets/bottombar.dart';
 import 'package:neurithm/widgets/wavesBackground.dart';
-import 'package:shared_preferences/shared_preferences.dart'; 
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HomePage extends StatefulWidget {
   bool showRatingPopup;
@@ -41,7 +41,7 @@ class _HomePageState extends State<HomePage> {
       });
 
       if (widget.showRatingPopup) {
-        _showRatingPopup(); 
+        _showRatingPopup();
       }
 
       SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -49,7 +49,7 @@ class _HomePageState extends State<HomePage> {
       openCount++;
       await prefs.setInt('open_count', openCount);
 
-      if (openCount % 10 == 0) {
+      if (openCount % 3 == 0) {
         _showRatingPopup();
 
         await prefs.setInt('open_count', 0);
@@ -62,11 +62,11 @@ class _HomePageState extends State<HomePage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          backgroundColor: Color(0xFF1A2A3A), 
+          backgroundColor: Color(0xFF1A2A3A),
           title: Text(
             'Rate Our App',
             style: TextStyle(
-              fontSize: 24, 
+              fontSize: 24,
               fontWeight: FontWeight.bold,
               color: Colors.white,
             ),
@@ -77,8 +77,8 @@ class _HomePageState extends State<HomePage> {
               Text(
                 "Please rate our app by selecting stars!",
                 style: TextStyle(
-                  fontSize: 18, 
-                  color: Colors.white, 
+                  fontSize: 18,
+                  color: Colors.white,
                 ),
               ),
               SizedBox(height: 20),
@@ -91,9 +91,9 @@ class _HomePageState extends State<HomePage> {
                 itemSize: 50,
                 itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
                 itemBuilder: (context, _) => Icon(
-                  Icons.star_border, 
+                  Icons.star_border,
                   color: Colors.amber,
-                  size: 50, 
+                  size: 50,
                 ),
                 onRatingUpdate: (rating) {
                   setState(() {
@@ -107,12 +107,12 @@ class _HomePageState extends State<HomePage> {
             TextButton(
               style: TextButton.styleFrom(
                 padding: EdgeInsets.symmetric(vertical: 15, horizontal: 30),
-                backgroundColor: Colors.blue, 
+                backgroundColor: Colors.blue,
               ),
               child: Text(
                 'Submit',
                 style: TextStyle(
-                  fontSize: 20, 
+                  fontSize: 20,
                   color: Colors.white,
                 ),
               ),
@@ -126,13 +126,13 @@ class _HomePageState extends State<HomePage> {
             TextButton(
               style: TextButton.styleFrom(
                 padding: EdgeInsets.symmetric(vertical: 15, horizontal: 30),
-                backgroundColor: Colors.grey, 
+                backgroundColor: Colors.grey,
               ),
               child: Text(
                 'Later',
                 style: TextStyle(
                   fontSize: 20,
-                  color: Colors.white, 
+                  color: Colors.white,
                 ),
               ),
               onPressed: () {
@@ -147,12 +147,16 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> _saveRatingToDatabase() async {
     if (_currentUser != null) {
-      String ratingId = FirebaseFirestore.instance.collection('ratings').doc().id;
+      String ratingId =
+          FirebaseFirestore.instance.collection('ratings').doc().id;
+      DateTime today = DateTime.now(); 
 
       try {
         await FirebaseFirestore.instance.collection('ratings').add({
-          'patientId': _currentUser!.uid, 
-          'rating': _userRating.toInt(), 
+          'patientId': _currentUser!.uid,
+          'rating': _userRating.toInt(),
+          'submittedAt':
+              today.toIso8601String(),
         });
 
         print("Rating saved with ratingId: $ratingId");
