@@ -19,7 +19,7 @@ class _FeedbackPageState extends State<ViewUserFeedbackPage> {
   @override
   void initState() {
     super.initState();
-    _aggregateFeedbacks();
+    _aggregateFeedbacks(); // Fetch data when page is loaded
   }
 
   Future<void> _aggregateFeedbacks() async {
@@ -32,15 +32,22 @@ class _FeedbackPageState extends State<ViewUserFeedbackPage> {
 
     Map<String, Set<DateTime>> uniqueFeedbacks = {};
     Map<String, Map<DateTime, List<String>>> feedbackComments = {};
-
     Set<String> totalFeedbackIds = {};
 
+    // Clear the _feedbacks list to avoid adding duplicate feedback on page reload
+    List<Map<String, dynamic>> aggregatedFeedbackList = [];
+
+    // Loop through each feedback to aggregate
     for (var feedbackDoc in patientFeedbackQuery.docs) {
       var feedbackData = feedbackDoc.data();
       var patientId = feedbackData['patientId'];
       var feedbackId = feedbackData['feedbackId'];
       var submittedAt = DateTime.parse(feedbackData['submittedAt']);
-      bool isResolved = feedbackData['isResolved'];
+
+      // Safely handle null 'isResolved' by treating it as 'false' if it's null.
+      bool isResolved = feedbackData['isResolved'] ?? false;
+
+      if (isResolved) continue; // Exclude resolved feedback early
 
       if (!uniqueFeedbacks.containsKey(patientId)) {
         uniqueFeedbacks[patientId] = {};
@@ -61,41 +68,39 @@ class _FeedbackPageState extends State<ViewUserFeedbackPage> {
           feedbackQuery.docs.firstWhere((doc) => doc.id == feedbackId);
       feedbackComments[patientId]![submittedAt]!
           .add(feedback.data()['comment']);
-
-      if (!isResolved) {
-        pendingFeedbacks++;
-      }
-
-      if (isResolved) {
-        resolvedFeedbacks++;
-      }
     }
 
     totalFeedbacks =
         uniqueFeedbacks.values.fold(0, (sum, dates) => sum + dates.length);
 
+    // Recalculate pending and resolved feedbacks
     pendingFeedbacks = uniqueFeedbacks.entries.fold(0, (count, entry) {
       return count +
           entry.value.where((date) {
-            return patientFeedbackQuery.docs.any((doc) =>
-                doc['patientId'] == entry.key &&
-                DateTime.parse(doc['submittedAt']).isAtSameMomentAs(date) &&
-                doc['isResolved'] == false);
+            return patientFeedbackQuery.docs.any((doc) {
+              bool isResolved =
+                  doc['isResolved'] ?? false; // Handle null 'isResolved'
+              return doc['patientId'] == entry.key &&
+                  DateTime.parse(doc['submittedAt']).isAtSameMomentAs(date) &&
+                  !isResolved; // Only count unresolved feedback
+            });
           }).length;
     });
 
     resolvedFeedbacks = uniqueFeedbacks.entries.fold(0, (count, entry) {
       return count +
           entry.value.where((date) {
-            return patientFeedbackQuery.docs.any((doc) =>
-                doc['patientId'] == entry.key &&
-                DateTime.parse(doc['submittedAt']).isAtSameMomentAs(date) &&
-                doc['isResolved'] == true);
+            return patientFeedbackQuery.docs.any((doc) {
+              bool isResolved =
+                  doc['isResolved'] ?? false; // Handle null 'isResolved'
+              return doc['patientId'] == entry.key &&
+                  DateTime.parse(doc['submittedAt']).isAtSameMomentAs(date) &&
+                  isResolved; // Only count resolved feedback
+            });
           }).length;
     });
 
-    List<Map<String, dynamic>> aggregatedFeedbackList = [];
-
+    // Aggregate unresolved feedbacks
     for (var patientId in uniqueFeedbacks.keys) {
       var user = patientQuery.docs.firstWhere((doc) => doc.id == patientId);
       String firstName = user['firstName'];
@@ -106,26 +111,23 @@ class _FeedbackPageState extends State<ViewUserFeedbackPage> {
         String feedbacks = uniqueFeedbacks[patientId]!.join(', ');
         String comments = feedbackComments[patientId]![date]!.join(', ');
 
-        // Only add unresolved feedbacks to the list
         var feedbackData = {
           'userName': fullName,
           'date': date,
           'feedbacks': feedbacks,
           'comments': comments,
           'feedbackIds': feedbackComments[patientId]![date]!,
-          'isResolved': resolvedFeedbacks > 0 ? true : false,
+          'isResolved': false, // Initially set to false
         };
 
-        // Add the feedback only if it is unresolved (i.e., isResolved == false)
-        if (feedbackData['isResolved'] == false) {
-          aggregatedFeedbackList.add(feedbackData);
-        }
+        // Add unresolved feedbacks to the list
+        aggregatedFeedbackList.add(feedbackData);
       }
     }
 
     setState(() {
-      _feedbacks
-          .addAll(aggregatedFeedbackList); // Display only unresolved feedbacks
+      _feedbacks =
+          aggregatedFeedbackList; // Refresh the list with unresolved feedbacks only
     });
   }
 
@@ -133,7 +135,6 @@ class _FeedbackPageState extends State<ViewUserFeedbackPage> {
     var patientName = feedback['userName'];
     var date = feedback['date'];
 
-    // Convert the date to DateTime if it's a string or already a DateTime object
     DateTime firebaseDate;
     if (date is String) {
       firebaseDate = DateTime.parse(date);
@@ -166,7 +167,7 @@ class _FeedbackPageState extends State<ViewUserFeedbackPage> {
 
     var patientId = patientQuery.docs.first.id;
 
-    // Now compare the DateTime object directly in the query
+    // Update the 'isResolved' field in the database
     await FirebaseFirestore.instance
         .collection('patient_feedback')
         .where('patientId', isEqualTo: patientId)
@@ -187,11 +188,15 @@ class _FeedbackPageState extends State<ViewUserFeedbackPage> {
     });
 
     setState(() {
+      // Directly remove the resolved feedback from the list
       _feedbacks.removeWhere((item) =>
           item['date'] == firebaseDate && item['userName'] == patientName);
+      pendingFeedbacks--; // Decrease pending count
+      resolvedFeedbacks++; // Increase resolved count
 
-      pendingFeedbacks--;
-      resolvedFeedbacks++;
+      // Only show unresolved feedback
+      _feedbacks =
+          _feedbacks.where((item) => item['isResolved'] == false).toList();
     });
   }
 
@@ -292,11 +297,7 @@ class _FeedbackPageState extends State<ViewUserFeedbackPage> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          _buildStatItem('Total', '$totalFeedbacks', Icons.message),
-          _verticalDivider(),
           _buildStatItem('Pending', '$pendingFeedbacks', Icons.pending),
-          _verticalDivider(),
-          _buildStatItem('Resolved', '$resolvedFeedbacks', Icons.check_circle),
         ],
       ),
     );
