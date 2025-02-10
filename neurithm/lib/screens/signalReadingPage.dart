@@ -6,9 +6,7 @@ import '../widgets/wavesBackground.dart';
 import 'homePage.dart';
 import '../screens/confirmationPage.dart';
 
-
 class Signalreadingpage extends StatelessWidget {
-
   const Signalreadingpage({super.key});
 
   @override
@@ -17,132 +15,91 @@ class Signalreadingpage extends StatelessWidget {
       resizeToAvoidBottomInset: false,
       body: Container(
         decoration: gradientBackground,
-        child: Center(
-          child: Stack(
-            alignment: Alignment.center,
-            children: [
-              wavesBackground(
-                  getScreenWidth(context), getScreenHeight(context)),
-              Padding(
+        child: Stack(
+          children: [
+            wavesBackground(getScreenWidth(context), getScreenHeight(context)),
+            Center(
+              child: Padding(
                 padding: EdgeInsets.symmetric(
                     horizontal: spacing(15, getScreenHeight(context))),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Padding(
-                      padding: EdgeInsets.only(
-                          bottom: spacing(20, getScreenHeight(context))),
-                      child: const Text(
-                        'Processing',
-                        style: TextStyle(
-                          fontSize: 22,
-                          fontWeight: FontWeight.w900,
-                          fontFamily: 'Lato',
+                    // Processing Text
+                    const Text(
+                      'Processing',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.w900,
+                        fontFamily: 'Lato',
+                      ),
+                    ),
+                    SizedBox(height: spacing(20, getScreenHeight(context))),
+                    // Processing Animation
+                    const Center(
+                      child: SizedBox(
+                        width: 60,
+                        height: 60,
+                        child: CircularProgressIndicator(
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                            Color(0xFF1A2A3A),
+                          ),
+                          strokeWidth: 4,
                         ),
                       ),
                     ),
-                   
-                    SizedBox(height: spacing(40, getScreenHeight(context))),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: ElevatedButton(
-                              onPressed: () {
-                                // Action to regenerate the sentence
-                                Navigator.pop(context);
-                              },
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor:
-                                    const Color.fromARGB(255, 240, 240, 240),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(50),
-                                ),
-                                padding: EdgeInsets.symmetric(
-                                    vertical:
-                                        spacing(12, getScreenHeight(context))),
-                              ),
-                              child: const Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(
-                                    Icons.refresh,
-                                    color: Color(0xFF1A2A3A),
-                                    size: 20,
-                                  ),
-                                  SizedBox(width: 5),
-                                  Text(
-                                    "Begin",
-                                    style: TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.normal,
-                                      color: Color(0xFF1A2A3A),
-                                    ),
-                                  ),
-                                ],
-                              ),
+                    SizedBox(height: spacing(20, getScreenHeight(context))),
+                    // Finish Button
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          String sentence = "This is the sentence to be recited";
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  ConfirmationPage(processedSentence: sentence),
                             ),
+                          );
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color.fromARGB(255, 240, 240, 240),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(50),
+                          ),
+                          padding: EdgeInsets.symmetric(
+                            vertical: spacing(12, getScreenHeight(context)),
                           ),
                         ),
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: ElevatedButton(
-                              onPressed: () {
-                                // Action to accept the sentence
-                                String sentence =
-                                    "This is the sentence to be recited"; // Replace with your dynamic sentence
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => ConfirmationPage(
-                                        processedSentence:
-                                            processedSentence), // Pass sentence here
-                                  ),
-                                );
-                              },
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor:
-                                    const Color.fromARGB(255, 240, 240, 240),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(50),
-                                ),
-                                padding: EdgeInsets.symmetric(
-                                    vertical:
-                                        spacing(12, getScreenHeight(context))),
-                              ),
-                              child: const Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(
-                                    Icons.volume_up,
-                                    color: Color(0xFF1A2A3A),
-                                    size: 20,
-                                  ),
-                                  SizedBox(width: 5),
-                                  Text(
-                                    "Finish",
-                                    style: TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.normal,
-                                      color: Color(
-                                          0xFF1A2A3A), // White text for contrast
-                                    ),
-                                  ),
-                                ],
+                        child: const Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.check_circle_outline,
+                              color: Color(0xFF1A2A3A),
+                              size: 24,
+                            ),
+                            SizedBox(width: 8),
+                            Text(
+                              "I'm done thinking",
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.normal,
+                                color: Color(0xFF1A2A3A),
                               ),
                             ),
-                          ),
+                          ],
                         ),
-                      ],
+                      ),
                     ),
                   ],
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
