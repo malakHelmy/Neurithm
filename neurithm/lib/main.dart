@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:neurithm/screens/welcomeScreen.dart';
 import 'package:neurithm/screens/voicesettings.dart';
+import 'package:neurithm/services/addAIModel.dart';
+import 'package:neurithm/services/addEEGData.dart';
+import 'package:neurithm/services/addSession.dart';
 import 'package:neurithm/services/addWordBank.dart';
 import 'screens/loginPage.dart';
 import 'services/addFeedback.dart'; // Import the FeedbackService
@@ -28,8 +31,11 @@ Future<void> main() async {
     ),
   );
 
-  // FeedbackService fs = new FeedbackService();
-  // fs.addPredefinedFeedback();
+  EEGDataService eegDataService = new EEGDataService();
+  
+  String filePath = "C:\\Users\\Dell\\Downloads\\par.1 نعم_EPOCX_206407_2023.12.17T11.51.39+03.00.md.csv";
+  
+  await eegDataService.saveEEGDataFromCSV(filePath);
 
   runApp(ThoughtToSpeechApp());
 }
