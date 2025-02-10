@@ -372,7 +372,7 @@ Future<void> synthesizeSpeech(String text, VoiceSettings settings) async {
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                 children: [
-                                  ElevatedButton.icon(
+                                  Expanded(child: ElevatedButton.icon(
                                     onPressed: _isGenerating
                                         ? null
                                         : () {
@@ -395,7 +395,8 @@ Future<void> synthesizeSpeech(String text, VoiceSettings settings) async {
                                       ),
                                     ),
                                   ),
-                                  ElevatedButton.icon(
+                                  ),
+                                  Expanded(child: ElevatedButton.icon(
                                     onPressed: _isPlaying || _isGenerating
                                         ? null
                                         : () async {
@@ -419,6 +420,7 @@ Future<void> synthesizeSpeech(String text, VoiceSettings settings) async {
                                         borderRadius: BorderRadius.circular(50),
                                       ),
                                     ),
+                                  ),
                                   ),
                                 ],
                               ),
