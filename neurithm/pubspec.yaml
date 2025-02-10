@@ -25,6 +25,7 @@ dependencies:
   cupertino_icons: ^1.0.8
   crypto: ^3.0.6
   flutter_rating_bar: ^4.0.0
+  csv: ^5.0.1 
 
 dev_dependencies:
   flutter_test:
