@@ -31,17 +31,40 @@ class Signalreadingpage extends StatelessWidget {
                       'Processing',
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                        fontSize: 22,
+                        fontSize: 24,
                         fontWeight: FontWeight.w900,
+                        fontFamily: 'Lato',
+                        letterSpacing: 0.5,
+                      ),
+                    ),
+                    const Text(
+                      'Reading and analyzing your signal data',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.grey,
+                        fontWeight: FontWeight.w500,
                         fontFamily: 'Lato',
                       ),
                     ),
-                    SizedBox(height: spacing(20, getScreenHeight(context))),
+                    SizedBox(height: spacing(25, getScreenHeight(context))),
                     // Processing Animation
-                    const Center(
-                      child: SizedBox(
-                        width: 60,
-                        height: 60,
+                    Container(
+                      padding: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.9),
+                        shape: BoxShape.circle,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.05),
+                            blurRadius: 15,
+                            offset: const Offset(0, 5),
+                          ),
+                        ],
+                      ),
+                      child: const SizedBox(
+                        width: 50,
+                        height: 50,
                         child: CircularProgressIndicator(
                           valueColor: AlwaysStoppedAnimation<Color>(
                             Color(0xFF1A2A3A),
@@ -50,7 +73,7 @@ class Signalreadingpage extends StatelessWidget {
                         ),
                       ),
                     ),
-                    SizedBox(height: spacing(20, getScreenHeight(context))),
+                    SizedBox(height: spacing(30, getScreenHeight(context))),
                     // Finish Button
                     SizedBox(
                       width: double.infinity,
@@ -66,28 +89,30 @@ class Signalreadingpage extends StatelessWidget {
                           );
                         },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color.fromARGB(255, 240, 240, 240),
+                          backgroundColor: Colors.white,
+                          foregroundColor: const Color(0xFF1A2A3A),
+                          elevation: 2,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(50),
                           ),
                           padding: EdgeInsets.symmetric(
-                            vertical: spacing(12, getScreenHeight(context)),
+                            vertical: spacing(15, getScreenHeight(context)),
                           ),
                         ),
                         child: const Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Icon(
-                              Icons.check_circle_outline,
+                              Icons.check_circle_rounded,
                               color: Color(0xFF1A2A3A),
                               size: 24,
                             ),
-                            SizedBox(width: 8),
+                            SizedBox(width: 12),
                             Text(
                               "I'm done thinking",
                               style: TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.normal,
+                                fontSize: 18,
+                                letterSpacing: 0.5,
                                 color: Color(0xFF1A2A3A),
                               ),
                             ),
