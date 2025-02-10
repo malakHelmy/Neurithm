@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:neurithm/screens/feedbackScreen.dart';
-import 'package:neurithm/services/addEEGData.dart'; // Import the EEGDataService
 import '../widgets/appBar.dart';
 import '../widgets/wavesBackground.dart';
 import 'homePage.dart';
@@ -11,8 +10,6 @@ class Signalreadingpage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Create an instance of EEGDataService
-    final EEGDataService _eegDataService = EEGDataService();
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -82,8 +79,6 @@ class Signalreadingpage extends StatelessWidget {
                       width: double.infinity,
                       child: ElevatedButton(
                         onPressed: () async {
-                          // Trigger CSV file upload
-                          await _eegDataService.saveEEGDataFromCSV();
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.white,

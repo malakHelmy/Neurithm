@@ -2,13 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:neurithm/screens/welcomeScreen.dart';
 import 'package:neurithm/screens/voicesettings.dart';
-import 'package:neurithm/services/addAIModel.dart';
-import 'package:neurithm/services/addEEGData.dart';
-import 'package:neurithm/services/addSession.dart';
 import 'package:neurithm/services/addWordBank.dart';
 import 'screens/loginPage.dart';
 import 'services/addFeedback.dart'; // Import the FeedbackService
-import 'screens/signalReadingPage.dart';
+import 'screens/adminDashboard.dart';
 
 Future<void> main() async {
   // Ensure Flutter bindings are initialized
@@ -31,8 +28,6 @@ Future<void> main() async {
     ),
   );
 
-  EEGDataService eegDataService = new EEGDataService();
-
   runApp(ThoughtToSpeechApp());
 }
 
@@ -45,7 +40,7 @@ class ThoughtToSpeechApp extends StatelessWidget {
         scaffoldBackgroundColor: const Color(0xFF1A2A3A),
         primaryColor: const Color(0xFF394B58),
       ),
-      home: Signalreadingpage(),
+      home: WelcomeScreen(),
     );
   }
 }

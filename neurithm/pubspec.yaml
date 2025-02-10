@@ -25,8 +25,8 @@ dependencies:
   cupertino_icons: ^1.0.8
   crypto: ^3.0.6
   flutter_rating_bar: ^4.0.0
-  csv: ^5.0.1 
-  file_picker: ^5.0.0  # Use the latest version
+  firebase_storage: ^12.4.2
+  firebase_storage_web: ^3.10.9
 
 
 dev_dependencies:
