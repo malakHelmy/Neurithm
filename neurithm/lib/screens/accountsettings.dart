@@ -14,16 +14,18 @@ class UserProfileSettingsPage extends StatefulWidget {
 
 class _UserProfileSettingsPageState extends State<UserProfileSettingsPage> {
   // Controllers for editable fields
-  final TextEditingController nameController =
-      TextEditingController(text: 'Anna Avetisyan');
+  final TextEditingController firstNameController =
+      TextEditingController(text: 'Yassmin');
+   final TextEditingController LastNameController =
+      TextEditingController(text: 'Ezzat');
   final TextEditingController emailController =
-      TextEditingController(text: 'info@aplusdesign.co');
+      TextEditingController(text: 'yassmin849407@gmail.com');
   final TextEditingController passwordController = TextEditingController();
 
   @override
   void dispose() {
     // Dispose controllers when the widget is removed
-    nameController.dispose();
+    // nameController.dispose();
     emailController.dispose();
     passwordController.dispose();
     super.dispose();
@@ -97,8 +99,10 @@ class _UserProfileSettingsPageState extends State<UserProfileSettingsPage> {
                       ),
                       child: ListView(
                         children: [
-                          _editableField(Icons.person, 'Edit Name',
-                              controller: nameController),
+                          _editableField(Icons.person, 'Edit First Name',
+                              controller: firstNameController),
+                          _editableField(Icons.person, 'Edit Last Name',
+                              controller: LastNameController),
                           _editableField(Icons.email, 'Change Email',
                               controller: emailController),
                           _editableField(Icons.lock, 'Update Password',
@@ -107,14 +111,6 @@ class _UserProfileSettingsPageState extends State<UserProfileSettingsPage> {
                           _editableField(Icons.lock, 'Confirm Password',
                               controller: passwordController,
                               obscureText: true),
-                          _settingsField(Icons.cake, 'Birthday',
-                              trailing: const Text(
-                                '12 Jan 1995',
-                                style: TextStyle(
-                                  fontSize: 20,
-                                  color: Colors.white,
-                                ),
-                              )),
                         ],
                       ),
                     ),
@@ -127,9 +123,9 @@ class _UserProfileSettingsPageState extends State<UserProfileSettingsPage> {
                       child: ElevatedButton(
                         onPressed: () {
                           // Save profile settings functionality
-                          print("Name: ${nameController.text}");
-                          print("Email: ${emailController.text}");
-                          print("Password: ${passwordController.text}");
+                          // print("Name: ${nameController.text}");
+                          // print("Email: ${emailController.text}");
+                          // print("Password: ${passwordController.text}");
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor:

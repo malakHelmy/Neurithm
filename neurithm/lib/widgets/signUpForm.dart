@@ -101,10 +101,10 @@ AnimatedOpacity signUpForm(
                     enabledBorder: const UnderlineInputBorder(
                       borderSide: BorderSide(color: Colors.grey, width: 1),
                     ),
-                    suffixIcon: IconButton(
-                      icon: const Icon(Icons.visibility, color: Colors.grey),
-                      onPressed: () {},
-                    ),
+                    // suffixIcon: IconButton(
+                    //   icon: const Icon(Icons.visibility, color: Colors.grey),
+                    //   onPressed: () {},
+                    // ),
                   ),
                   validator: _validatePassword,
                 ),
