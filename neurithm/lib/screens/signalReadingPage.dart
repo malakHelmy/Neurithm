@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:neurithm/screens/feedbackScreen.dart';
-
+import 'package:neurithm/services/addEEGData.dart'; // Import the EEGDataService
 import '../widgets/appBar.dart';
 import '../widgets/wavesBackground.dart';
 import 'homePage.dart';
@@ -11,6 +11,9 @@ class Signalreadingpage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Create an instance of EEGDataService
+    final EEGDataService _eegDataService = EEGDataService();
+
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: Container(
@@ -74,6 +77,46 @@ class Signalreadingpage extends StatelessWidget {
                       ),
                     ),
                     SizedBox(height: spacing(30, getScreenHeight(context))),
+                    // Data Simulation Button
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: () async {
+                          // Trigger CSV file upload
+                          await _eegDataService.saveEEGDataFromCSV();
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.white,
+                          foregroundColor: const Color(0xFF1A2A3A),
+                          elevation: 2,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(50),
+                          ),
+                          padding: EdgeInsets.symmetric(
+                            vertical: spacing(15, getScreenHeight(context))),
+                        ),
+                        child: const Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.upload_rounded,
+                              color: Color(0xFF1A2A3A),
+                              size: 24,
+                            ),
+                            SizedBox(width: 12),
+                            Text(
+                              "Data Simulation",
+                              style: TextStyle(
+                                fontSize: 18,
+                                letterSpacing: 0.5,
+                                color: Color(0xFF1A2A3A),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: spacing(15, getScreenHeight(context))),
                     // Finish Button
                     SizedBox(
                       width: double.infinity,
@@ -96,8 +139,7 @@ class Signalreadingpage extends StatelessWidget {
                             borderRadius: BorderRadius.circular(50),
                           ),
                           padding: EdgeInsets.symmetric(
-                            vertical: spacing(15, getScreenHeight(context)),
-                          ),
+                            vertical: spacing(15, getScreenHeight(context))),
                         ),
                         child: const Row(
                           mainAxisAlignment: MainAxisAlignment.center,

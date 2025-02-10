@@ -8,7 +8,7 @@ import 'package:neurithm/services/addSession.dart';
 import 'package:neurithm/services/addWordBank.dart';
 import 'screens/loginPage.dart';
 import 'services/addFeedback.dart'; // Import the FeedbackService
-import 'screens/adminDashboard.dart';
+import 'screens/signalReadingPage.dart';
 
 Future<void> main() async {
   // Ensure Flutter bindings are initialized
@@ -32,10 +32,6 @@ Future<void> main() async {
   );
 
   EEGDataService eegDataService = new EEGDataService();
-  
-  String filePath = "C:\\Users\\Dell\\Downloads\\par.1 نعم_EPOCX_206407_2023.12.17T11.51.39+03.00.md.csv";
-  
-  await eegDataService.saveEEGDataFromCSV(filePath);
 
   runApp(ThoughtToSpeechApp());
 }
@@ -49,7 +45,7 @@ class ThoughtToSpeechApp extends StatelessWidget {
         scaffoldBackgroundColor: const Color(0xFF1A2A3A),
         primaryColor: const Color(0xFF394B58),
       ),
-      home: WelcomeScreen(),
+      home: Signalreadingpage(),
     );
   }
 }

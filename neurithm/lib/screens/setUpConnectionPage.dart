@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../widgets/appBar.dart';
 import '../widgets/wavesBackground.dart';
 import 'homePage.dart';
-import '../screens/confirmationPage.dart';
+import '../screens/signalReadingPage.dart';
 
 class setUpConnectionPage extends StatefulWidget {
   const setUpConnectionPage({super.key});
@@ -215,8 +215,7 @@ class _setUpConnectionPageState extends State<setUpConnectionPage>
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                        builder: (context) => ConfirmationPage(
-                                        processedSentence: "Your processed sentence here", 
+                                        builder: (context) => Signalreadingpage(
                                         ),
                                       ),
                                     );
