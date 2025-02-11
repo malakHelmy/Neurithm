@@ -187,7 +187,7 @@ class ConfirmationPage extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
-                              "Finish",
+                              "End Session",
                               style: TextStyle(
                                 fontSize: 20,
                                 fontWeight: FontWeight.normal,
