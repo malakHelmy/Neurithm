@@ -15,11 +15,11 @@ class UserProfileSettingsPage extends StatefulWidget {
 class _UserProfileSettingsPageState extends State<UserProfileSettingsPage> {
   // Controllers for editable fields
   final TextEditingController firstNameController =
-      TextEditingController(text: 'Yassmin');
+      TextEditingController(text: 'Jana');
    final TextEditingController LastNameController =
-      TextEditingController(text: 'Ezzat');
+      TextEditingController(text: 'Hani');
   final TextEditingController emailController =
-      TextEditingController(text: 'yassmin849407@gmail.com');
+      TextEditingController(text: 'janahani.nbis@gmail.com');
   final TextEditingController passwordController = TextEditingController();
 
   @override
