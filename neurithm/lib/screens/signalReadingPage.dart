@@ -5,6 +5,7 @@ import '../widgets/wavesBackground.dart';
 import 'homePage.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart'; // Add this import
 import '../screens/confirmationPage.dart';
 
 class Signalreadingpage extends StatelessWidget {
@@ -75,30 +76,63 @@ class Signalreadingpage extends StatelessWidget {
                       ),
                     ),
                     SizedBox(height: spacing(30, getScreenHeight(context))),
-                    // Data Simulation Button
-
-                    SizedBox(height: spacing(15, getScreenHeight(context))),
                     // Finish Button
                     SizedBox(
                       width: double.infinity,
                       child: ElevatedButton(
                         onPressed: () async {
-                          final docRef = FirebaseFirestore.instance
-                              .collection('predictions')
-                              .doc('dkgU0HEKGfYZmSvQMG1e');
+                          // Step 1: Get the current user's ID
+                          final User? user = FirebaseAuth.instance.currentUser;
+                          if (user == null) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('No user is logged in.'),
+                              ),
+                            );
+                            return;
+                          }
+                          final String userId = user.uid;
 
-                          final docSnapshot = await docRef.get();
+                          // Step 2: Fetch the sessionId from the sessions table
+                          final sessionsQuery = await FirebaseFirestore.instance
+                              .collection('session')
+                              .where('patientId', isEqualTo: userId)
+                              .get();
 
-                          if (docSnapshot.exists) {
-                            final predictedText =
-                                docSnapshot.data()?['predictedText'] ?? '';
+                          if (sessionsQuery.docs.isNotEmpty) {
+                            final sessionId = sessionsQuery.docs.first.id;
 
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => ConfirmationPage(
-                                  processedSentence: predictedText,
+                            // Step 3: Check if the sessionId matches in the predictions table
+                            final predictionsQuery = await FirebaseFirestore.instance
+                                .collection('predictions').where('sessionId', isEqualTo: sessionId)
+                                .get();
+
+                            if (predictionsQuery.docs.isNotEmpty) {
+                              // Step 4: Fetch the predictedText
+                              final predictedText = predictionsQuery.docs.first['predictedText'];
+
+                              // Navigate to the ConfirmationPage
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => ConfirmationPage(
+                                    processedSentence: predictedText,
+                                  ),
                                 ),
+                              );
+                            } else {
+                              // Handle case where no matching sessionId is found in predictions
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('No matching prediction found for this session.'),
+                                ),
+                              );
+                            }
+                          } else {
+                            // Handle case where no session is found for the user
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('No session found for the current user.'),
                               ),
                             );
                           }
