@@ -155,7 +155,7 @@ class _setUpConnectionPageState extends State<setUpConnectionPage>
                         _isScanning
                             ? "Scanning..." // Show "Scanning..." during scanning
                             : _isScanComplete
-                                ? "Headset was found" // Show "Headset was found" after scanning completes
+                                ? "Emotiv epoc-123 headset was found" // Show "Headset was found" after scanning completes
                                 : "",
                         style: const TextStyle(
                           color: Color.fromARGB(255, 254, 255, 255),

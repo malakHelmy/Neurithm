@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:neurithm/widgets/wavesBackground.dart';
+import 'package:neurithm/screens/confirmationPage.dart';
 
 class RecitePage extends StatefulWidget {
   final String sentence;
@@ -109,7 +110,7 @@ class _RecitePageState extends State<RecitePage>
                     width: double.infinity,
                     child: ElevatedButton(
                       onPressed: () {
-                        Navigator.popUntil(context, (route) => route.isFirst);
+                        Navigator.pop(context);
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor:
@@ -123,13 +124,48 @@ class _RecitePageState extends State<RecitePage>
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Icon(
-                            Icons.home,
+                            Icons.arrow_back,
                             color: Color(0xFF1A2A3A),
                             size: 25,
                           ),
                           SizedBox(width: 10),
                           Text(
-                            "Return to Home",
+                            "Return",
+                            style: TextStyle(
+                              fontSize: 25,
+                              fontWeight: FontWeight.normal,
+                              color: Color(0xFF1A2A3A),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                       const SizedBox(height: 40),
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: () {
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor:
+                            const Color.fromARGB(255, 240, 240, 240),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(50),
+                        ),
+                        padding: const EdgeInsets.symmetric(vertical: 13),
+                      ),
+                      child: const Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            Icons.repeat,
+                            color: Color(0xFF1A2A3A),
+                            size: 25,
+                          ),
+                          SizedBox(width: 10),
+                          Text(
+                            "Replay",
                             style: TextStyle(
                               fontSize: 25,
                               fontWeight: FontWeight.normal,
