@@ -116,14 +116,14 @@ class ConfirmationPage extends StatelessWidget {
                             child: ElevatedButton(
                               onPressed: () {
                                 // Action to accept the sentence
-                                String sentence =
-                                    "This is the sentence to be recited"; // Replace with your dynamic sentence
+                               // String sentence =
+                                 //   "This is the sentence to be recited"; // Replace with your dynamic sentence
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
                                     builder: (context) => RecitePage(
-                                        sentence:
-                                            sentence), // Pass sentence here
+                                   sentence: processedSentence, // Use the actual predicted text
+                                    ),
                                   ),
                                 );
                               },
