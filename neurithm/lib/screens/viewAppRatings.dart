@@ -23,7 +23,7 @@ class _AppRatingsDashboardState extends State<ViewAppRatingsDashboard> {
   }
 
 Future<void> _fetchAppRatings() async {
-  var ratingsQuery = await FirebaseFirestore.instance.collection('ratings').get();
+  var ratingsQuery = await FirebaseFirestore.instance.collection('ratings').orderBy('submittedAt', descending: true).get();
   var patientQuery = await FirebaseFirestore.instance.collection('patients').get();
 
   Map<String, Map<String, dynamic>> patientLatestRatings = {};
