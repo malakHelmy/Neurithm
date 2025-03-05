@@ -13,11 +13,11 @@ class WordBankPhrase {
     };
   }
 
-  factory WordBankPhrase.fromMap(Map<String, dynamic> map, String documentId) {
-    return WordBankPhrase(
-      id: documentId,
-      categoryId: map['category_id'],
-      phrase: map['phrase'],
-    );
-  }
+factory WordBankPhrase.fromMap(Map<String, dynamic> map, [String? documentId]) {
+  return WordBankPhrase(
+    id: documentId ?? '', // Use an empty string if documentId is null
+    categoryId: map['category_id'] ?? '',
+    phrase: map['phrase'] ?? '',
+  );
+}
 }
