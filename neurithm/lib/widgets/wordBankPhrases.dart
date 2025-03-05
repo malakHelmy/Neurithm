@@ -31,13 +31,16 @@ class _PhrasesPageState extends State<WordBankPhrases> {
   Future<void> _fetchPhrases() async {
     try {
       if (widget.category.name == "Frequent Used Phrases") {
-        final fetchedPhrases = await _dbHelper.getFrequentPhrases(widget.currentUser!.uid);
+        final fetchedData =
+            await _dbHelper.getFrequentPhrases(widget.currentUser!.uid);
         setState(() {
-          phrases = fetchedPhrases.cast<WordBankPhrase>();
+          phrases =
+              fetchedData.map((data) => WordBankPhrase.fromMap(data)).toList();
           isLoading = false;
         });
       } else {
-        final fetchedPhrases = await _firestoreService.fetchPhrases(widget.category.id);
+        final fetchedPhrases =
+            await _firestoreService.fetchPhrases(widget.category.id);
         setState(() {
           phrases = fetchedPhrases;
           isLoading = false;
