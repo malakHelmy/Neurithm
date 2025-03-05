@@ -4,7 +4,7 @@ import 'package:neurithm/screens/welcomeScreen.dart';
 import 'package:neurithm/screens/voicesettings.dart';
 import 'package:neurithm/services/addWordBank.dart';
 import 'screens/loginPage.dart';
-import 'services/addFeedback.dart'; // Import the FeedbackService
+import 'services/addFeedback.dart'; 
 import 'screens/adminDashboard.dart';
 
 Future<void> main() async {
