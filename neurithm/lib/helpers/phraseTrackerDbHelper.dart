@@ -1,3 +1,4 @@
+import 'package:neurithm/models/wordBank.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
@@ -56,12 +57,16 @@ class DatabaseHelper {
     }
   }
 
-  Future<List<Map<String, dynamic>>> getFrequentPhrases(String patientID) async {
-    final db = await instance.database;
-    return await db.query(
-      'frequentUsedPhrases',
-      where: 'patientID = ? AND counter > 5',
-      whereArgs: [patientID],
-    );
-  }
+  Future<List<WordBankPhrase>> getFrequentPhrases(String patientID) async {
+  final db = await instance.database;
+  
+  final result = await db.rawQuery('''
+    SELECT wb.id, wb.category_id, wb.phrase
+    FROM frequentUsedPhrases fp
+    JOIN word_bank wb ON fp.wordbankphraseID = wb.id
+    WHERE fp.patientID = ? AND fp.counter > 5
+  ''', [patientID]);
+
+  return result.map((data) => WordBankPhrase.fromMap(data)).toList();
+}
 }
