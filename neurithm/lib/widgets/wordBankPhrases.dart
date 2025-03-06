@@ -9,7 +9,8 @@ class WordBankPhrases extends StatefulWidget {
   final WordBankCategory category;
   final Patient? currentUser;
 
-  const WordBankPhrases({super.key, required this.category, required this.currentUser});
+  const WordBankPhrases(
+      {super.key, required this.category, required this.currentUser});
 
   @override
   State<WordBankPhrases> createState() => _PhrasesPageState();
@@ -31,11 +32,10 @@ class _PhrasesPageState extends State<WordBankPhrases> {
   Future<void> _fetchPhrases() async {
     try {
       if (widget.category.name == "Frequent Used Phrases") {
-        final fetchedData =
+        final fetchedPhrases =
             await _dbHelper.getFrequentPhrases(widget.currentUser!.uid);
         setState(() {
-          phrases =
-              fetchedData.map((data) => WordBankPhrase.fromMap(data)).toList();
+          phrases = fetchedPhrases;
           isLoading = false;
         });
       } else {
@@ -75,8 +75,7 @@ class _PhrasesPageState extends State<WordBankPhrases> {
                       onTap: () async {
                         await _trackPhraseClick(phrases[index].id);
                         ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text('Tracked phrase usage'))
-                        );
+                            SnackBar(content: Text('Tracked phrase usage')));
                       },
                     );
                   },

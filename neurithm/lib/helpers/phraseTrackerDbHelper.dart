@@ -1,6 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:neurithm/models/wordBank.dart';
+import 'package:neurithm/services/addWordBank.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class DatabaseHelper {
   static final DatabaseHelper instance = DatabaseHelper._init();
@@ -57,16 +60,28 @@ class DatabaseHelper {
     }
   }
 
-  Future<List<WordBankPhrase>> getFrequentPhrases(String patientID) async {
+Future<List<WordBankPhrase>> getFrequentPhrases(String patientID) async {
   final db = await instance.database;
   
+  // Step 1: Get phrase IDs from SQLite
   final result = await db.rawQuery('''
-    SELECT wb.id, wb.category_id, wb.phrase
-    FROM frequentUsedPhrases fp
-    JOIN word_bank wb ON fp.wordbankphraseID = wb.id
-    WHERE fp.patientID = ? AND fp.counter > 5
+    SELECT wordbankphraseID FROM frequentUsedPhrases 
+    WHERE patientID = ? AND counter > 5
   ''', [patientID]);
 
-  return result.map((data) => WordBankPhrase.fromMap(data)).toList();
+  // Step 2: Fetch full phrase details from Firebase
+  List<WordBankPhrase> phrases = [];
+  for (var row in result) {
+    String phraseID = row['wordbankphraseID'] as String;
+    WordBankPhrase? phrase = await FirestoreService().getPhraseById(phraseID);
+    
+    if (phrase != null) {
+      phrases.add(phrase);
+    }
+  }
+
+  return phrases;
 }
+
+
 }
