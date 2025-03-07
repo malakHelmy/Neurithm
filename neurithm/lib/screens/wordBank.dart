@@ -5,8 +5,6 @@ import '../widgets/appbar.dart';
 import '../widgets/bottombar.dart';
 import '../widgets/wavesBackground.dart';
 import "../widgets/wordBankPhrases.dart";
-import 'package:neurithm/models/patient.dart';
-import 'package:neurithm/services/auth.dart';
 
 class WordBankPage extends StatefulWidget {
   const WordBankPage({super.key});
@@ -21,23 +19,11 @@ class _WordBankPageState extends State<WordBankPage> {
   TextEditingController searchController = TextEditingController();
   List<WordBankCategory> categories = [];
   bool isLoading = true;
-  Patient? _currentUser;
-  final AuthMethods _authMethods = AuthMethods();
 
   @override
   void initState() {
     super.initState();
-    _fetchUser();
     _fetchCategories();
-  }
-
-  Future<void> _fetchUser() async {
-    Patient? user = await _authMethods.getCurrentUser();
-    if (mounted) {
-      setState(() {
-        _currentUser = user;
-      });
-    }
   }
 
   Future<void> _fetchCategories() async {
@@ -135,7 +121,7 @@ class _WordBankPageState extends State<WordBankPage> {
                                     context,
                                     MaterialPageRoute(
                                       builder: (context) =>
-                                          WordBankPhrases(category: category, currentUser : _currentUser),
+                                          WordBankPhrases(category: category),
                                     ),
                                   );
                                 },

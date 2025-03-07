@@ -1,9 +1,14 @@
 import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:flutter_tts/flutter_tts.dart';
 import 'package:neurithm/widgets/wavesBackground.dart';
-import 'package:neurithm/screens/confirmationPage.dart';
+import 'package:http/http.dart' as http;
+import 'package:audioplayers/audioplayers.dart';
+import 'dart:convert';
+import 'dart:io';
+import 'package:path_provider/path_provider.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+
 
 class RecitePage extends StatefulWidget {
   final String sentence;
@@ -16,10 +21,13 @@ class RecitePage extends StatefulWidget {
 
 class _RecitePageState extends State<RecitePage>
     with SingleTickerProviderStateMixin {
-  final FlutterTts _flutterTts = FlutterTts();
   late AnimationController _animationController;
   late Timer _waveTimer;
   List<double> waveHeights = List.filled(20, 0); // Initial wave heights
+  final AudioPlayer _audioPlayer = AudioPlayer();
+  bool _isPlaying = false;
+  bool _isGenerating = false;
+  String? _audioFilePath; // Store the path of the generated audio file
 
   @override
   void initState() {
@@ -34,12 +42,13 @@ class _RecitePageState extends State<RecitePage>
     // Start dynamic wave animation
     _startWaveAnimation();
 
-    // Start TTS
-    _speak(widget.sentence);
+    // Start Coqui TTS and play audio immediately
+    synthesizeSpeech(widget.sentence);
   }
 
   void _startWaveAnimation() {
     _waveTimer = Timer.periodic(const Duration(milliseconds: 100), (timer) {
+      if (!mounted) return; // Check if the widget is still mounted
       setState(() {
         waveHeights = List.generate(
           20,
@@ -51,18 +60,116 @@ class _RecitePageState extends State<RecitePage>
     });
   }
 
-  Future<void> _speak(String sentence) async {
-    await _flutterTts.setLanguage("en-US");
-    await _flutterTts.setSpeechRate(0.5);
-    await _flutterTts.setVolume(1.0);
-    await _flutterTts.speak(sentence);
+  Future<void> synthesizeSpeech(String text) async {
+    String? accessToken = dotenv.env['GOOGLE_CLOUD_TTS_API_KEY'];
+    if (!mounted) return;
+
+    setState(() {
+      _isGenerating = true;
+    });
+
+    try {
+      final url = Uri.parse(
+          'https://texttospeech.googleapis.com/v1/text:synthesize?key=$accessToken');
+
+      final response = await http.post(
+        url,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          "input": {"text": text},
+          "voice": {
+            "languageCode": "ar-XA", // Arabic voice
+            "name": "ar-XA-Standard-D" // Example Arabic voice
+          },
+          "audioConfig": {
+            "audioEncoding": "LINEAR16" // WAV format
+          }
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> responseData = jsonDecode(response.body);
+        final String audioContent = responseData['audioContent'];
+
+        if (audioContent != null) {
+          final directory = await getTemporaryDirectory();
+          final filePath = '${directory.path}/output.wav';
+          File audioFile = File(filePath);
+          await audioFile.writeAsBytes(base64Decode(audioContent));
+
+          setState(() {
+            _audioFilePath = filePath;
+          });
+
+          await _playAudio(filePath);
+        }
+      } else {
+        print(
+            'Failed to generate speech: ${response.statusCode} - ${response.body}');
+      }
+    } catch (e) {
+      print('Error in synthesizeSpeech: $e');
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isGenerating = false;
+        });
+      }
+    }
+  }
+
+  Future<void> _playAudio(String filePath) async {
+    if (!mounted) return; // Check if the widget is still mounted
+
+    setState(() {
+      _isPlaying = true;
+    });
+
+    print('Attempting to play audio from: $filePath');
+
+    try {
+      await _audioPlayer.play(DeviceFileSource(filePath));
+      print('Audio playback started');
+
+      _audioPlayer.onPlayerStateChanged.listen((state) {
+        if (!mounted) return; // Check if the widget is still mounted
+        print('Player state: $state');
+        if (state == PlayerState.completed) {
+          if (mounted) {
+            setState(() {
+              _isPlaying = false;
+            });
+          }
+          print('Audio playback completed');
+        }
+      });
+    } catch (e) {
+      print('Error playing audio: $e');
+      if (mounted) {
+        setState(() {
+          _isPlaying = false;
+        });
+      }
+    }
+  }
+
+  Future<void> _reciteAgain() async {
+    if (!mounted) return; // Check if the widget is still mounted
+
+    if (_audioFilePath != null) {
+      // If audio file already exists, play it immediately
+      await _playAudio(_audioFilePath!);
+    } else {
+      // If audio file doesn't exist, generate it first
+      await synthesizeSpeech(widget.sentence);
+    }
   }
 
   @override
   void dispose() {
     _animationController.dispose();
     _waveTimer.cancel();
-    _flutterTts.stop();
+    _audioPlayer.dispose();
     super.dispose();
   }
 
@@ -110,7 +217,7 @@ class _RecitePageState extends State<RecitePage>
                     width: double.infinity,
                     child: ElevatedButton(
                       onPressed: () {
-                        Navigator.pop(context);
+                        Navigator.popUntil(context, (route) => route.isFirst);
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor:
@@ -124,13 +231,13 @@ class _RecitePageState extends State<RecitePage>
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Icon(
-                            Icons.arrow_back,
+                            Icons.home,
                             color: Color(0xFF1A2A3A),
                             size: 25,
                           ),
                           SizedBox(width: 10),
                           Text(
-                            "Return",
+                            "Return to Home",
                             style: TextStyle(
                               fontSize: 25,
                               fontWeight: FontWeight.normal,
@@ -141,12 +248,15 @@ class _RecitePageState extends State<RecitePage>
                       ),
                     ),
                   ),
-                       const SizedBox(height: 40),
+                  const SizedBox(height: 20),
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
-                      onPressed: () {
-                      },
+                      onPressed: _isPlaying
+                          ? null
+                          : () {
+                              _reciteAgain();
+                            },
                       style: ElevatedButton.styleFrom(
                         backgroundColor:
                             const Color.fromARGB(255, 240, 240, 240),
@@ -159,13 +269,13 @@ class _RecitePageState extends State<RecitePage>
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Icon(
-                            Icons.repeat,
+                            Icons.replay,
                             color: Color(0xFF1A2A3A),
                             size: 25,
                           ),
                           SizedBox(width: 10),
                           Text(
-                            "Replay",
+                            "Recite Again",
                             style: TextStyle(
                               fontSize: 25,
                               fontWeight: FontWeight.normal,

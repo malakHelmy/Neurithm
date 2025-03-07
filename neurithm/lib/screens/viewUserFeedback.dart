@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:neurithm/widgets/appbar.dart';
 import 'package:neurithm/widgets/wavesBackground.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class ViewUserFeedbackPage extends StatefulWidget {
   const ViewUserFeedbackPage({Key? key}) : super(key: key);
@@ -131,52 +130,6 @@ class _FeedbackPageState extends State<ViewUserFeedbackPage> {
           aggregatedFeedbackList; // Refresh the list with unresolved feedbacks only
     });
   }
-//////////////////////
-  Future<void> _replyToUser(Map<String, dynamic> feedback) async {
-    var patientName = feedback['userName'];
-  List<String> nameParts = patientName.split(' ');
-  if (nameParts.length < 2) {
-    print('Invalid userName format');
-    return;
-  }
-
-  String firstName = nameParts[0];
-  String lastName = nameParts.sublist(1).join(' ');
-
-  var userQuery = await FirebaseFirestore.instance
-      .collection('patients')
-      .where('firstName', isEqualTo: firstName)
-      .where('lastName', isEqualTo: lastName)
-      .get();
-
-  if (userQuery.docs.isEmpty) {
-    print('No user found with this name');
-    return;
-  }
-
-  String userEmail = userQuery.docs.first['email'];
-
-final Uri emailUri = Uri(
-  scheme: 'mailto',
-  path: userEmail,
-  queryParameters: {
-    'subject': 'Response to your feedback',
-    'body': 'Hello Jana Omran,\n\nThank you for your feedback.\n We will work on fixing the issues you have stated.\n Thank you for understanding!'
-  },
-);
-
-String urlString = emailUri.toString();
-
-// Replace + with space in the URL
-urlString = urlString.replaceAll('+', ' ');
-
-if (await canLaunch(urlString)) {
-  await launch(urlString);
-} else {
-  print('Could not launch email');
-}
-
-}///////////////////////////
 
   Future<void> _markAsResolved(Map<String, dynamic> feedback) async {
     var patientName = feedback['userName'];
@@ -445,8 +398,8 @@ if (await canLaunch(urlString)) {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 TextButton.icon(
-                  onPressed: () async{
-                       await _replyToUser(feedback);
+                  onPressed: () {
+                    // Implement reply functionality
                   },
                   icon: const Icon(
                     Icons.reply,
