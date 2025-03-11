@@ -91,19 +91,17 @@ class _RecitePageState extends State<RecitePage>
         final Map<String, dynamic> responseData = jsonDecode(response.body);
         final String audioContent = responseData['audioContent'];
 
-        if (audioContent != null) {
-          final directory = await getTemporaryDirectory();
-          final filePath = '${directory.path}/output.wav';
-          File audioFile = File(filePath);
-          await audioFile.writeAsBytes(base64Decode(audioContent));
+        final directory = await getTemporaryDirectory();
+        final filePath = '${directory.path}/output.wav';
+        File audioFile = File(filePath);
+        await audioFile.writeAsBytes(base64Decode(audioContent));
 
-          setState(() {
-            _audioFilePath = filePath;
-          });
+        setState(() {
+          _audioFilePath = filePath;
+        });
 
-          await _playAudio(filePath);
-        }
-      } else {
+        await _playAudio(filePath);
+            } else {
         print(
             'Failed to generate speech: ${response.statusCode} - ${response.body}');
       }
