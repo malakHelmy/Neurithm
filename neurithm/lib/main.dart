@@ -9,7 +9,7 @@ import 'screens/adminDashboard.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 Future<void> main() async {
-    // await dotenv.load();
+  await dotenv.load();
   // Ensure Flutter bindings are initialized
   WidgetsFlutterBinding.ensureInitialized();
   // Initialize Firebase with provided options
