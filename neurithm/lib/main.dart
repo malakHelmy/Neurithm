@@ -4,15 +4,10 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:neurithm/screens/confirmationPage.dart';
 import 'package:neurithm/screens/signalReadingPage.dart';
 import 'package:neurithm/screens/welcomeScreen.dart';
-import 'package:neurithm/screens/voicesettings.dart';
-import 'package:neurithm/services/addWordBank.dart';
-import 'screens/loginPage.dart';
-import 'screens/recitePage.dart';
-import 'screens/adminDashboard.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 Future<void> main() async {
-  // await dotenv.load();
+  await dotenv.load();
   // Ensure Flutter bindings are initialized
   WidgetsFlutterBinding.ensureInitialized();
   // Initialize Firebase with provided options
@@ -32,7 +27,7 @@ Future<void> main() async {
     ),
   );
   FirebaseFirestore.instance.settings = const Settings(
-    persistenceEnabled: true, // ✅ enables local caching
+    persistenceEnabled: true, 
   );
 
   runApp(ThoughtToSpeechApp());
@@ -47,9 +42,7 @@ class ThoughtToSpeechApp extends StatelessWidget {
         scaffoldBackgroundColor: const Color(0xFF1A2A3A),
         primaryColor: const Color(0xFF394B58),
       ),
-      home: ConfirmationPage(
-        processedSentence: 'hi',
-      ),
+      home: Signalreadingpage(),
     );
   }
 }

@@ -151,6 +151,8 @@ class Signalreadingpage extends StatelessWidget {
                                   category.name,
                                   style: const TextStyle(
                                     fontSize: 13,
+                                    color: Color(0xFF1A2A3A),
+                                    fontWeight: FontWeight.normal,
                                   ),
                                 ),
                               );
@@ -282,6 +284,8 @@ class Signalreadingpage extends StatelessWidget {
             label,
             style: const TextStyle(
               fontSize: 15,
+              color: Color(0xFF1A2A3A),
+              fontWeight: FontWeight.normal,
             ),
           ),
         ],
