@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart';
@@ -33,7 +35,61 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
 
   Future<void> _initializeData() async {
     await _fetchUser();
-    await _fetchFeedbackData();
+    await _loadFeedbackFromCache();
+    _fetchFeedbackDataInBackground();
+  }
+
+  Future<void> _loadFeedbackFromCache() async {
+    final prefs = await SharedPreferences.getInstance();
+    final cached = prefs.getString('cached_feedback');
+
+    if (cached != null) {
+      try {
+        final decoded = Map<String, dynamic>.from(jsonDecode(cached));
+        final loaded = decoded.map(
+          (key, value) => MapEntry(key, List<String>.from(value)),
+        );
+
+        if (mounted) {
+          setState(() {
+            _feedbackData = loaded;
+            _isLoading = false;
+          });
+        }
+      } catch (e) {
+        print("Failed to decode cached feedback: $e");
+      }
+    }
+  }
+
+  Future<void> _fetchFeedbackDataInBackground() async {
+    final feedbackSnapshot =
+        await FirebaseFirestore.instance.collection('feedback').get();
+
+    Map<String, List<String>> feedbackData = {};
+
+    for (var doc in feedbackSnapshot.docs) {
+      final data = doc.data();
+      final category = data['category'] ?? 'Uncategorized';
+      final comment = data['comment'] ?? '';
+
+      if (!feedbackData.containsKey(category)) {
+        feedbackData[category] = [];
+      }
+
+      feedbackData[category]!.add(comment);
+    }
+
+    // ✅ Cache the data locally
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setString('cached_feedback', jsonEncode(feedbackData));
+
+    if (mounted) {
+      setState(() {
+        _feedbackData = feedbackData;
+        _isLoading = false;
+      });
+    }
   }
 
   Future<void> _fetchUser() async {
@@ -41,23 +97,6 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
     if (mounted) {
       setState(() {
         _currentUser = user;
-      });
-    }
-  }
-
-  Future<void> _fetchFeedbackData() async {
-    List<String> categories = await _feedbackService.fetchCategories();
-    Map<String, List<String>> feedbackData = {};
-
-    for (String category in categories) {
-      feedbackData[category] =
-          await _feedbackService.fetchCommentsByCategory(category);
-    }
-
-    if (mounted) {
-      setState(() {
-        _feedbackData = feedbackData;
-        _isLoading = false;
       });
     }
   }
@@ -148,70 +187,66 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _isLoading
-                    ? const Center(child: CircularProgressIndicator())
-                    : Expanded(
-                        child: SingleChildScrollView(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: _feedbackData.entries.map((entry) {
-                              return Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Padding(
+                Expanded(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: _feedbackData.entries.map((entry) {
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(vertical: 8.0),
+                              child: Text(
+                                entry.key,
+                                style: const TextStyle(
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white70,
+                                ),
+                              ),
+                            ),
+                            Wrap(
+                              spacing: 10.0,
+                              runSpacing: 10.0,
+                              children: entry.value.map((comment) {
+                                bool isSelected =
+                                    _selectedComments.contains(comment);
+                                return ElevatedButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      isSelected
+                                          ? _selectedComments.remove(comment)
+                                          : _selectedComments.add(comment);
+                                    });
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: isSelected
+                                        ? const Color(0xFF1A2A3A)
+                                        : const Color.fromARGB(
+                                            255, 206, 206, 206),
+                                    foregroundColor: isSelected
+                                        ? Colors.white70
+                                        : Colors.black,
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(12)),
                                     padding: const EdgeInsets.symmetric(
-                                        vertical: 8.0),
-                                    child: Text(
-                                      entry.key,
-                                      style: const TextStyle(
-                                        fontSize: 22,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.white70,
-                                      ),
-                                    ),
+                                        vertical: 12, horizontal: 24),
                                   ),
-                                  Wrap(
-                                    spacing: 10.0,
-                                    runSpacing: 10.0,
-                                    children: entry.value.map((comment) {
-                                      bool isSelected =
-                                          _selectedComments.contains(comment);
-                                      return ElevatedButton(
-                                        onPressed: () {
-                                          setState(() {
-                                            isSelected
-                                                ? _selectedComments
-                                                    .remove(comment)
-                                                : _selectedComments
-                                                    .add(comment);
-                                          });
-                                        },
-                                        style: ElevatedButton.styleFrom(
-                                          backgroundColor: isSelected
-                                              ? const Color(0xFF1A2A3A)
-                                              : const Color.fromARGB(
-                                                  255, 206, 206, 206),
-                                          foregroundColor: isSelected
-                                              ? Colors.white70
-                                              : Colors.black,
-                                          shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(12)),
-                                          padding: const EdgeInsets.symmetric(
-                                              vertical: 12, horizontal: 24),
-                                        ),
-                                        child: Text(comment,
-                                            textAlign: TextAlign.center),
-                                      );
-                                    }).toList(),
-                                  ),
-                                  const SizedBox(height: 15),
-                                ],
-                              );
-                            }).toList(),
-                          ),
-                        ),
-                      ),
+                                  child: Text(comment,
+                                      textAlign: TextAlign.center),
+                                );
+                              }).toList(),
+                            ),
+                            const SizedBox(height: 15),
+                          ],
+                        );
+                      }).toList(),
+                    ),
+                  ),
+                ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [

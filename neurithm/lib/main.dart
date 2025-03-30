@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:neurithm/screens/confirmationPage.dart';
@@ -6,7 +7,7 @@ import 'package:neurithm/screens/welcomeScreen.dart';
 import 'package:neurithm/screens/voicesettings.dart';
 import 'package:neurithm/services/addWordBank.dart';
 import 'screens/loginPage.dart';
-import 'screens/recitePage.dart'; 
+import 'screens/recitePage.dart';
 import 'screens/adminDashboard.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
@@ -30,6 +31,9 @@ Future<void> main() async {
           "1:49235168369:android:b283ac169a67724e455fd0", // From "mobilesdk_app_id"
     ),
   );
+  FirebaseFirestore.instance.settings = const Settings(
+    persistenceEnabled: true, // ✅ enables local caching
+  );
 
   runApp(ThoughtToSpeechApp());
 }
@@ -43,7 +47,9 @@ class ThoughtToSpeechApp extends StatelessWidget {
         scaffoldBackgroundColor: const Color(0xFF1A2A3A),
         primaryColor: const Color(0xFF394B58),
       ),
-      home: ConfirmationPage(processedSentence: 'hi',),
+      home: ConfirmationPage(
+        processedSentence: 'hi',
+      ),
     );
   }
 }
