@@ -1,8 +1,12 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:neurithm/services/biometricAuth.dart';
 import '../screens/homePage.dart';
 import 'inputDecoration.dart';
 import '../services/auth.dart';
 import '../screens/adminDashboard.dart';
+import 'package:local_auth/local_auth.dart';
 
 class LoginForm extends StatefulWidget {
   final bool showLoginForm;
@@ -22,6 +26,7 @@ class LoginForm extends StatefulWidget {
 
 class _LoginFormState extends State<LoginForm> {
   final AuthMethods _authMethods = AuthMethods();
+  final LocalAuthentication _localAuth = LocalAuthentication();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
@@ -32,6 +37,29 @@ class _LoginFormState extends State<LoginForm> {
     _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    if (widget.showLoginForm && (Platform.isIOS || Platform.isAndroid)) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _authenticateUser();
+      });
+    }
+  }
+
+  Future<void> _authenticateUser() async {
+    bool isAuthenticated = await BiometricAuth.authenticateWithFaceID(context);
+    if (isAuthenticated && mounted) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => HomePage(showRatingPopup: false),
+        ),
+      );
+    }
   }
 
   @override

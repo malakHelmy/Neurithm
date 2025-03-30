@@ -4,12 +4,12 @@ import 'package:neurithm/screens/welcomeScreen.dart';
 import 'package:neurithm/screens/voicesettings.dart';
 import 'package:neurithm/services/addWordBank.dart';
 import 'screens/loginPage.dart';
-import 'screens/recitePage.dart'; // Import the FeedbackService
+import 'screens/recitePage.dart'; 
 import 'screens/adminDashboard.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 Future<void> main() async {
-    await dotenv.load();
+    // await dotenv.load();
   // Ensure Flutter bindings are initialized
   WidgetsFlutterBinding.ensureInitialized();
   // Initialize Firebase with provided options

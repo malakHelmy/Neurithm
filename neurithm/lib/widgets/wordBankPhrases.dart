@@ -47,7 +47,7 @@ class _PhrasesPageState extends State<WordBankPhrases> {
               itemCount: phrases.length,
               itemBuilder: (context, index) {
                 return ListTile(
-                  title: Text(phrases[index].phrase),
+                  title: Text(phrases[index].phrase, style: TextStyle(fontSize: 24)),
                   leading: Icon(Icons.chat),
                 );
               },
