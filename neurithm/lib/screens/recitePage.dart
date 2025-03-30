@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:neurithm/screens/signalReadingPage.dart';
 import 'package:neurithm/widgets/wavesBackground.dart';
 import 'package:http/http.dart' as http;
 import 'package:audioplayers/audioplayers.dart';
@@ -8,7 +9,6 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-
 
 class RecitePage extends StatefulWidget {
   final String sentence;
@@ -101,7 +101,7 @@ class _RecitePageState extends State<RecitePage>
         });
 
         await _playAudio(filePath);
-            } else {
+      } else {
         print(
             'Failed to generate speech: ${response.statusCode} - ${response.body}');
       }
@@ -174,6 +174,17 @@ class _RecitePageState extends State<RecitePage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+      ),
+      extendBodyBehindAppBar: true,
       body: Container(
         decoration: gradientBackground,
         child: Stack(children: [
@@ -215,7 +226,11 @@ class _RecitePageState extends State<RecitePage>
                     width: double.infinity,
                     child: ElevatedButton(
                       onPressed: () {
-                        Navigator.popUntil(context, (route) => route.isFirst);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => Signalreadingpage()),
+                        );
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor:
@@ -229,13 +244,13 @@ class _RecitePageState extends State<RecitePage>
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Icon(
-                            Icons.home,
+                            Icons.psychology,
                             color: Color(0xFF1A2A3A),
                             size: 25,
                           ),
                           SizedBox(width: 10),
                           Text(
-                            "Return to Home",
+                            "Return to Thinking",
                             style: TextStyle(
                               fontSize: 25,
                               fontWeight: FontWeight.normal,

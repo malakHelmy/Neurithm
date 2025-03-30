@@ -14,6 +14,17 @@ class ConfirmationPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+      ),
+      extendBodyBehindAppBar: true,
       resizeToAvoidBottomInset: false,
       body: Container(
         decoration: gradientBackground,
@@ -116,13 +127,14 @@ class ConfirmationPage extends StatelessWidget {
                             child: ElevatedButton(
                               onPressed: () {
                                 // Action to accept the sentence
-                               // String sentence =
-                                 //   "This is the sentence to be recited"; // Replace with your dynamic sentence
+                                // String sentence =
+                                //   "This is the sentence to be recited"; // Replace with your dynamic sentence
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
                                     builder: (context) => RecitePage(
-                                   sentence: processedSentence, // Use the actual predicted text
+                                      sentence:
+                                          processedSentence, // Use the actual predicted text
                                     ),
                                   ),
                                 );
