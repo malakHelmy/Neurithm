@@ -1,8 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:neurithm/screens/confirmationPage.dart';
-import 'package:neurithm/screens/signalReadingPage.dart';
 import 'package:neurithm/screens/welcomeScreen.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
@@ -42,7 +40,7 @@ class ThoughtToSpeechApp extends StatelessWidget {
         scaffoldBackgroundColor: const Color(0xFF1A2A3A),
         primaryColor: const Color(0xFF394B58),
       ),
-      home: Signalreadingpage(),
+      home: WelcomeScreen(),
     );
   }
 }

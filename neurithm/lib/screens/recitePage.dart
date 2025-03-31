@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:neurithm/screens/feedbackScreen.dart';
 import 'package:neurithm/screens/signalReadingPage.dart';
 import 'package:neurithm/widgets/wavesBackground.dart';
 import 'package:http/http.dart' as http;
@@ -293,6 +294,45 @@ class _RecitePageState extends State<RecitePage>
                               fontSize: 25,
                               fontWeight: FontWeight.normal,
                               color: Color(0xFF1A2A3A),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const FeedbackScreen()),
+                        );
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor:Colors.green,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(50),
+                        ),
+                        padding: const EdgeInsets.symmetric(vertical: 13),
+                      ),
+                      child: const Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            Icons.check_circle,
+                            color: Color(0xFF1A2A3A),
+                            size: 25,
+                          ),
+                          SizedBox(width: 10),
+                          Text(
+                            "Finish",
+                            style: TextStyle(
+                              fontSize: 25,
+                              fontWeight: FontWeight.normal,
+                              color: Colors.white,
                             ),
                           ),
                         ],
