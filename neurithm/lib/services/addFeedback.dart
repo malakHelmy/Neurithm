@@ -6,7 +6,7 @@ class FeedbackService {
 
   // Add a single feedback entry to Firestore
   Future<void> addFeedback(FeedbackModel feedback) async {
-    var feedbackRef = _db.collection('feedback').doc(); // Auto-generate ID
+    var feedbackRef = _db.collection('feedback').doc();
     await feedbackRef.set(feedback.toMap());
   }
 
@@ -19,20 +19,41 @@ class FeedbackService {
       {"category": "Text Output", "comment": "Slow response time"},
       {"category": "Text Output", "comment": "Captured my intent well"},
       {"category": "Text Output", "comment": "Too many text regenerations"},
-      {"category": "Text Output", "comment": "Regenerations don’t improve accuracy"},
+      {
+        "category": "Text Output",
+        "comment": "Regenerations don’t improve accuracy"
+      },
       {"category": "Text Output", "comment": "Regeneration was useful"},
       {"category": "Text Output", "comment": "Accurate word detection"},
-      {"category": "Text to Speech Performance", "comment": "Speech sounded robotic"},
-      {"category": "Text to Speech Performance", "comment": "Voice was too monotone"},
-      {"category": "Text to Speech Performance", "comment": "Clear and natural voice"},
+      {
+        "category": "Text to Speech Performance",
+        "comment": "Speech sounded robotic"
+      },
+      {
+        "category": "Text to Speech Performance",
+        "comment": "Voice was too monotone"
+      },
+      {
+        "category": "Text to Speech Performance",
+        "comment": "Clear and natural voice"
+      },
       {"category": "Interface & Usability", "comment": "Easy to navigate"},
       {"category": "Interface & Usability", "comment": "Smooth and responsive"},
       {"category": "Interface & Usability", "comment": "Too complicated"},
       {"category": "Interface & Usability", "comment": "Needs better layout"},
       {"category": "Word Bank & Phrases", "comment": "Useful phrase selection"},
-      {"category": "Word Bank & Phrases", "comment": "Needs more word categories"},
-      {"category": "Word Bank & Phrases", "comment": "Not enough phrases in each category"},
-      {"category": "Word Bank & Phrases", "comment": "Helpful for quick communication"},
+      {
+        "category": "Word Bank & Phrases",
+        "comment": "Needs more word categories"
+      },
+      {
+        "category": "Word Bank & Phrases",
+        "comment": "Not enough phrases in each category"
+      },
+      {
+        "category": "Word Bank & Phrases",
+        "comment": "Helpful for quick communication"
+      },
     ];
 
     for (var feedback in predefinedFeedback) {

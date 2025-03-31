@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import '../models/admin.dart';
+import 'package:neurithm/models/admin.dart';
 
 class AdminProfileMethods {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -11,9 +11,9 @@ class AdminProfileMethods {
     try {
       User? user = _auth.currentUser;
       if (user != null) {
-        DocumentSnapshot adminDoc = 
+        DocumentSnapshot adminDoc =
             await _firestore.collection('admins').doc(user.uid).get();
-        
+
         if (adminDoc.exists) {
           return Admin(
             uid: user.uid,
@@ -41,13 +41,9 @@ class AdminProfileMethods {
     try {
       User? user = _auth.currentUser;
       if (user == null) {
-        return {
-          'success': false,
-          'message': 'No authenticated user found'
-        };
+        return {'success': false, 'message': 'No authenticated user found'};
       }
 
-      // Update Firestore document
       Map<String, dynamic> updateData = {
         'firstName': firstName,
         'lastName': lastName,
@@ -73,11 +69,7 @@ class AdminProfileMethods {
         };
       }
 
-      return {
-        'success': true,
-        'message': 'Profile updated successfully'
-      };
-
+      return {'success': true, 'message': 'Profile updated successfully'};
     } catch (e) {
       if (e is FirebaseAuthException) {
         switch (e.code) {
@@ -92,10 +84,7 @@ class AdminProfileMethods {
               'message': 'Password should be at least 6 characters'
             };
           case 'invalid-email':
-            return {
-              'success': false,
-              'message': 'Invalid email address'
-            };
+            return {'success': false, 'message': 'Invalid email address'};
           default:
             return {
               'success': false,
@@ -103,10 +92,7 @@ class AdminProfileMethods {
             };
         }
       }
-      return {
-        'success': false,
-        'message': 'An unexpected error occurred'
-      };
+      return {'success': false, 'message': 'An unexpected error occurred'};
     }
   }
 }

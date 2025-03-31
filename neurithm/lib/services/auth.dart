@@ -13,9 +13,9 @@ class AuthMethods {
       User? user = _auth.currentUser;
       if (user != null) {
         // Check admin collection first
-        DocumentSnapshot adminDoc = 
+        DocumentSnapshot adminDoc =
             await _firestore.collection('admins').doc(user.uid).get();
-        
+
         if (adminDoc.exists) {
           return Admin(
             uid: user.uid,
@@ -27,9 +27,9 @@ class AuthMethods {
         }
 
         // If not admin, check patient collection
-        DocumentSnapshot patientDoc = 
+        DocumentSnapshot patientDoc =
             await _firestore.collection('patients').doc(user.uid).get();
-        
+
         if (patientDoc.exists) {
           return Patient(
             uid: user.uid,
@@ -46,15 +46,14 @@ class AuthMethods {
     return null;
   }
 
-   // Sign-Up with Email and Password
+  // Sign-Up with Email and Password
   Future<bool> signUpWithEmailPassword(
       String firstName, String lastName, String email, String password) async {
     bool result = false;
     try {
       // Create the user with email and password
-      UserCredential userCredential =
-          await _auth.createUserWithEmailAndPassword(
-              email: email, password: password);
+      UserCredential userCredential = await _auth
+          .createUserWithEmailAndPassword(email: email, password: password);
       User? user = userCredential.user;
 
       if (user != null) {
@@ -75,18 +74,18 @@ class AuthMethods {
     return result;
   }
 
-
-  Future<Map<String, dynamic>> signInWithEmailPassword(String email, String password) async {
+  Future<Map<String, dynamic>> signInWithEmailPassword(
+      String email, String password) async {
     try {
-      UserCredential userCredential = 
-          await _auth.signInWithEmailAndPassword(email: email, password: password);
+      UserCredential userCredential = await _auth.signInWithEmailAndPassword(
+          email: email, password: password);
       User? user = userCredential.user;
 
       if (user != null) {
         // Check if user is admin
-        DocumentSnapshot adminDoc = 
+        DocumentSnapshot adminDoc =
             await _firestore.collection('admins').doc(user.uid).get();
-        
+
         if (adminDoc.exists) {
           return {
             'success': true,
@@ -102,9 +101,9 @@ class AuthMethods {
         }
 
         // Check if user is patient
-        DocumentSnapshot patientDoc = 
+        DocumentSnapshot patientDoc =
             await _firestore.collection('patients').doc(user.uid).get();
-        
+
         if (patientDoc.exists) {
           return {
             'success': true,
@@ -126,7 +125,7 @@ class AuthMethods {
     return {'success': false, 'error': 'User not found'};
   }
 
-  // Keep existing Google Sign-In method (will always create patient accounts)
+  // Keep existing Google Sign-In method
   Future<bool> signInWithGoogle() async {
     bool result = false;
     try {
@@ -139,14 +138,14 @@ class AuthMethods {
       final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
       if (googleUser == null) return false;
 
-      final GoogleSignInAuthentication googleAuth = 
+      final GoogleSignInAuthentication googleAuth =
           await googleUser.authentication;
       final credential = GoogleAuthProvider.credential(
         accessToken: googleAuth.accessToken,
         idToken: googleAuth.idToken,
       );
 
-      UserCredential userCredential = 
+      UserCredential userCredential =
           await _auth.signInWithCredential(credential);
       User? user = userCredential.user;
 
