@@ -7,15 +7,14 @@ class FeedbackModel {
 
   Map<String, dynamic> toMap() {
     return {
-      'id': id,
       'category': category,
       'comment': comment,
     };
   }
 
-  factory FeedbackModel.fromMap(Map<String, dynamic> map, String documentId) {
+  factory FeedbackModel.fromMap(Map<String, dynamic> map, String id) {
     return FeedbackModel(
-      id: documentId,
+      id: id,
       category: map['category'],
       comment: map['comment'],
     );

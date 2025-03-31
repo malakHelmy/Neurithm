@@ -15,7 +15,6 @@ class PatientFeedback {
 
   Map<String, dynamic> toMap() {
     return {
-      'id': id,
       'patientId': patientId,
       'feedbackId': feedbackId,
       'submittedAt': submittedAt.toIso8601String(), 
@@ -23,9 +22,9 @@ class PatientFeedback {
     };
   }
 
-  factory PatientFeedback.fromMap(Map<String, dynamic> map, String documentId) {
+  factory PatientFeedback.fromMap(Map<String, dynamic> map, String id) {
     return PatientFeedback(
-      id: documentId,
+      id: id,
       patientId: map['patientId'],
       feedbackId: map['feedbackId'],
       submittedAt: DateTime.parse(map['submittedAt']), 

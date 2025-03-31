@@ -13,16 +13,15 @@ class RatingModel {
 
   Map<String, dynamic> toMap() {
     return {
-      'id': id,
       'patientId': patientId,
       'rating': rating,
       'submittedAt': submittedAt.toIso8601String(), 
     };
   }
 
-  factory RatingModel.fromMap(Map<String, dynamic> map, String documentId) {
+  factory RatingModel.fromMap(Map<String, dynamic> map, String id) {
     return RatingModel(
-      id: documentId,
+      id: id,
       patientId: map['patientId'],
       rating: map['rating'],
       submittedAt: DateTime.parse(map['submittedAt']), 

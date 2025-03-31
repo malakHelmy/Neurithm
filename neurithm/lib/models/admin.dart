@@ -1,5 +1,4 @@
-import 'users.dart'; 
-
+import 'package:neurithm/models/users.dart';
 
 class Admin extends Users {
   final String firstName;
@@ -11,7 +10,6 @@ class Admin extends Users {
     required String password,
     required this.firstName,
     required this.lastName,
-
   }) : super(uid: uid, email: email, password: password);
 
   @override
@@ -32,7 +30,16 @@ class Admin extends Users {
       'password': password,
       'firstName': firstName,
       'lastName': lastName,
-
     };
+  }
+
+  factory Admin.fromMap(Map<String, dynamic> map) {
+    return Admin(
+      uid: map['uid'],
+      email: map['email'],
+      password: map['password'],
+      firstName: map['firstName'],
+      lastName: map['lastName'],
+    );
   }
 }

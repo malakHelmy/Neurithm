@@ -1,4 +1,3 @@
-
 class WordBankCategory {
   final String id;
   final String name;
@@ -7,14 +6,13 @@ class WordBankCategory {
 
   Map<String, dynamic> toMap() {
     return {
-      'id': id,
       'name': name,
     };
   }
 
-  factory WordBankCategory.fromMap(Map<String, dynamic> map, String documentId) {
+  factory WordBankCategory.fromMap(Map<String, dynamic> map, String id) {
     return WordBankCategory(
-      id: documentId,
+      id: id,
       name: map['name'],
     );
   }

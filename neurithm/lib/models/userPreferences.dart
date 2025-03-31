@@ -1,6 +1,5 @@
+import 'package:neurithm/screens/voicesettings.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../screens/voicesettings.dart';
-
 class UserPreferences {
   static const String _pitchKey = 'pitch';
   static const String _genderKey = 'gender';

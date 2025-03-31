@@ -1,4 +1,4 @@
-import 'users.dart'; // Import the abstract class
+import 'package:neurithm/models/users.dart';
 
 class Patient extends Users {
   final String firstName;
@@ -14,7 +14,6 @@ class Patient extends Users {
 
   @override
   void login() {
-    // Implementation of the login method specific to Patient
     print('$firstName $lastName is logging in...');
   }
 

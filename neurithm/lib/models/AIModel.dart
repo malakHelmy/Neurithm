@@ -15,4 +15,12 @@ class AIModel {
       'firebaseUrl': firebaseUrl,
     };
   }
+
+  factory AIModel.fromMap(Map<String, dynamic> map, String id) {
+    return AIModel(
+      id: id,
+      modelType: map['modelType'],
+      firebaseUrl: map['firebaseUrl'],
+    );
+  }
 }

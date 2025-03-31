@@ -7,15 +7,14 @@ class WordBankPhrase {
 
   Map<String, dynamic> toMap() {
     return {
-      'id': id,
       'category_id': categoryId,
       'phrase': phrase,
     };
   }
 
-  factory WordBankPhrase.fromMap(Map<String, dynamic> map, String documentId) {
+  factory WordBankPhrase.fromMap(Map<String, dynamic> map, String id) {
     return WordBankPhrase(
-      id: documentId,
+      id: id,
       categoryId: map['category_id'],
       phrase: map['phrase'],
     );
