@@ -5,8 +5,8 @@ const BoxDecoration gradientBackground = BoxDecoration(
     begin: Alignment.topCenter,
     end: Alignment.bottomCenter,
     colors: [
-      Color.fromARGB(255, 79, 114, 190), // start color
-      Color(0xFF1A2A3A), // end color
+      Color.fromARGB(255, 79, 114, 190), 
+      Color(0xFF1A2A3A), 
     ],
   ),
 );
@@ -18,12 +18,11 @@ const BoxDecoration darkGradientBackground = BoxDecoration(
   ),
 );
 
-//old waves background code
 Positioned waveBackground = Positioned.fill(
   child: Opacity(
-    opacity: 0.50, // Adjust opacity as desired
+    opacity: 0.50,
     child: Image.asset(
-      'assets/images/waves.jpg', // Your waves image path
+      'assets/images/waves.jpg',
       fit: BoxFit.cover,
     ),
   ),
@@ -35,7 +34,7 @@ AspectRatio wavesBackground(screenWidth, screenHeight) {
     child: Opacity(
       opacity: 0.50,
       child: Image.asset(
-        'assets/images/waves.jpg', // Your waves image path
+        'assets/images/waves.jpg',
         fit: BoxFit.fitHeight,
       ),
     ),

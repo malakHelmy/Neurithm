@@ -1,16 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:neurithm/screens/aboutUs.dart';
+import 'package:neurithm/screens/help.dart';
+import 'package:neurithm/screens/homepage.dart';
 import 'package:neurithm/screens/loginPage.dart';
 import 'package:neurithm/screens/userProfile.dart';
-import 'package:neurithm/widgets/logInForm.dart';
-import '../screens/homePage.dart';
-import '../screens/wordBank.dart';
-import '../screens/help.dart';
-import '../screens/aboutUs.dart';
-import '../services/auth.dart';
+import 'package:neurithm/screens/wordBank.dart';
+import 'package:neurithm/services/auth.dart';
 
 Drawer sideAppBar(context) {
-  
-    final AuthMethods _authMethods = AuthMethods();
+  final AuthMethods _authMethods = AuthMethods();
 
   return Drawer(
     child: ListView(
@@ -40,24 +38,25 @@ Drawer sideAppBar(context) {
                 fontFamily: 'Lato',
                 fontWeight: FontWeight.bold,
               )),
-          onTap: () {Navigator.push(
+          onTap: () {
+            Navigator.push(
                 context,
                 MaterialPageRoute(
                   builder: (context) => AboutPage(),
                 ));
           },
         ),
-        // ListTile(
-        //     title: const Text('Contact',
-        //         style: TextStyle(
-        //           color: Color.fromARGB(255, 206, 206, 206),
-        //           fontSize: 25,
-        //           fontFamily: 'Lato',
-        //           fontWeight: FontWeight.bold,
-        //         )),
-        //     onTap: () {
-        //       Navigator.pop(context);
-        //     }),
+        ListTile(
+            title: const Text('Contact',
+                style: TextStyle(
+                  color: Color.fromARGB(255, 206, 206, 206),
+                  fontSize: 25,
+                  fontFamily: 'Lato',
+                  fontWeight: FontWeight.bold,
+                )),
+            onTap: () {
+              Navigator.pop(context);
+            }),
         ListTile(
           title: const Text('Help and Support',
               style: TextStyle(
@@ -117,11 +116,11 @@ Drawer sideAppBar(context) {
           onTap: () {
             _authMethods.signOut();
             Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => LoginPage(),
-                      ),
-                    );
+              context,
+              MaterialPageRoute(
+                builder: (context) => LoginPage(),
+              ),
+            );
           },
         ),
       ],
@@ -131,7 +130,8 @@ Drawer sideAppBar(context) {
 
 AppBar Appbar(GlobalKey<ScaffoldState> scaffoldKey) {
   return AppBar(
-    backgroundColor: Colors.transparent, elevation: 0.0,
+    backgroundColor: Colors.transparent,
+    elevation: 0.0,
     leading: IconButton(
       icon: const Icon(
         Icons.menu,
@@ -150,7 +150,7 @@ AppBar Appbar(GlobalKey<ScaffoldState> scaffoldKey) {
         fontFamily: 'Vonique',
       ),
     ),
-    centerTitle: true, // Centers the title in the app bar
+    centerTitle: true,
     actions: [
       IconButton(
         icon: const Icon(
@@ -158,9 +158,7 @@ AppBar Appbar(GlobalKey<ScaffoldState> scaffoldKey) {
           color: Color.fromARGB(255, 130, 197, 116),
           size: 25,
         ),
-        onPressed: () {
-          // Add functionality here
-        },
+        onPressed: () {},
       ),
     ],
   );
@@ -187,7 +185,6 @@ Padding appBar(GlobalKey<ScaffoldState> scaffoldKey) {
   );
 }
 
-//get screen width and height (for better responsiveness)
 getScreenWidth(context) {
   return MediaQuery.of(context).size.width;
 }

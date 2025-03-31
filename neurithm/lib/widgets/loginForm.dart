@@ -1,12 +1,11 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:neurithm/services/biometricAuth.dart';
-import '../screens/homePage.dart';
-import 'inputDecoration.dart';
-import '../services/auth.dart';
-import '../screens/adminDashboard.dart';
+import 'dart:io';
 import 'package:local_auth/local_auth.dart';
+import 'package:neurithm/screens/adminDashboard.dart';
+import 'package:neurithm/screens/homepage.dart';
+import 'package:neurithm/services/auth.dart';
+import 'package:neurithm/services/biometricAuth.dart';
+import 'package:neurithm/widgets/customTextField.dart';
 
 class LoginForm extends StatefulWidget {
   final bool showLoginForm;
@@ -121,7 +120,7 @@ class _LoginFormState extends State<LoginForm> {
                   Align(
                     alignment: Alignment.centerRight,
                     child: TextButton(
-                      onPressed: () {}, // Implement password reset
+                      onPressed: () {},
                       child: const Text(
                         "Forgot password?",
                         style: TextStyle(color: Colors.white, fontSize: 17),

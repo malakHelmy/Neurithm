@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:neurithm/models/wordBank.dart';
 import 'package:neurithm/models/wordBankCategories.dart';
-import 'package:neurithm/services/addwordBank.dart';
+import 'package:neurithm/services/addWordBank.dart';
 
 class WordBankPhrases extends StatefulWidget {
   final WordBankCategory category;
@@ -42,13 +42,13 @@ class _PhrasesPageState extends State<WordBankPhrases> {
     return Scaffold(
       appBar: AppBar(title: Text(widget.category.name)),
       body: isLoading
-          ? Center(child: CircularProgressIndicator())
+          ? const Center(child: CircularProgressIndicator())
           : ListView.builder(
               itemCount: phrases.length,
               itemBuilder: (context, index) {
                 return ListTile(
-                  title: Text(phrases[index].phrase, style: TextStyle(fontSize: 24)),
-                  leading: Icon(Icons.chat),
+                  title: Text(phrases[index].phrase, style: const TextStyle(fontSize: 24)),
+                  leading: const Icon(Icons.chat),
                 );
               },
             ),

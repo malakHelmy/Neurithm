@@ -3,7 +3,7 @@ import 'package:neurithm/screens/homepage.dart';
 import '../widgets/appbar.dart';
 import '../widgets/bottombar.dart';
 import '../widgets/wavesBackground.dart';
-import '../widgets/inputDecoration.dart';
+import '../widgets/customTextField.dart';
 
 class HelpPage extends StatelessWidget {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();

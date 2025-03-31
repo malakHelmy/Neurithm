@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import '../screens/history.dart';
-import '../screens/homePage.dart';
-import '../screens/settings.dart';
-import '../screens/wordBank.dart';
+import 'package:neurithm/screens/history.dart';
+import 'package:neurithm/screens/homepage.dart';
+import 'package:neurithm/screens/settings.dart';
+import 'package:neurithm/screens/wordBank.dart';
 
 BottomNavigationBar bottomappBar(BuildContext context) {
   void _onItemTapped(int index) {
@@ -10,7 +10,8 @@ BottomNavigationBar bottomappBar(BuildContext context) {
       case 0:
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => HomePage(showRatingPopup: false)),
+          MaterialPageRoute(
+              builder: (context) => HomePage(showRatingPopup: false)),
         );
         break;
       case 1:

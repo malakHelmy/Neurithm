@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:neurithm/widgets/loginForm.dart';
-import 'inputDecoration.dart';
-import '../screens/homePage.dart';
-import '../services/auth.dart';
+import 'package:neurithm/screens/homepage.dart';
+import 'package:neurithm/services/auth.dart';
+import 'package:neurithm/widgets/customTextField.dart';
 
 AnimatedOpacity signUpForm(
   BuildContext context,
@@ -114,14 +113,14 @@ AnimatedOpacity signUpForm(
                   controller: _confirmPasswordController,
                   obscureText: true,
                   style: const TextStyle(fontSize: 18, color: Colors.black),
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     labelText: "Confirm Password",
-                    labelStyle: const TextStyle(
+                    labelStyle: TextStyle(
                         color: Color.fromARGB(115, 255, 255, 255)),
-                    focusedBorder: const UnderlineInputBorder(
+                    focusedBorder: UnderlineInputBorder(
                       borderSide: BorderSide(color: Colors.white, width: 2),
                     ),
-                    enabledBorder: const UnderlineInputBorder(
+                    enabledBorder: UnderlineInputBorder(
                       borderSide: BorderSide(color: Colors.grey, width: 1),
                     ),
                   ),
