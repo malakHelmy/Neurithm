@@ -41,8 +41,38 @@ class _WordBankPageState extends State<WordBankPage> {
     }
   }
 
+  IconData getIconForCategory(String name) {
+    switch (name.toLowerCase()) {
+      case 'emergency':
+        return Icons.warning;
+      case 'frequent used phrases':
+        return Icons.chat;
+      case 'food':
+        return Icons.fastfood;
+      case 'work':
+        return Icons.work;
+      case 'greetings':
+        return Icons.waving_hand;
+      case 'daily needs':
+        return Icons.shopping_cart;
+      case 'health':
+        return Icons.health_and_safety;
+      case 'travel':
+        return Icons.airplanemode_active;
+      case 'family':
+        return Icons.family_restroom;
+      default:
+        return Icons.category;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    String searchText = searchController.text.toLowerCase();
+    List<WordBankCategory> filteredCategories = categories
+        .where((category) => category.name.toLowerCase().contains(searchText))
+        .toList();
+
     return Scaffold(
       key: _scaffoldKey,
       drawer: sideAppBar(context),
@@ -59,9 +89,7 @@ class _WordBankPageState extends State<WordBankPage> {
           decoration: gradientBackground,
           child: Stack(
             children: [
-              Positioned.fill(
-                child: waveBackground,
-              ),
+              Positioned.fill(child: waveBackground),
               Padding(
                 padding: EdgeInsets.symmetric(
                   horizontal: spacing(15, getScreenHeight(context)),
@@ -75,9 +103,9 @@ class _WordBankPageState extends State<WordBankPage> {
                       controller: searchController,
                       decoration: InputDecoration(
                         hintText: "Search categories...",
-                        hintStyle: TextStyle(color: Color(0xFF1A2A3A)),
+                        hintStyle: const TextStyle(color: Color(0xFF1A2A3A)),
                         prefixIcon:
-                            Icon(Icons.search, color: Color(0xFF1A2A3A)),
+                            const Icon(Icons.search, color: Color(0xFF1A2A3A)),
                         filled: true,
                         fillColor: Colors.white.withOpacity(0.8),
                         border: OutlineInputBorder(
@@ -85,7 +113,7 @@ class _WordBankPageState extends State<WordBankPage> {
                           borderSide: BorderSide.none,
                         ),
                       ),
-                      onChanged: (value) => setState(() {}),
+                      onChanged: (_) => setState(() {}),
                     ),
                     SizedBox(height: spacing(30, getScreenHeight(context))),
                     const Text(
@@ -99,10 +127,10 @@ class _WordBankPageState extends State<WordBankPage> {
                     ),
                     SizedBox(height: spacing(10, getScreenHeight(context))),
                     isLoading
-                        ? Center(child: CircularProgressIndicator())
+                        ? const Center(child: CircularProgressIndicator())
                         : GridView.builder(
                             shrinkWrap: true,
-                            physics: NeverScrollableScrollPhysics(),
+                            physics: const NeverScrollableScrollPhysics(),
                             gridDelegate:
                                 SliverGridDelegateWithFixedCrossAxisCount(
                               crossAxisCount: 2,
@@ -112,9 +140,9 @@ class _WordBankPageState extends State<WordBankPage> {
                                   spacing(20, getScreenHeight(context)),
                               childAspectRatio: 1.5,
                             ),
-                            itemCount: categories.length,
+                            itemCount: filteredCategories.length,
                             itemBuilder: (context, index) {
-                              final category = categories[index];
+                              final category = filteredCategories[index];
                               return GestureDetector(
                                 onTap: () {
                                   Navigator.push(
@@ -127,28 +155,25 @@ class _WordBankPageState extends State<WordBankPage> {
                                 },
                                 child: Container(
                                   decoration: BoxDecoration(
-                                    color: const Color.fromARGB(
-                                        255, 226, 226, 226),
+                                    color: const Color.fromARGB(255, 226, 226, 226),
                                     borderRadius: BorderRadius.circular(15),
                                     boxShadow: [
                                       BoxShadow(
                                         color: Colors.black.withOpacity(0.2),
                                         blurRadius: 5,
-                                        offset: Offset(0, 3),
+                                        offset: const Offset(0, 3),
                                       ),
                                     ],
                                   ),
                                   child: Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
-                                      Icon(Icons.category,
-                                          size: 40, color: Color(0xFF1A2A3A)),
-                                      SizedBox(
-                                          height: spacing(
-                                              5, getScreenHeight(context))),
+                                      Icon(getIconForCategory(category.name),
+                                          size: 40, color: const Color(0xFF1A2A3A)),
+                                      SizedBox(height: spacing(5, getScreenHeight(context))),
                                       Text(
                                         category.name,
-                                        style: TextStyle(
+                                        style: const TextStyle(
                                           fontSize: 20,
                                           color: Color(0xFF1A2A3A),
                                           fontWeight: FontWeight.bold,
