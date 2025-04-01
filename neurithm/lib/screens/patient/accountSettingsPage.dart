@@ -1,31 +1,94 @@
 import 'package:flutter/material.dart';
+import 'package:neurithm/models/patient.dart';
 import 'package:neurithm/screens/patient/settingsPage.dart';
+import 'package:neurithm/services/authService.dart';
+import 'package:neurithm/services/patientProfileService.dart';
 import 'package:neurithm/widgets/appBar.dart';
 import 'package:neurithm/widgets/wavesBackground.dart';
 
-class accountSettingsPage extends StatefulWidget {
-  const accountSettingsPage({super.key});
+class AccountSettingsPage extends StatefulWidget {
+  const AccountSettingsPage({super.key});
 
   @override
-  State<accountSettingsPage> createState() =>
-      _AccountSettingsPageState();
+  State<AccountSettingsPage> createState() => _AccountSettingsPageState();
 }
 
-class _AccountSettingsPageState extends State<accountSettingsPage> {
-  final TextEditingController firstNameController =
-      TextEditingController(text: 'Jana');
-   final TextEditingController LastNameController =
-      TextEditingController(text: 'Hani');
-  final TextEditingController emailController =
-      TextEditingController(text: 'janahani.nbis@gmail.com');
+class _AccountSettingsPageState extends State<AccountSettingsPage> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  final AuthService _authService = AuthService();
+  final PatientProfileService _profileService = PatientProfileService();
+
+  Patient? _currentUser;
+  bool _isLoading = true;
+
+  final TextEditingController firstNameController = TextEditingController();
+  final TextEditingController lastNameController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  final TextEditingController confirmPasswordController =
+      TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchUser();
+  }
+
+  Future<void> _fetchUser() async {
+    Patient? user = await _authService.getCurrentUser();
+    if (user != null) {
+      final data = await _profileService.fetchPatientData(user.uid);
+      if (mounted && data != null) {
+        setState(() {
+          _currentUser = user;
+          firstNameController.text = data['firstName'] ?? '';
+          lastNameController.text = data['lastName'] ?? '';
+          emailController.text = data['email'] ?? '';
+          _isLoading = false;
+        });
+      }
+    }
+  }
+
+  Future<void> _saveChanges() async {
+    if (_currentUser == null) return;
+
+    if (passwordController.text != confirmPasswordController.text) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Passwords do not match.')),
+      );
+      return;
+    }
+
+    try {
+      await _profileService.updatePatientProfile(
+        uid: _currentUser!.uid,
+        firstName: firstNameController.text,
+        lastName: lastNameController.text,
+        email: emailController.text,
+      );
+
+      if (passwordController.text.isNotEmpty) {
+        await _profileService.updatePassword(passwordController.text);
+      }
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Profile updated successfully.')),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error: \$e')),
+      );
+    }
+  }
 
   @override
   void dispose() {
-    // Dispose controllers when the widget is removed
-    // nameController.dispose();
+    firstNameController.dispose();
+    lastNameController.dispose();
     emailController.dispose();
     passwordController.dispose();
+    confirmPasswordController.dispose();
     super.dispose();
   }
 
@@ -66,11 +129,8 @@ class _AccountSettingsPageState extends State<accountSettingsPage> {
                       CircleAvatar(
                         radius: 50,
                         backgroundColor: Color.fromARGB(255, 62, 99, 135),
-                        child: Icon(
-                          Icons.person,
-                          size: 50,
-                          color: Colors.white,
-                        ),
+                        child:
+                            Icon(Icons.person, size: 50, color: Colors.white),
                       ),
                       SizedBox(height: 10),
                       Text(
@@ -85,46 +145,29 @@ class _AccountSettingsPageState extends State<accountSettingsPage> {
                     ],
                   ),
                   const SizedBox(height: 10),
-                  // Profile Settings Fields Section
                   Expanded(
-                    child: Container(
-                      decoration: const BoxDecoration(
-                        color: Colors.transparent,
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(30),
-                          topRight: Radius.circular(30),
-                        ),
-                      ),
-                      child: ListView(
-                        children: [
-                          _editableField(Icons.person, 'Edit First Name',
-                              controller: firstNameController),
-                          _editableField(Icons.person, 'Edit Last Name',
-                              controller: LastNameController),
-                          _editableField(Icons.email, 'Change Email',
-                              controller: emailController),
-                          _editableField(Icons.lock, 'Update Password',
-                              controller: passwordController,
-                              obscureText: true),
-                          _editableField(Icons.lock, 'Confirm Password',
-                              controller: passwordController,
-                              obscureText: true),
-                        ],
-                      ),
+                    child: ListView(
+                      children: [
+                        _editableField(Icons.person, 'First Name',
+                            controller: firstNameController, readOnly: true),
+                        _editableField(Icons.person, 'Last Name',
+                            controller: lastNameController, readOnly: true),
+                        _editableField(Icons.email, 'Email',
+                            controller: emailController, readOnly: true),
+                        _editableField(Icons.lock, 'New Password',
+                            controller: passwordController, obscureText: true),
+                        _editableField(Icons.lock, 'Confirm Password',
+                            controller: confirmPasswordController,
+                            obscureText: true),
+                      ],
                     ),
                   ),
-                  // Save Profile Settings Button
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 25),
                     child: SizedBox(
                       width: double.infinity,
                       child: ElevatedButton(
-                        onPressed: () {
-                          // Save profile settings functionality
-                          // print("Name: ${nameController.text}");
-                          // print("Email: ${emailController.text}");
-                          // print("Password: ${passwordController.text}");
-                        },
+                        onPressed: _saveChanges,
                         style: ElevatedButton.styleFrom(
                           backgroundColor:
                               const Color.fromARGB(255, 240, 240, 240),
@@ -132,7 +175,8 @@ class _AccountSettingsPageState extends State<accountSettingsPage> {
                             borderRadius: BorderRadius.circular(50),
                           ),
                           padding: EdgeInsets.symmetric(
-                              vertical: spacing(12, getScreenHeight(context))),
+                            vertical: spacing(12, getScreenHeight(context)),
+                          ),
                         ),
                         child: const Text(
                           "Save Changes",
@@ -154,68 +198,33 @@ class _AccountSettingsPageState extends State<accountSettingsPage> {
     );
   }
 
-  // Editable Field with TextEditingController
-  Widget _editableField(IconData icon, String label,
-      {required TextEditingController controller, bool obscureText = false}) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-          child: Row(
-            children: [
-              Icon(icon, color: Color.fromARGB(255, 206, 206, 206)),
-              const SizedBox(width: 25),
-              Expanded(
-                child: TextField(
-                  controller: controller,
-                  obscureText: obscureText,
-                  style: const TextStyle(fontSize: 20, color: Colors.white),
-                  decoration: InputDecoration(
-                    labelText: label,
-                    labelStyle: const TextStyle(color: Colors.white54),
-                    
-                  ),
-                ),
+  Widget _editableField(
+    IconData icon,
+    String label, {
+    required TextEditingController controller,
+    bool obscureText = false,
+    bool readOnly = false,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+      child: Row(
+        children: [
+          Icon(icon, color: const Color.fromARGB(255, 206, 206, 206)),
+          const SizedBox(width: 25),
+          Expanded(
+            child: TextField(
+              controller: controller,
+              obscureText: obscureText,
+              readOnly: readOnly,
+              style: const TextStyle(fontSize: 20, color: Colors.white),
+              decoration: InputDecoration(
+                labelText: label,
+                labelStyle: const TextStyle(color: Colors.white54),
               ),
-            ],
-          ),
-        ),
-        
-      ],
-    );
-  }
-
-  // Non-editable Field
-  Widget _settingsField(IconData icon, String label,
-      {Widget? trailing, VoidCallback? onTap}) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        GestureDetector(
-          onTap: onTap,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-            child: Row(
-              children: [
-                Icon(icon, color: Color.fromARGB(255, 206, 206, 206)),
-                const SizedBox(width: 25),
-                Expanded(
-                  child: Text(
-                    label,
-                    style: const TextStyle(fontSize: 20, color: Colors.white),
-                  ),
-                ),
-                if (trailing != null) trailing,
-              ],
             ),
           ),
-        ),
-        const Divider(
-          color: Color.fromARGB(255, 206, 206, 206),
-          thickness: 0.75,
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

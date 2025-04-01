@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:neurithm/models/patient.dart';
 import 'package:neurithm/screens/patient/helpPage.dart';
 import 'package:neurithm/screens/patient/conversationHistoryPage.dart';
 import 'package:neurithm/screens/patient/setUpConnectionPage.dart';
+import 'package:neurithm/services/AppRatingsService.dart';
 import 'package:neurithm/services/authService.dart';
 import 'package:neurithm/widgets/appBar.dart';
 import 'package:neurithm/widgets/bottomBar.dart';
@@ -23,6 +23,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final AuthService _authService = AuthService();
+  final AppRatingsService _ratingsService = AppRatingsService();
   Patient? _currentUser;
   bool _isLoading = true;
   double _userRating = 0;
@@ -55,6 +56,15 @@ class _HomePageState extends State<HomePage> {
 
         await prefs.setInt('open_count', 0);
       }
+    }
+  }
+
+  Future<void> _saveRatingToDatabase() async {
+    if (_currentUser != null) {
+      await _ratingsService.saveRatingToDatabase(
+        patientId: _currentUser!.uid,
+        rating: _userRating.toInt(),
+      );
     }
   }
 
@@ -146,26 +156,6 @@ class _HomePageState extends State<HomePage> {
         );
       },
     );
-  }
-
-  Future<void> _saveRatingToDatabase() async {
-    if (_currentUser != null) {
-      String ratingId =
-          FirebaseFirestore.instance.collection('ratings').doc().id;
-      DateTime today = DateTime.now();
-
-      try {
-        await FirebaseFirestore.instance.collection('ratings').add({
-          'patientId': _currentUser!.uid,
-          'rating': _userRating.toInt(),
-          'submittedAt': today.toIso8601String(),
-        });
-
-        print("Rating saved with ratingId: $ratingId");
-      } catch (e) {
-        print("Error saving rating: $e");
-      }
-    }
   }
 
   @override

@@ -85,4 +85,20 @@ class AppRatingsService {
       'recentRatings': ratingsList,
     };
   }
+
+  Future<void> saveRatingToDatabase({
+    required String patientId,
+    required int rating,
+  }) async {
+    try {
+      await _db.collection('ratings').add({
+        'patientId': patientId,
+        'rating': rating,
+        'submittedAt': DateTime.now().toIso8601String(),
+      });
+      print("Rating saved successfully");
+    } catch (e) {
+      print("Error saving rating: \$e");
+    }
+  }
 }

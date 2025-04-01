@@ -85,7 +85,7 @@ Drawer sideAppBar(context) {
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => accountSettingsPage(),
+                  builder: (context) => AccountSettingsPage(),
                 ));
           },
         ),
