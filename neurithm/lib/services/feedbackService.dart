@@ -1,5 +1,7 @@
+import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:neurithm/models/feedback.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class FeedbackService {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
@@ -94,6 +96,153 @@ class FeedbackService {
     } catch (e) {
       print("Error fetching comments for category '$category': $e");
       return [];
+    }
+  }
+
+  // Fetch all feedback comments
+  Future<List<Map<String, dynamic>>> aggregateFeedbacks() async {
+    final feedbackQuery = await _db.collection('feedback').get();
+    final patientFeedbackQuery = await _db.collection('patient_feedback').get();
+    final patientQuery = await _db.collection('patients').get();
+
+    Map<String, Set<DateTime>> uniqueFeedbacks = {};
+    Map<String, Map<DateTime, List<String>>> feedbackComments = {};
+    List<Map<String, dynamic>> aggregatedFeedbackList = [];
+
+    for (var feedbackDoc in patientFeedbackQuery.docs) {
+      final feedbackData = feedbackDoc.data();
+      final patientId = feedbackData['patientId'];
+      final feedbackId = feedbackData['feedbackId'];
+      final submittedAt = DateTime.parse(feedbackData['submittedAt']);
+
+      final isResolved = feedbackData['isResolved'] ?? false;
+      if (isResolved) continue;
+
+      uniqueFeedbacks.putIfAbsent(patientId, () => {}).add(submittedAt);
+
+      feedbackComments.putIfAbsent(patientId, () => {});
+      feedbackComments[patientId]!.putIfAbsent(submittedAt, () => []);
+
+      final feedback =
+          feedbackQuery.docs.firstWhere((doc) => doc.id == feedbackId);
+      feedbackComments[patientId]![submittedAt]!
+          .add(feedback.data()['comment']);
+    }
+
+    for (var patientId in uniqueFeedbacks.keys) {
+      final user = patientQuery.docs.firstWhere((doc) => doc.id == patientId);
+      final fullName = "${user['firstName']} ${user['lastName']}";
+
+      for (var date in uniqueFeedbacks[patientId]!) {
+        final feedbacks = uniqueFeedbacks[patientId]!.join(', ');
+        final comments = feedbackComments[patientId]![date]!.join(', ');
+
+        aggregatedFeedbackList.add({
+          'userName': fullName,
+          'date': date,
+          'feedbacks': feedbacks,
+          'comments': comments,
+          'feedbackIds': feedbackComments[patientId]![date]!,
+          'isResolved': false,
+        });
+      }
+    }
+
+    return aggregatedFeedbackList;
+  }
+
+  // Resolve feedback by updating the Firestore document
+  Future<void> markAsResolved(String userName, dynamic date) async {
+    DateTime firebaseDate =
+        date is String ? DateTime.parse(date) : date as DateTime;
+
+    final nameParts = userName.split(' ');
+    final firstName = nameParts[0];
+    final lastName = nameParts.sublist(1).join(' ');
+
+    final patientQuery = await _db
+        .collection('patients')
+        .where('firstName', isEqualTo: firstName)
+        .where('lastName', isEqualTo: lastName)
+        .get();
+
+    if (patientQuery.docs.isEmpty) return;
+
+    final patientId = patientQuery.docs.first.id;
+
+    final feedbacks = await FirebaseFirestore.instance
+        .collection('patient_feedback')
+        .where('patientId', isEqualTo: patientId)
+        .get();
+
+    for (var doc in feedbacks.docs) {
+      var submittedAt = doc['submittedAt'] is Timestamp
+          ? (doc['submittedAt'] as Timestamp).toDate()
+          : DateTime.parse(doc['submittedAt']);
+
+      if (submittedAt.isAtSameMomentAs(firebaseDate)) {
+        await doc.reference.update({'isResolved': true});
+      }
+    }
+  }
+
+  // Fetch feedback data and cache it locally
+  Future<Map<String, List<String>>> fetchFeedbackDataAndCache() async {
+    final feedbackSnapshot =
+        await FirebaseFirestore.instance.collection('feedback').get();
+
+    Map<String, List<String>> feedbackData = {};
+
+    for (var doc in feedbackSnapshot.docs) {
+      final data = doc.data();
+      final category = data['category'] ?? 'Uncategorized';
+      final comment = data['comment'] ?? '';
+
+      if (!feedbackData.containsKey(category)) {
+        feedbackData[category] = [];
+      }
+
+      feedbackData[category]!.add(comment);
+    }
+
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setString('cached_feedback', jsonEncode(feedbackData));
+
+    return feedbackData;
+  }
+
+  // Patient submits feedback after end of session
+  Future<void> submitFeedback({
+    required Set<String> selectedComments,
+    required Map<String, List<String>> feedbackData,
+    required String patientId,
+  }) async {
+    if (selectedComments.isEmpty || patientId.isEmpty) return;
+
+    final today = DateTime.now();
+    final feedbackCollection =
+        FirebaseFirestore.instance.collection('feedback');
+    final patientFeedbackCollection =
+        FirebaseFirestore.instance.collection('patient_feedback');
+
+    for (var comment in selectedComments) {
+      final category = feedbackData.keys.firstWhere(
+        (key) => feedbackData[key]!.contains(comment),
+        orElse: () => 'Unknown',
+      );
+
+      final querySnapshot =
+          await feedbackCollection.where('comment', isEqualTo: comment).get();
+
+      if (querySnapshot.docs.isNotEmpty) {
+        final feedbackId = querySnapshot.docs.first.id;
+        await patientFeedbackCollection.add({
+          'patientId': patientId,
+          'feedbackId': feedbackId,
+          'submittedAt': today.toIso8601String(),
+          'isResolved': false,
+        });
+      }
     }
   }
 }

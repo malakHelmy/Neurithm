@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:neurithm/services/feedbackService.dart';
 import 'package:neurithm/widgets/appBar.dart';
 import 'package:neurithm/widgets/wavesBackground.dart';
 
@@ -16,186 +16,32 @@ class _PatientsFeedbackPageState extends State<ViewPatientsFeedbackPage> {
   int pendingFeedbacks = 0;
   int resolvedFeedbacks = 0;
 
+  final FeedbackService _feedbackService = FeedbackService();
+
   @override
   void initState() {
     super.initState();
-    _aggregateFeedbacks();
+    _loadFeedbacks();
   }
 
-  Future<void> _aggregateFeedbacks() async {
-    var feedbackQuery =
-        await FirebaseFirestore.instance.collection('feedback').get();
-    var patientFeedbackQuery =
-        await FirebaseFirestore.instance.collection('patient_feedback').get();
-    var patientQuery =
-        await FirebaseFirestore.instance.collection('patients').get();
-
-    Map<String, Set<DateTime>> uniqueFeedbacks = {};
-    Map<String, Map<DateTime, List<String>>> feedbackComments = {};
-    Set<String> totalFeedbackIds = {};
-
-    // Clear the _feedbacks list to avoid adding duplicate feedback on page reload
-    List<Map<String, dynamic>> aggregatedFeedbackList = [];
-
-    // Loop through each feedback to aggregate
-    for (var feedbackDoc in patientFeedbackQuery.docs) {
-      var feedbackData = feedbackDoc.data();
-      var patientId = feedbackData['patientId'];
-      var feedbackId = feedbackData['feedbackId'];
-      var submittedAt = DateTime.parse(feedbackData['submittedAt']);
-
-      // Safely handle null 'isResolved' by treating it as 'false' if it's null.
-      bool isResolved = feedbackData['isResolved'] ?? false;
-
-      if (isResolved) continue;
-
-      if (!uniqueFeedbacks.containsKey(patientId)) {
-        uniqueFeedbacks[patientId] = {};
-      }
-
-      uniqueFeedbacks[patientId]!.add(submittedAt);
-      totalFeedbackIds.add(feedbackId);
-
-      if (!feedbackComments.containsKey(patientId)) {
-        feedbackComments[patientId] = {};
-      }
-
-      if (!feedbackComments[patientId]!.containsKey(submittedAt)) {
-        feedbackComments[patientId]![submittedAt] = [];
-      }
-
-      var feedback =
-          feedbackQuery.docs.firstWhere((doc) => doc.id == feedbackId);
-      feedbackComments[patientId]![submittedAt]!
-          .add(feedback.data()['comment']);
-    }
-
-    totalFeedbacks =
-        uniqueFeedbacks.values.fold(0, (sum, dates) => sum + dates.length);
-
-    // Recalculate pending and resolved feedbacks
-    pendingFeedbacks = uniqueFeedbacks.entries.fold(0, (count, entry) {
-      return count +
-          entry.value.where((date) {
-            return patientFeedbackQuery.docs.any((doc) {
-              bool isResolved = doc['isResolved'] ?? false;
-              return doc['patientId'] == entry.key &&
-                  DateTime.parse(doc['submittedAt']).isAtSameMomentAs(date) &&
-                  !isResolved;
-            });
-          }).length;
-    });
-
-    resolvedFeedbacks = uniqueFeedbacks.entries.fold(0, (count, entry) {
-      return count +
-          entry.value.where((date) {
-            return patientFeedbackQuery.docs.any((doc) {
-              bool isResolved =
-                  doc['isResolved'] ?? false; // Handle null 'isResolved'
-              return doc['patientId'] == entry.key &&
-                  DateTime.parse(doc['submittedAt']).isAtSameMomentAs(date) &&
-                  isResolved; // Only count resolved feedback
-            });
-          }).length;
-    });
-
-    // Aggregate unresolved feedbacks
-    for (var patientId in uniqueFeedbacks.keys) {
-      var user = patientQuery.docs.firstWhere((doc) => doc.id == patientId);
-      String firstName = user['firstName'];
-      String lastName = user['lastName'];
-      String fullName = '$firstName $lastName';
-
-      for (var date in uniqueFeedbacks[patientId]!) {
-        String feedbacks = uniqueFeedbacks[patientId]!.join(', ');
-        String comments = feedbackComments[patientId]![date]!.join(', ');
-
-        var feedbackData = {
-          'userName': fullName,
-          'date': date,
-          'feedbacks': feedbacks,
-          'comments': comments,
-          'feedbackIds': feedbackComments[patientId]![date]!,
-          'isResolved': false, // Initially set to false
-        };
-
-        // Add unresolved feedbacks to the list
-        aggregatedFeedbackList.add(feedbackData);
-      }
-    }
-
+  Future<void> _loadFeedbacks() async {
+    final data = await _feedbackService.aggregateFeedbacks();
     setState(() {
-      _feedbacks =
-          aggregatedFeedbackList; // Refresh the list with unresolved feedbacks only
+      _feedbacks = data;
+      pendingFeedbacks = data.length;
+      // You can later enhance this to calculate resolvedFeedbacks if needed
     });
   }
 
   Future<void> _markAsResolved(Map<String, dynamic> feedback) async {
-    var patientName = feedback['userName'];
-    var date = feedback['date'];
-
-    DateTime firebaseDate;
-    if (date is String) {
-      firebaseDate = DateTime.parse(date);
-    } else if (date is DateTime) {
-      firebaseDate = date;
-    } else {
-      print('Invalid date format');
-      return;
-    }
-
-    List<String> nameParts = patientName.split(' ');
-    if (nameParts.length < 2) {
-      print('Invalid userName format');
-      return;
-    }
-
-    var firstName = nameParts[0];
-    var lastName = nameParts.sublist(1).join(' ');
-
-    var patientQuery = await FirebaseFirestore.instance
-        .collection('patients')
-        .where('firstName', isEqualTo: firstName)
-        .where('lastName', isEqualTo: lastName)
-        .get();
-
-    if (patientQuery.docs.isEmpty) {
-      print('No patient found with this name');
-      return;
-    }
-
-    var patientId = patientQuery.docs.first.id;
-
-    // Update the 'isResolved' field in the database
-    await FirebaseFirestore.instance
-        .collection('patient_feedback')
-        .where('patientId', isEqualTo: patientId)
-        .get()
-        .then((querySnapshot) {
-      querySnapshot.docs.forEach((doc) {
-        var submittedAt;
-        if (doc['submittedAt'] is Timestamp) {
-          submittedAt = (doc['submittedAt'] as Timestamp).toDate();
-        } else if (doc['submittedAt'] is String) {
-          submittedAt = DateTime.parse(doc['submittedAt']);
-        }
-
-        if (submittedAt.isAtSameMomentAs(firebaseDate)) {
-          doc.reference.update({'isResolved': true});
-        }
-      });
-    });
-
+    await _feedbackService.markAsResolved(
+        feedback['userName'], feedback['date']);
     setState(() {
-      // Directly remove the resolved feedback from the list
       _feedbacks.removeWhere((item) =>
-          item['date'] == firebaseDate && item['userName'] == patientName);
-      pendingFeedbacks--; // Decrease pending count
-      resolvedFeedbacks++; // Increase resolved count
-
-      // Only show unresolved feedback
-      _feedbacks =
-          _feedbacks.where((item) => item['isResolved'] == false).toList();
+          item['date'] == feedback['date'] &&
+          item['userName'] == feedback['userName']);
+      pendingFeedbacks--;
+      resolvedFeedbacks++;
     });
   }
 

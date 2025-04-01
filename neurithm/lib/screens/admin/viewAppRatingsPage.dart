@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:neurithm/services/AppRatingsService.dart';
 import 'package:neurithm/widgets/appBar.dart';
 import 'package:neurithm/widgets/wavesBackground.dart';
 
@@ -15,6 +15,7 @@ class _AppRatingsPageState extends State<ViewAppRatingsPage> {
   int totalReviews = 0;
   int last30Days = 0;
   List<Map<String, dynamic>> recentRatings = [];
+  final AppRatingsService _ratingService = AppRatingsService();
 
   @override
   void initState() {
@@ -23,83 +24,13 @@ class _AppRatingsPageState extends State<ViewAppRatingsPage> {
   }
 
   Future<void> _fetchAppRatings() async {
-    var ratingsQuery =
-        await FirebaseFirestore.instance.collection('ratings').get();
-    var patientQuery =
-        await FirebaseFirestore.instance.collection('patients').get();
-
-    Map<String, Map<String, dynamic>> patientLatestRatings = {};
-    DateTime thirtyDaysAgo = DateTime.now().subtract(Duration(days: 30));
-
-    int totalRating = 0;
-    Set<String> uniquePatients = Set();
-    Set<String> patientsInLast30Days = Set();
-    int ratingsInLast30Days = 0;
-
-    for (var doc in ratingsQuery.docs) {
-      var ratingData = doc.data();
-      String patientId = ratingData['patientId'];
-      double rating = ratingData['rating'];
-      var submittedAt = ratingData['submittedAt'];
-
-      DateTime submittedDate;
-      if (submittedAt is Timestamp) {
-        submittedDate = submittedAt.toDate();
-      } else if (submittedAt is String) {
-        submittedDate = DateTime.parse(submittedAt);
-      } else {
-        continue;
-      }
-
-      // Only keep the latest rating for each patient
-      if (!patientLatestRatings.containsKey(patientId) ||
-          patientLatestRatings[patientId]!['submittedAt']
-              .isBefore(submittedDate)) {
-        patientLatestRatings[patientId] = {
-          'rating': rating,
-          'submittedAt': submittedDate,
-        };
-      }
-
-      if (!uniquePatients.contains(patientId)) {
-        uniquePatients.add(patientId);
-        totalReviews++;
-      }
-
-      if (submittedDate.isAfter(thirtyDaysAgo) &&
-          !patientsInLast30Days.contains(patientId)) {
-        patientsInLast30Days.add(patientId);
-        ratingsInLast30Days++;
-      }
-
-      totalRating += rating as int;
-    }
-
-    double totalLatestRating = 0;
-    for (var patientId in patientLatestRatings.keys) {
-      totalLatestRating += patientLatestRatings[patientId]!['rating'];
-    }
-    averageRating = totalLatestRating / uniquePatients.length;
-
-    List<Map<String, dynamic>> ratingsList = [];
-    for (var patientId in patientLatestRatings.keys) {
-      var patient = patientQuery.docs.firstWhere((doc) => doc.id == patientId);
-      String firstName = patient['firstName'];
-      String lastName = patient['lastName'];
-      String fullName = '$firstName $lastName';
-      var latestRating = patientLatestRatings[patientId];
-
-      ratingsList.add({
-        'userName': fullName,
-        'rating': latestRating?['rating'],
-        'date': latestRating?['submittedAt'].toString().substring(0, 10),
-      });
-    }
+    final data = await _ratingService.fetchAppRatings();
 
     setState(() {
-      recentRatings = ratingsList;
-      totalReviews = uniquePatients.length;
-      last30Days = ratingsInLast30Days;
+      averageRating = data['averageRating'];
+      totalReviews = data['totalReviews'];
+      last30Days = data['last30Days'];
+      recentRatings = List<Map<String, dynamic>>.from(data['recentRatings']);
     });
   }
 

@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'dart:convert';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart';
 import 'package:neurithm/models/patient.dart';
 import 'package:neurithm/screens/homepage.dart';
@@ -19,7 +17,6 @@ class FeedbackPage extends StatefulWidget {
 class _FeedbackPageState extends State<FeedbackPage> {
   final FeedbackService _feedbackService = FeedbackService();
   final AuthService _authService = AuthService();
-
   Map<String, List<String>> _feedbackData = {};
   Set<String> _selectedComments = {};
   Patient? _currentUser;
@@ -33,58 +30,14 @@ class _FeedbackPageState extends State<FeedbackPage> {
 
   Future<void> _initializeData() async {
     await _fetchUser();
-    await _loadFeedbackFromCache();
     _fetchFeedbackDataInBackground();
   }
 
-  Future<void> _loadFeedbackFromCache() async {
-    final prefs = await SharedPreferences.getInstance();
-    final cached = prefs.getString('cached_feedback');
-
-    if (cached != null) {
-      try {
-        final decoded = Map<String, dynamic>.from(jsonDecode(cached));
-        final loaded = decoded.map(
-          (key, value) => MapEntry(key, List<String>.from(value)),
-        );
-
-        if (mounted) {
-          setState(() {
-            _feedbackData = loaded;
-            _isLoading = false;
-          });
-        }
-      } catch (e) {
-        print("Failed to decode cached feedback: $e");
-      }
-    }
-  }
-
   Future<void> _fetchFeedbackDataInBackground() async {
-    final feedbackSnapshot =
-        await FirebaseFirestore.instance.collection('feedback').get();
-
-    Map<String, List<String>> feedbackData = {};
-
-    for (var doc in feedbackSnapshot.docs) {
-      final data = doc.data();
-      final category = data['category'] ?? 'Uncategorized';
-      final comment = data['comment'] ?? '';
-
-      if (!feedbackData.containsKey(category)) {
-        feedbackData[category] = [];
-      }
-
-      feedbackData[category]!.add(comment);
-    }
-
-    // Cache the data locally
-    final prefs = await SharedPreferences.getInstance();
-    prefs.setString('cached_feedback', jsonEncode(feedbackData));
-
+    final fetched = await _feedbackService.fetchFeedbackDataAndCache();
     if (mounted) {
       setState(() {
-        _feedbackData = feedbackData;
+        _feedbackData = fetched;
         _isLoading = false;
       });
     }
@@ -100,51 +53,20 @@ class _FeedbackPageState extends State<FeedbackPage> {
   }
 
   void _submitFeedback() async {
-    if (_selectedComments.isEmpty || _currentUser == null) return;
+    if (_currentUser == null) return;
 
-    List<String> feedbackIds = [];
-    DateTime today = DateTime.now();
+    await _feedbackService.submitFeedback(
+      selectedComments: _selectedComments,
+      feedbackData: _feedbackData,
+      patientId: _currentUser!.uid,
+    );
 
-    // Loop through selected comments
-    for (var comment in _selectedComments) {
-      String category = _feedbackData.keys.firstWhere(
-        (key) => _feedbackData[key]!.contains(comment),
-        orElse: () => "Unknown",
-      );
-
-      // Query the 'feedback' collection to get the feedback ID for the existing comment
-      var querySnapshot = await FirebaseFirestore.instance
-          .collection('feedback')
-          .where('comment', isEqualTo: comment)
-          .get();
-
-      if (querySnapshot.docs.isNotEmpty) {
-        feedbackIds.add(querySnapshot.docs.first.id);
-      }
-    }
-
-    // Create entries in 'patient_feedback' using the feedbackId
-    for (var feedbackId in feedbackIds) {
-      await FirebaseFirestore.instance.collection('patient_feedback').add({
-        'patientId': _currentUser?.uid,
-        'feedbackId': feedbackId,
-        'submittedAt': today.toIso8601String(),
-        'isResolved': false,
-      });
-    }
-
-    SharedPreferences prefs = await SharedPreferences.getInstance();
+    final prefs = await SharedPreferences.getInstance();
     int openCount = prefs.getInt('open_count') ?? 0;
-    print("Current openCount: $openCount");
-
     openCount++;
     await prefs.setInt('open_count', openCount);
 
-    print("Updated openCount: $openCount");
-
-    bool showRatingPopup = (openCount % 3 == 0);
-
-    print("Show rating popup: $showRatingPopup");
+    final showRatingPopup = (openCount % 3 == 0);
 
     if (mounted) {
       Navigator.pushReplacement(
@@ -164,8 +86,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
         title: const Text("Session Feedback"),
         backgroundColor: Colors.transparent,
         elevation: 0,
-        systemOverlayStyle:
-            SystemUiOverlayStyle.light, 
+        systemOverlayStyle: SystemUiOverlayStyle.light,
       ),
       resizeToAvoidBottomInset: false,
       body: Stack(
@@ -178,8 +99,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
             padding: EdgeInsets.only(
               left: 16.0,
               right: 16.0,
-              top: MediaQuery.of(context).padding.top +
-                  kToolbarHeight, 
+              top: MediaQuery.of(context).padding.top + kToolbarHeight,
               bottom: 24.0,
             ),
             child: Column(

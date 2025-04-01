@@ -3,6 +3,7 @@ import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:neurithm/screens/patient/signalReadingPage.dart';
 import 'package:neurithm/widgets/appBar.dart';
 import 'package:neurithm/widgets/wavesBackground.dart';
+import 'package:neurithm/services/connectToBluetoothService.dart';
 
 class SetUpConnectionPage extends StatefulWidget {
   const SetUpConnectionPage({super.key});
@@ -17,6 +18,8 @@ class _SetUpConnectionPageState extends State<SetUpConnectionPage>
   bool _isScanning = false;
   bool _isScanComplete = false;
   List<BluetoothDevice> bciHeadsets = [];
+  final ConnectToBluetoothService _bluetoothService =
+      ConnectToBluetoothService();
 
   @override
   void initState() {
@@ -41,40 +44,23 @@ class _SetUpConnectionPageState extends State<SetUpConnectionPage>
     });
 
     _controller.repeat();
-    final flutterBlue = FlutterBluePlus();
 
-    await FlutterBluePlus.startScan(timeout: const Duration(seconds: 5));
+    final foundDevices = await _bluetoothService.scanForHeadsets();
 
-    FlutterBluePlus.scanResults.listen((results) {
-      for (ScanResult result in results) {
-        if (result.device.name.isNotEmpty &&
-            result.device.name.startsWith("EPOCX")) {
-          if (!bciHeadsets.any((d) => d.id == result.device.id)) {
-            setState(() {
-              bciHeadsets.add(result.device);
-            });
-          }
-        }
-      }
-    });
-
-    await Future.delayed(const Duration(seconds: 5));
-    await FlutterBluePlus.stopScan();
-
-    _controller.stop();
     setState(() {
+      bciHeadsets = foundDevices;
       _isScanning = false;
       _isScanComplete = true;
     });
+
+    _controller.stop();
   }
 
   void _connectToDevice(BluetoothDevice device) async {
-    await device.connect();
+    await _bluetoothService.connectToDevice(device);
     Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (context) => const SignalReadingpage(),
-      ),
+      MaterialPageRoute(builder: (context) => const SignalReadingpage()),
     );
   }
 
