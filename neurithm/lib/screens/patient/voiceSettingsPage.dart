@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:audioplayers/audioplayers.dart';
@@ -9,7 +8,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:neurithm/widgets/wavesBackground.dart';
 import 'package:neurithm/widgets/appbar.dart';
 import 'package:neurithm/widgets/bottombar.dart';
-
 
 class VoiceSettings {
   double pitch;
@@ -65,13 +63,13 @@ class VoiceSettingsPage extends StatefulWidget {
 class _VoiceSettingsState extends State<VoiceSettingsPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final AudioPlayer _audioPlayer = AudioPlayer();
-  
+
   VoiceSettings _userSettings = VoiceSettings(
     pitch: 1.0,
     gender: "male",
     accent: "en",
   );
-  
+
   String _textToSynthesize = "Hello, ahahahaha yes of course.";
   bool _isPlaying = false;
   bool _isGenerating = false;
@@ -84,7 +82,7 @@ class _VoiceSettingsState extends State<VoiceSettingsPage> {
     _textController.text = _textToSynthesize;
   }
 
- Future<void> _loadPreferences() async {
+  Future<void> _loadPreferences() async {
     final settings = await UserPreferences.loadVoiceSettings();
     setState(() {
       _userSettings = settings;
@@ -99,81 +97,84 @@ class _VoiceSettingsState extends State<VoiceSettingsPage> {
     );
   }
 
-Future<void> synthesizeSpeech(String text, VoiceSettings settings) async {
-  setState(() {
-    _isGenerating = true;
-  });
+  Future<void> synthesizeSpeech(String text, VoiceSettings settings) async {
+    setState(() {
+      _isGenerating = true;
+    });
 
-  final url = Uri.parse('http://192.168.1.3:5000/synthesize');
-  print("synthesizeSpeech");
-  try {
-    print("inside try");
-    final response = await http.post(
-      url,
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode({
-        'text': text,
-        'pitch': settings.pitch,
-        'language': settings.accent,
-        'gender': settings.gender,
-      }),
-    );
+    final url = Uri.parse('http://192.168.1.3:5000/synthesize');
+    print("synthesizeSpeech");
+    try {
+      print("inside try");
+      final response = await http.post(
+        url,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          'text': text,
+          'pitch': settings.pitch,
+          'language': settings.accent,
+          'gender': settings.gender,
+        }),
+      );
 
-    if (response.statusCode == 200) {
-      final directory = await getTemporaryDirectory();
-      final filePath = '${directory.path}/output.wav';
-      File audioFile = File(filePath);
-      await audioFile.writeAsBytes(response.bodyBytes);
+      if (response.statusCode == 200) {
+        final directory = await getTemporaryDirectory();
+        final filePath = '${directory.path}/output.wav';
+        File audioFile = File(filePath);
+        await audioFile.writeAsBytes(response.bodyBytes);
 
-      print('Audio file saved at: $filePath');
+        print('Audio file saved at: $filePath');
 
-      // Verify the file exists
-      bool fileExists = await audioFile.exists();
-      print('File exists: $fileExists');
+        // Verify the file exists
+        bool fileExists = await audioFile.exists();
+        print('File exists: $fileExists');
 
-      if (fileExists) {
-        await _playAudio(filePath);
+        if (fileExists) {
+          await _playAudio(filePath);
+        } else {
+          print('File does not exist at path: $filePath');
+        }
       } else {
-        print('File does not exist at path: $filePath');
+        print(
+            'Failed to generate speech: ${response.statusCode} - ${response.body}');
       }
-    } else {
-      print('Failed to generate speech: ${response.statusCode} - ${response.body}');
+    } catch (e) {
+      print('Error: $e');
+    } finally {
+      setState(() {
+        _isGenerating = false;
+      });
     }
-  } catch (e) {
-    print('Error: $e');
-  } finally {
-    setState(() {
-      _isGenerating = false;
-    });
   }
-}
- Future<void> _playAudio(String filePath) async {
-  setState(() {
-    _isPlaying = true;
-  });
 
-  print('Attempting to play audio from: $filePath');
-
-  try {
-    await _audioPlayer.play(DeviceFileSource(filePath));
-    print('Audio playback started');
-
-    _audioPlayer.onPlayerStateChanged.listen((state) {
-      print('Player state: $state');
-      if (state == PlayerState.completed) {
-        setState(() {
-          _isPlaying = false;
-        });
-        print('Audio playback completed');
-      }
-    });
-  } catch (e) {
-    print('Error playing audio: $e');
+  Future<void> _playAudio(String filePath) async {
     setState(() {
-      _isPlaying = false;
+      _isPlaying = true;
     });
+
+    print('Attempting to play audio from: $filePath');
+
+    try {
+      await _audioPlayer.play(DeviceFileSource(filePath));
+      print('Audio playback started');
+
+      _audioPlayer.onPlayerStateChanged.listen((state) {
+        print('Player state: $state');
+        if (state == PlayerState.completed) {
+          setState(() {
+            _isPlaying = false;
+          });
+          print('Audio playback completed');
+        }
+      });
+    } catch (e) {
+      print('Error playing audio: $e');
+      setState(() {
+        _isPlaying = false;
+      });
+    }
   }
-}
+
   @override
   void dispose() {
     _audioPlayer.dispose();
@@ -196,7 +197,7 @@ Future<void> synthesizeSpeech(String text, VoiceSettings settings) async {
         padding: EdgeInsets.all(spacing(5)),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(15.0),
-          child: bottomappBar(context),
+          child: BottomBar(context),
         ),
       ),
       body: SingleChildScrollView(
@@ -253,7 +254,8 @@ Future<void> synthesizeSpeech(String text, VoiceSettings settings) async {
                                         _savePreferences();
                                       },
                                       divisions: 15,
-                                      label: _userSettings.pitch.toStringAsFixed(2),
+                                      label: _userSettings.pitch
+                                          .toStringAsFixed(2),
                                       activeColor: Colors.white,
                                     ),
                                   ),
@@ -270,7 +272,8 @@ Future<void> synthesizeSpeech(String text, VoiceSettings settings) async {
                               SizedBox(height: spacing(8)),
                               Container(
                                 width: double.infinity,
-                                padding: EdgeInsets.symmetric(horizontal: spacing(12)),
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: spacing(12)),
                                 decoration: BoxDecoration(
                                   border: Border.all(color: Colors.grey),
                                   borderRadius: BorderRadius.circular(4),
@@ -285,8 +288,16 @@ Future<void> synthesizeSpeech(String text, VoiceSettings settings) async {
                                     _savePreferences();
                                   },
                                   items: const [
-                                    DropdownMenuItem(value: "en", child: Text("English", style: TextStyle(color: Colors.white))),
-                                    DropdownMenuItem(value: "ar", child: Text("Arabic", style: TextStyle(color: Colors.white))),
+                                    DropdownMenuItem(
+                                        value: "en",
+                                        child: Text("English",
+                                            style: TextStyle(
+                                                color: Colors.white))),
+                                    DropdownMenuItem(
+                                        value: "ar",
+                                        child: Text("Arabic",
+                                            style: TextStyle(
+                                                color: Colors.white))),
                                   ],
                                   isExpanded: true,
                                   dropdownColor: Color(0xFF1A2A3A),
@@ -304,7 +315,8 @@ Future<void> synthesizeSpeech(String text, VoiceSettings settings) async {
                               SizedBox(height: spacing(8)),
                               Container(
                                 width: double.infinity,
-                                padding: EdgeInsets.symmetric(horizontal: spacing(12)),
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: spacing(12)),
                                 decoration: BoxDecoration(
                                   border: Border.all(color: Colors.grey),
                                   borderRadius: BorderRadius.circular(4),
@@ -319,8 +331,16 @@ Future<void> synthesizeSpeech(String text, VoiceSettings settings) async {
                                     _savePreferences();
                                   },
                                   items: const [
-                                    DropdownMenuItem(value: "male", child: Text("Male", style: TextStyle(color: Colors.white))),
-                                    DropdownMenuItem(value: "female", child: Text("Female", style: TextStyle(color: Colors.white))),
+                                    DropdownMenuItem(
+                                        value: "male",
+                                        child: Text("Male",
+                                            style: TextStyle(
+                                                color: Colors.white))),
+                                    DropdownMenuItem(
+                                        value: "female",
+                                        child: Text("Female",
+                                            style: TextStyle(
+                                                color: Colors.white))),
                                   ],
                                   isExpanded: true,
                                   dropdownColor: Color(0xFF1A2A3A),
@@ -370,57 +390,70 @@ Future<void> synthesizeSpeech(String text, VoiceSettings settings) async {
                               ),
                               SizedBox(height: spacing(16)),
                               Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
                                 children: [
-                                  Expanded(child: ElevatedButton.icon(
-                                    onPressed: _isGenerating
-                                        ? null
-                                        : () {
-                                            synthesizeSpeech(_textToSynthesize, _userSettings);
-                                          },
-                                    icon: Icon(Icons.record_voice_over),
-                                    label: Text(
-                                      "Generate & Play Voice",
-                                      style: TextStyle(fontSize: fontSize(16)),
-                                    ),
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: Colors.white,
-                                      foregroundColor: Color(0xFF1A2A3A),
-                                      padding: EdgeInsets.symmetric(
-                                        horizontal: spacing(20),
-                                        vertical: spacing(12),
+                                  Expanded(
+                                    child: ElevatedButton.icon(
+                                      onPressed: _isGenerating
+                                          ? null
+                                          : () {
+                                              synthesizeSpeech(
+                                                  _textToSynthesize,
+                                                  _userSettings);
+                                            },
+                                      icon: Icon(Icons.record_voice_over),
+                                      label: Text(
+                                        "Generate & Play Voice",
+                                        style:
+                                            TextStyle(fontSize: fontSize(16)),
                                       ),
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(50),
-                                      ),
-                                    ),
-                                  ),
-                                  ),
-                                  Expanded(child: ElevatedButton.icon(
-                                    onPressed: _isPlaying || _isGenerating
-                                        ? null
-                                        : () async {
-                                            final directory = await getTemporaryDirectory();
-                                            final filePath = '${directory.path}/output.wav';
-                                            await _playAudio(filePath);
-                                          },
-                                    icon: Icon(_isPlaying ? Icons.pause : Icons.play_arrow),
-                                    label: Text(
-                                      _isPlaying ? "Playing.." : "Replay",
-                                      style: TextStyle(fontSize: fontSize(16)),
-                                    ),
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: Colors.white,
-                                      foregroundColor: Color(0xFF1A2A3A),
-                                      padding: EdgeInsets.symmetric(
-                                        horizontal: spacing(20),
-                                        vertical: spacing(12),
-                                      ),
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(50),
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: Colors.white,
+                                        foregroundColor: Color(0xFF1A2A3A),
+                                        padding: EdgeInsets.symmetric(
+                                          horizontal: spacing(20),
+                                          vertical: spacing(12),
+                                        ),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(50),
+                                        ),
                                       ),
                                     ),
                                   ),
+                                  Expanded(
+                                    child: ElevatedButton.icon(
+                                      onPressed: _isPlaying || _isGenerating
+                                          ? null
+                                          : () async {
+                                              final directory =
+                                                  await getTemporaryDirectory();
+                                              final filePath =
+                                                  '${directory.path}/output.wav';
+                                              await _playAudio(filePath);
+                                            },
+                                      icon: Icon(_isPlaying
+                                          ? Icons.pause
+                                          : Icons.play_arrow),
+                                      label: Text(
+                                        _isPlaying ? "Playing.." : "Replay",
+                                        style:
+                                            TextStyle(fontSize: fontSize(16)),
+                                      ),
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: Colors.white,
+                                        foregroundColor: Color(0xFF1A2A3A),
+                                        padding: EdgeInsets.symmetric(
+                                          horizontal: spacing(20),
+                                          vertical: spacing(12),
+                                        ),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(50),
+                                        ),
+                                      ),
+                                    ),
                                   ),
                                 ],
                               ),

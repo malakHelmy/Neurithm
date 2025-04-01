@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:neurithm/models/wordBank.dart';
 import 'package:neurithm/models/wordBankCategories.dart';
 
-class FirestoreService {
+class WordBankService {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
 
   // Upload categories first, then phrases related to each category

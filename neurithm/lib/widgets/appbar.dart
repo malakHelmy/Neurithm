@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:neurithm/screens/aboutUs.dart';
-import 'package:neurithm/screens/help.dart';
+import 'package:neurithm/screens/patient/aboutUsPage.dart';
+import 'package:neurithm/screens/patient/accountSettingsPage.dart';
+import 'package:neurithm/screens/patient/helpPage.dart';
 import 'package:neurithm/screens/homepage.dart';
-import 'package:neurithm/screens/loginPage.dart';
-import 'package:neurithm/screens/userProfile.dart';
-import 'package:neurithm/screens/wordBank.dart';
-import 'package:neurithm/services/auth.dart';
+import 'package:neurithm/screens/introPage.dart';
+import 'package:neurithm/screens/patient/wordBankPage.dart';
+import 'package:neurithm/services/authService.dart';
 
 Drawer sideAppBar(context) {
-  final AuthMethods _authMethods = AuthMethods();
+  final AuthService _authService = AuthService();
 
   return Drawer(
     child: ListView(
@@ -42,7 +42,7 @@ Drawer sideAppBar(context) {
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => AboutPage(),
+                  builder: (context) => AboutUsPage(),
                 ));
           },
         ),
@@ -85,7 +85,7 @@ Drawer sideAppBar(context) {
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => userProfilePage(),
+                  builder: (context) => accountSettingsPage(),
                 ));
           },
         ),
@@ -114,11 +114,11 @@ Drawer sideAppBar(context) {
                 fontWeight: FontWeight.bold,
               )),
           onTap: () {
-            _authMethods.signOut();
+            _authService.signOut();
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => LoginPage(),
+                builder: (context) => const IntroPage(),
               ),
             );
           },

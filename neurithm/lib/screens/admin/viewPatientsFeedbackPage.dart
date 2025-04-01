@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:neurithm/widgets/appbar.dart';
+import 'package:neurithm/widgets/appBar.dart';
 import 'package:neurithm/widgets/wavesBackground.dart';
 
-class ViewUserFeedbackPage extends StatefulWidget {
-  const ViewUserFeedbackPage({Key? key}) : super(key: key);
+class ViewPatientsFeedbackPage extends StatefulWidget {
+  const ViewPatientsFeedbackPage({Key? key}) : super(key: key);
 
   @override
-  State<ViewUserFeedbackPage> createState() => _FeedbackPageState();
+  State<ViewPatientsFeedbackPage> createState() => _PatientsFeedbackPageState();
 }
 
-class _FeedbackPageState extends State<ViewUserFeedbackPage> {
+class _PatientsFeedbackPageState extends State<ViewPatientsFeedbackPage> {
   List<Map<String, dynamic>> _feedbacks = [];
   int totalFeedbacks = 0;
   int pendingFeedbacks = 0;
@@ -19,7 +19,7 @@ class _FeedbackPageState extends State<ViewUserFeedbackPage> {
   @override
   void initState() {
     super.initState();
-    _aggregateFeedbacks(); // Fetch data when page is loaded
+    _aggregateFeedbacks();
   }
 
   Future<void> _aggregateFeedbacks() async {
@@ -47,7 +47,7 @@ class _FeedbackPageState extends State<ViewUserFeedbackPage> {
       // Safely handle null 'isResolved' by treating it as 'false' if it's null.
       bool isResolved = feedbackData['isResolved'] ?? false;
 
-      if (isResolved) continue; // Exclude resolved feedback early
+      if (isResolved) continue;
 
       if (!uniqueFeedbacks.containsKey(patientId)) {
         uniqueFeedbacks[patientId] = {};
@@ -78,11 +78,10 @@ class _FeedbackPageState extends State<ViewUserFeedbackPage> {
       return count +
           entry.value.where((date) {
             return patientFeedbackQuery.docs.any((doc) {
-              bool isResolved =
-                  doc['isResolved'] ?? false; // Handle null 'isResolved'
+              bool isResolved = doc['isResolved'] ?? false;
               return doc['patientId'] == entry.key &&
                   DateTime.parse(doc['submittedAt']).isAtSameMomentAs(date) &&
-                  !isResolved; // Only count unresolved feedback
+                  !isResolved;
             });
           }).length;
     });
@@ -229,7 +228,7 @@ class _FeedbackPageState extends State<ViewUserFeedbackPage> {
                       color: Color.fromARGB(255, 206, 206, 206),
                     ),
                     onPressed: () {
-                      // filter functionality lw hnaamelo
+                      // filter functionality
                     },
                   ),
                 ],
@@ -387,7 +386,7 @@ class _FeedbackPageState extends State<ViewUserFeedbackPage> {
             ),
             const SizedBox(height: 15),
             Text(
-              feedback['comments'], // Display all comments combined
+              feedback['comments'],
               style: TextStyle(
                 color: Colors.white.withOpacity(0.9),
                 fontSize: 14,

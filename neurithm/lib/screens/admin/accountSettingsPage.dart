@@ -1,25 +1,21 @@
 import 'package:flutter/material.dart';
-import '../widgets/wavesBackground.dart';
-import '../widgets/appbar.dart';
-import '../screens/viewAppRatings.dart';
-import '../screens/viewPatients.dart';
-import '../screens/adminSettings.dart';
-import '../services/adminProfileMethods.dart';
+import 'package:neurithm/services/adminProfileService.dart';
+import 'package:neurithm/widgets/appBar.dart';
+import 'package:neurithm/widgets/wavesBackground.dart';
 
-// admin_settings.dart
-class AdminSettingsPage extends StatefulWidget {
-  const AdminSettingsPage({Key? key}) : super(key: key);
+class AdminAccountSettingsPage extends StatefulWidget {
+  const AdminAccountSettingsPage({Key? key}) : super(key: key);
 
   @override
-  State<AdminSettingsPage> createState() => _AdminSettingsPageState();
+  State<AdminAccountSettingsPage> createState() => _AdminSettingsPageState();
 }
 
-class _AdminSettingsPageState extends State<AdminSettingsPage> {
+class _AdminSettingsPageState extends State<AdminAccountSettingsPage> {
   final TextEditingController nameController = TextEditingController();
   final TextEditingController lastNameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-  final AdminProfileMethods _adminProfileMethods = AdminProfileMethods();
+  final AdminProfileService _adminProfileService = AdminProfileService();
   bool isLoading = true;
 
   @override
@@ -31,7 +27,7 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
   Future<void> _loadAdminProfile() async {
     setState(() => isLoading = true);
     try {
-      final admin = await _adminProfileMethods.getAdminProfile();
+      final admin = await _adminProfileService.getAdminProfile();
       if (admin != null) {
         nameController.text = admin.firstName;
         lastNameController.text = admin.lastName;
@@ -46,7 +42,7 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
   Future<void> _saveChanges() async {
     setState(() => isLoading = true);
 
-    final result = await _adminProfileMethods.updateAdminProfile(
+    final result = await _adminProfileService.updateAdminProfile(
       firstName: nameController.text,
       lastName: lastNameController.text,
       newEmail: emailController.text,
@@ -134,7 +130,8 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
                           Icons.person,
                           'First Name',
                           controller: nameController,
-                        ),_settingsField(
+                        ),
+                        _settingsField(
                           Icons.person,
                           'Last Name',
                           controller: lastNameController,

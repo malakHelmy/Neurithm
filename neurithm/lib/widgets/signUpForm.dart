@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:neurithm/screens/homepage.dart';
-import 'package:neurithm/services/auth.dart';
+import 'package:neurithm/services/authService.dart';
 import 'package:neurithm/widgets/customTextField.dart';
 
-AnimatedOpacity signUpForm(
+AnimatedOpacity SignUpForm(
   BuildContext context,
   bool _showLoginForm,
   bool _showSignUpForm,
@@ -54,7 +54,7 @@ AnimatedOpacity signUpForm(
     return null;
   }
 
-  final AuthMethods _authMethods = AuthMethods();
+  final AuthService _authService = AuthService();
 
   return AnimatedOpacity(
     opacity: _showSignUpForm && !_showLoginForm ? 1.0 : 0.0,
@@ -67,21 +67,21 @@ AnimatedOpacity signUpForm(
                 TextFormField(
                   controller: _firstNameController,
                   style: const TextStyle(fontSize: 20, color: Colors.white),
-                  decoration: customTextFieldDecoration('First Name'),
+                  decoration: customTextField('First Name'),
                   validator: _validateName,
                 ),
                 const SizedBox(height: 20),
                 TextFormField(
                   controller: _lastNameController,
                   style: const TextStyle(fontSize: 20, color: Colors.white),
-                  decoration: customTextFieldDecoration('Last Name'),
+                  decoration: customTextField('Last Name'),
                   validator: _validateName,
                 ),
                 const SizedBox(height: 20),
                 TextFormField(
                   controller: _emailController,
                   style: const TextStyle(fontSize: 20, color: Colors.white),
-                  decoration: customTextFieldDecoration('Email'),
+                  decoration: customTextField('Email'),
                   validator: _validateEmail,
                 ),
                 const SizedBox(height: 20),
@@ -134,7 +134,7 @@ AnimatedOpacity signUpForm(
                     onPressed: () async {
                       if (_formKey.currentState?.validate() ?? false) {
                         bool result =
-                            await _authMethods.signUpWithEmailPassword(
+                            await _authService.signUpWithEmailPassword(
                           _firstNameController.text,
                           _lastNameController.text,
                           _emailController.text,
@@ -175,7 +175,7 @@ AnimatedOpacity signUpForm(
                   width: double.infinity,
                   child: ElevatedButton.icon(
                     onPressed: () async {
-                      bool result = await _authMethods.signInWithGoogle();
+                      bool result = await _authService.signInWithGoogle();
                       if (result) {
                         Navigator.pushReplacement(
                           context,

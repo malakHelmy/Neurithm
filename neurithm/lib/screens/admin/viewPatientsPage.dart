@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import '../widgets/wavesBackground.dart';
-import '../widgets/appbar.dart';
-import '../models/patient.dart';
+import 'package:neurithm/models/patient.dart';
+import 'package:neurithm/widgets/appBar.dart';
+import 'package:neurithm/widgets/wavesBackground.dart';
 
-class PatientsListPage extends StatefulWidget {
-  const PatientsListPage({Key? key}) : super(key: key);
+class ViewPatientsPage extends StatefulWidget {
+  const ViewPatientsPage({Key? key}) : super(key: key);
 
   @override
-  _PatientsListPageState createState() => _PatientsListPageState();
+  State<ViewPatientsPage> createState() => _PatientsPageState();
 }
 
-class _PatientsListPageState extends State<PatientsListPage> {
+class _PatientsPageState extends State<ViewPatientsPage> {
   final TextEditingController _searchController = TextEditingController();
   String _searchQuery = "";
 
@@ -51,7 +51,7 @@ class _PatientsListPageState extends State<PatientsListPage> {
                     ),
                   ),
                   const SizedBox(height: 20),
-                  
+
                   // Search Field
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -59,13 +59,14 @@ class _PatientsListPageState extends State<PatientsListPage> {
                       controller: _searchController,
                       onChanged: (value) {
                         setState(() {
-                          _searchQuery = value.toLowerCase(); // normalize case
+                          _searchQuery = value.toLowerCase();
                         });
                       },
                       decoration: InputDecoration(
                         hintText: 'Search patients by name or email...',
                         hintStyle: const TextStyle(color: Colors.white70),
-                        prefixIcon: const Icon(Icons.search, color: Colors.white70),
+                        prefixIcon:
+                            const Icon(Icons.search, color: Colors.white70),
                         filled: true,
                         fillColor: Colors.white.withOpacity(0.1),
                         border: OutlineInputBorder(
@@ -81,26 +82,39 @@ class _PatientsListPageState extends State<PatientsListPage> {
 
                   Expanded(
                     child: StreamBuilder<QuerySnapshot>(
-                      stream: FirebaseFirestore.instance.collection('patients').snapshots(),
+                      stream: FirebaseFirestore.instance
+                          .collection('patients')
+                          .snapshots(),
                       builder: (context, snapshot) {
-                        if (snapshot.connectionState == ConnectionState.waiting) {
-                          return const Center(child: CircularProgressIndicator());
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return const Center(
+                              child: CircularProgressIndicator());
                         } else if (snapshot.hasError) {
-                          return Center(child: Text('Error: ${snapshot.error}'));
-                        } else if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                          return const Center(child: Text('No patients found.', style: TextStyle(color: Colors.white70)));
+                          return Center(
+                              child: Text('Error: ${snapshot.error}'));
+                        } else if (!snapshot.hasData ||
+                            snapshot.data!.docs.isEmpty) {
+                          return const Center(
+                              child: Text('No patients found.',
+                                  style: TextStyle(color: Colors.white70)));
                         } else {
                           final patients = snapshot.data!.docs
-                              .map((doc) => Patient.fromMap(doc.data() as Map<String, dynamic>))
+                              .map((doc) => Patient.fromMap(
+                                  doc.data() as Map<String, dynamic>))
                               .where((patient) {
-                                final fullName = '${patient.firstName} ${patient.lastName}'.toLowerCase();
-                                final email = patient.email.toLowerCase();
-                                return fullName.contains(_searchQuery) || email.contains(_searchQuery);
-                              }).toList();
+                            final fullName =
+                                '${patient.firstName} ${patient.lastName}'
+                                    .toLowerCase();
+                            final email = patient.email.toLowerCase();
+                            return fullName.contains(_searchQuery) ||
+                                email.contains(_searchQuery);
+                          }).toList();
 
                           if (patients.isEmpty) {
                             return const Center(
-                              child: Text('No matching patients found.', style: TextStyle(color: Colors.white70)),
+                              child: Text('No matching patients found.',
+                                  style: TextStyle(color: Colors.white70)),
                             );
                           }
 
@@ -117,8 +131,10 @@ class _PatientsListPageState extends State<PatientsListPage> {
                                 ),
                                 child: ListTile(
                                   leading: const CircleAvatar(
-                                    backgroundColor: Color.fromARGB(255, 62, 99, 135),
-                                    child: Icon(Icons.person, color: Colors.white),
+                                    backgroundColor:
+                                        Color.fromARGB(255, 62, 99, 135),
+                                    child:
+                                        Icon(Icons.person, color: Colors.white),
                                   ),
                                   title: Text(
                                     '${patient.firstName} ${patient.lastName}',
@@ -129,7 +145,8 @@ class _PatientsListPageState extends State<PatientsListPage> {
                                   ),
                                   subtitle: Text(
                                     'Email: ${patient.email}',
-                                    style: const TextStyle(color: Colors.white70),
+                                    style:
+                                        const TextStyle(color: Colors.white70),
                                   ),
                                 ),
                               );

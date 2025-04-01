@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:local_auth/local_auth.dart';
 
-class BiometricAuth {
+class BiometricAuthService {
   static final LocalAuthentication _localAuth = LocalAuthentication();
 
   static Future<bool> authenticateWithFaceID(BuildContext context) async {

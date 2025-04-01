@@ -1,12 +1,10 @@
-
 import 'package:flutter/material.dart';
-import '../widgets/wavesBackground.dart';
-import '../widgets/appbar.dart';
-import '../screens/viewAppRatings.dart';
-import '../screens/viewPatients.dart';
-import '../screens/adminSettings.dart';
-import '../screens/viewUserFeedback.dart';
-import '../widgets/bottombar.dart';
+import 'package:neurithm/screens/admin/accountSettingsPage.dart';
+import 'package:neurithm/screens/admin/viewAppRatingsPage.dart';
+import 'package:neurithm/screens/admin/viewPatientsPage.dart';
+import 'package:neurithm/screens/admin/viewPatientsFeedbackPage.dart';
+import 'package:neurithm/widgets/appBar.dart';
+import 'package:neurithm/widgets/wavesBackground.dart';
 
 class AdminDashboardPage extends StatelessWidget {
   const AdminDashboardPage({Key? key}) : super(key: key);
@@ -14,7 +12,7 @@ class AdminDashboardPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-    drawer: sideAppBar(context),
+      drawer: sideAppBar(context),
       body: Container(
         decoration: gradientBackground,
         child: Stack(
@@ -63,7 +61,7 @@ class AdminDashboardPage extends StatelessWidget {
                             () => Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => const AdminSettingsPage(),
+                                builder: (context) => const AdminAccountSettingsPage(),
                               ),
                             ),
                           ),
@@ -74,7 +72,7 @@ class AdminDashboardPage extends StatelessWidget {
                             () => Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => const PatientsListPage(),
+                                builder: (context) => const ViewPatientsPage(),
                               ),
                             ),
                           ),
@@ -85,7 +83,8 @@ class AdminDashboardPage extends StatelessWidget {
                             () => Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => const ViewUserFeedbackPage(),
+                                builder: (context) =>
+                                    const ViewPatientsFeedbackPage(),
                               ),
                             ),
                           ),
@@ -96,7 +95,8 @@ class AdminDashboardPage extends StatelessWidget {
                             () => Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => const ViewAppRatingsDashboard(),
+                                builder: (context) =>
+                                    const ViewAppRatingsPage(),
                               ),
                             ),
                           ),

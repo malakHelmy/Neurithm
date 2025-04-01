@@ -1,26 +1,26 @@
 import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:neurithm/screens/feedbackScreen.dart';
-import 'package:neurithm/screens/signalReadingPage.dart';
-import 'package:neurithm/widgets/wavesBackground.dart';
 import 'package:http/http.dart' as http;
 import 'package:audioplayers/audioplayers.dart';
-import 'dart:convert';
-import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'dart:convert';
+import 'dart:io';
+import 'package:neurithm/screens/patient/feedbackPage.dart';
+import 'package:neurithm/screens/patient/signalReadingPage.dart';
+import 'package:neurithm/widgets/wavesBackground.dart';
 
-class RecitePage extends StatefulWidget {
+class ReciteContextPage extends StatefulWidget {
   final String sentence;
 
-  const RecitePage({super.key, required this.sentence});
+  const ReciteContextPage({super.key, required this.sentence});
 
   @override
-  _RecitePageState createState() => _RecitePageState();
+  _ReciteContextPageState createState() => _ReciteContextPageState();
 }
 
-class _RecitePageState extends State<RecitePage>
+class _ReciteContextPageState extends State<ReciteContextPage>
     with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
   late Timer _waveTimer;
@@ -118,7 +118,7 @@ class _RecitePageState extends State<RecitePage>
   }
 
   Future<void> _playAudio(String filePath) async {
-    if (!mounted) return; // Check if the widget is still mounted
+    if (!mounted) return;
 
     setState(() {
       _isPlaying = true;
@@ -153,7 +153,7 @@ class _RecitePageState extends State<RecitePage>
   }
 
   Future<void> _reciteAgain() async {
-    if (!mounted) return; // Check if the widget is still mounted
+    if (!mounted) return;
 
     if (_audioFilePath != null) {
       // If audio file already exists, play it immediately
@@ -206,7 +206,6 @@ class _RecitePageState extends State<RecitePage>
                     ),
                   ),
                   const SizedBox(height: 30),
-                  // Dynamic Wave Animation
                   CustomPaint(
                     size: const Size(200, 100),
                     painter: WavePainter(waveHeights),
@@ -230,7 +229,7 @@ class _RecitePageState extends State<RecitePage>
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => Signalreadingpage()),
+                              builder: (context) => SignalReadingpage()),
                         );
                       },
                       style: ElevatedButton.styleFrom(
@@ -308,11 +307,11 @@ class _RecitePageState extends State<RecitePage>
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => const FeedbackScreen()),
+                              builder: (context) => const FeedbackPage()),
                         );
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor:Colors.green,
+                        backgroundColor: Colors.green,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(50),
                         ),
@@ -372,6 +371,6 @@ class WavePainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) {
-    return true; // Repaint when waveHeights updates
+    return true;
   }
 }

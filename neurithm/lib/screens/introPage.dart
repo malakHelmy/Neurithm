@@ -1,18 +1,17 @@
 import 'package:flutter/material.dart';
-import '../widgets/signUpForm.dart';
-import '../widgets/loginForm.dart';
-import '../widgets/appbar.dart';
-import '../widgets/wavesBackground.dart';
-import 'homePage.dart';
+import 'package:neurithm/widgets/appbar.dart';
+import 'package:neurithm/widgets/loginForm.dart';
+import 'package:neurithm/widgets/signUpForm.dart';
+import 'package:neurithm/widgets/wavesBackground.dart';
 
-class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+class IntroPage extends StatefulWidget {
+  const IntroPage({super.key});
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<IntroPage> createState() => _IntroPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _IntroPageState extends State<IntroPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   bool _showLoginForm = false;
   bool _showSignUpForm = false;
@@ -148,7 +147,7 @@ class _LoginPageState extends State<LoginPage> {
                               });
                             },
                           ),
-                           signUpForm(
+                          SignUpForm(
                             context,
                             _showLoginForm,
                             _showSignUpForm,

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import '../widgets/appbar.dart';
-import '../widgets/bottombar.dart';
-import '../widgets/wavesBackground.dart';
-import '../screens/accountsettings.dart'; // Import Account Settings Page
-import '../screens/voicesettings.dart'; // Import Voice Settings Page
+import 'package:neurithm/screens/patient/accountSettingsPage.dart';
+import 'package:neurithm/screens/patient/voiceSettingsPage.dart';
+import 'package:neurithm/widgets/appBar.dart';
+import 'package:neurithm/widgets/bottomBar.dart';
+import 'package:neurithm/widgets/wavesBackground.dart';
 
 class SettingsPage extends StatelessWidget {
   @override
@@ -23,18 +23,18 @@ class SettingsPage extends StatelessWidget {
         padding: EdgeInsets.all(spacing(5)),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(15.0),
-          child: bottomappBar(context),
+          child: BottomBar(context),
         ),
       ),
       body: Container(
-        decoration: gradientBackground, // Gradient background
+        decoration: gradientBackground,
         child: Stack(
           children: [
             Positioned.fill(
               child: Opacity(
                 opacity: 0.50,
                 child: Image.asset(
-                  'assets/images/waves.jpg', // Use waves background
+                  'assets/images/waves.jpg',
                   fit: BoxFit.cover,
                 ),
               ),
@@ -54,11 +54,11 @@ class SettingsPage extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => UserProfileSettingsPage()),
+                            builder: (context) => accountSettingsPage()),
                       );
                     },
                     child: Container(
-                      width: screenWidth, // Full width
+                      width: screenWidth,
                       padding: EdgeInsets.symmetric(
                           vertical: spacing(15), horizontal: spacing(20)),
                       decoration: BoxDecoration(
@@ -67,9 +67,8 @@ class SettingsPage extends StatelessWidget {
                       ),
                       child: Row(
                         children: [
-                          Icon(Icons.arrow_forward_ios,
-                              color: const Color.fromARGB(255, 11, 3, 26),
-                              size: 20),
+                          const Icon(Icons.arrow_forward_ios,
+                              color: Color.fromARGB(255, 11, 3, 26), size: 20),
                           SizedBox(width: spacing(10)),
                           Text(
                             "Account Settings",
@@ -94,7 +93,7 @@ class SettingsPage extends StatelessWidget {
                       );
                     },
                     child: Container(
-                      width: screenWidth, // Full width
+                      width: screenWidth,
                       padding: EdgeInsets.symmetric(
                           vertical: spacing(15), horizontal: spacing(20)),
                       decoration: BoxDecoration(
@@ -103,9 +102,8 @@ class SettingsPage extends StatelessWidget {
                       ),
                       child: Row(
                         children: [
-                          Icon(Icons.arrow_forward_ios,
-                              color: const Color.fromARGB(255, 11, 3, 26),
-                              size: 20),
+                          const Icon(Icons.arrow_forward_ios,
+                              color: Color.fromARGB(255, 11, 3, 26), size: 20),
                           SizedBox(width: spacing(10)),
                           Text(
                             "Voice Settings",

@@ -1,38 +1,36 @@
 import 'package:flutter/material.dart';
-import '../widgets/wavesBackground.dart';
+import 'package:neurithm/screens/introPage.dart';
+import 'package:neurithm/widgets/wavesBackground.dart';
 
-import 'loginPage.dart';
-
-class WelcomeScreen extends StatefulWidget {
-  const WelcomeScreen({Key? key}) : super(key: key);
+class WelcomePage extends StatefulWidget {
+  const WelcomePage({Key? key}) : super(key: key);
 
   @override
-  State<WelcomeScreen> createState() => _WelcomeScreenState();
+  State<WelcomePage> createState() => _WelcomePageState();
 }
 
-class _WelcomeScreenState extends State<WelcomeScreen>
+class _WelcomePageState extends State<WelcomePage>
     with SingleTickerProviderStateMixin {
-  bool _showLogo = true; // Controls logo visibility
+  bool _showLogo = true;
   int _currentSlideIndex = 0; // Tracks the current slide in the slideshow
 
   // Slide data: Each slide contains a title, icon, and description
   final List<Map<String, dynamic>> _slides = [
     {
       "title": "Welcome to Neurithm",
-      "icon": Icons.waves, // Represents signals or brainwaves
+      "icon": Icons.waves,
       "description":
           "Pioneering the path where brain signals transform into meaningful communication.",
     },
     {
       "title": "Empowering Voices",
-      "icon": Icons.mic, // Represents speech and communication
+      "icon": Icons.mic,
       "description":
           "Helping individuals who lost their ability to speak rediscover their voice with groundbreaking technology.",
     },
     {
       "title": "Innovation That Matters",
-      "icon":
-          Icons.accessibility_new, // Represents empowerment and accessibility
+      "icon": Icons.accessibility_new,
       "description":
           "Making communication accessible for everyone, empowering lives and breaking barriers.",
     },
@@ -69,7 +67,7 @@ class _WelcomeScreenState extends State<WelcomeScreen>
   void _navigateToLoginPage() {
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (context) => const LoginPage()),
+      MaterialPageRoute(builder: (context) => const IntroPage()),
     );
   }
 

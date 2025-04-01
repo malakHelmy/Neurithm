@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:local_auth/local_auth.dart';
-import 'package:neurithm/screens/adminDashboard.dart';
+import 'package:neurithm/screens/admin/adminDashboardPage.dart';
 import 'package:neurithm/screens/homepage.dart';
-import 'package:neurithm/services/auth.dart';
-import 'package:neurithm/services/biometricAuth.dart';
+import 'package:neurithm/services/authService.dart';
+import 'package:neurithm/services/biometricAuthService.dart';
 import 'package:neurithm/widgets/customTextField.dart';
 
 class LoginForm extends StatefulWidget {
@@ -24,7 +24,7 @@ class LoginForm extends StatefulWidget {
 }
 
 class _LoginFormState extends State<LoginForm> {
-  final AuthMethods _authMethods = AuthMethods();
+  final AuthService _authService = AuthService();
   final LocalAuthentication _localAuth = LocalAuthentication();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
@@ -50,7 +50,7 @@ class _LoginFormState extends State<LoginForm> {
   }
 
   Future<void> _authenticateUser() async {
-    bool isAuthenticated = await BiometricAuth.authenticateWithFaceID(context);
+    bool isAuthenticated = await BiometricAuthService.authenticateWithFaceID(context);
     if (isAuthenticated && mounted) {
       Navigator.pushReplacement(
         context,
@@ -77,7 +77,7 @@ class _LoginFormState extends State<LoginForm> {
                   TextFormField(
                     controller: _emailController,
                     style: const TextStyle(fontSize: 20, color: Colors.white),
-                    decoration: customTextFieldDecoration('Email'),
+                    decoration: customTextField('Email'),
                     keyboardType: TextInputType.emailAddress,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
@@ -236,7 +236,7 @@ class _LoginFormState extends State<LoginForm> {
         _isLoading = true;
       });
 
-      final result = await _authMethods.signInWithEmailPassword(
+      final result = await _authService.signInWithEmailPassword(
         _emailController.text,
         _passwordController.text,
       );
@@ -277,7 +277,7 @@ class _LoginFormState extends State<LoginForm> {
   }
 
   Future<void> _handleGoogleSignIn() async {
-    bool result = await _authMethods.signInWithGoogle();
+    bool result = await _authService.signInWithGoogle();
     if (result && mounted) {
       Navigator.pushReplacement(
         context,

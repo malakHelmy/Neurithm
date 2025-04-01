@@ -1,19 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:neurithm/screens/homePage.dart';
-import '../widgets/wavesBackground.dart';
-import '../widgets/appbar.dart';
-import 'settings.dart';
+import 'package:neurithm/screens/patient/settingsPage.dart';
+import 'package:neurithm/widgets/appBar.dart';
+import 'package:neurithm/widgets/wavesBackground.dart';
 
-class UserProfileSettingsPage extends StatefulWidget {
-  const UserProfileSettingsPage({super.key});
+class accountSettingsPage extends StatefulWidget {
+  const accountSettingsPage({super.key});
 
   @override
-  State<UserProfileSettingsPage> createState() =>
-      _UserProfileSettingsPageState();
+  State<accountSettingsPage> createState() =>
+      _AccountSettingsPageState();
 }
 
-class _UserProfileSettingsPageState extends State<UserProfileSettingsPage> {
-  // Controllers for editable fields
+class _AccountSettingsPageState extends State<accountSettingsPage> {
   final TextEditingController firstNameController =
       TextEditingController(text: 'Jana');
    final TextEditingController LastNameController =

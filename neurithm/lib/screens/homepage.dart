@@ -1,12 +1,13 @@
-import 'dart:math';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:neurithm/models/patient.dart';
-import 'package:neurithm/screens/setUpConnectionPage.dart';
-import 'package:neurithm/services/auth.dart';
-import 'package:neurithm/widgets/appbar.dart';
-import 'package:neurithm/widgets/bottombar.dart';
+import 'package:neurithm/screens/patient/helpPage.dart';
+import 'package:neurithm/screens/patient/conversationHistoryPage.dart';
+import 'package:neurithm/screens/patient/setUpConnectionPage.dart';
+import 'package:neurithm/services/authService.dart';
+import 'package:neurithm/widgets/appBar.dart';
+import 'package:neurithm/widgets/bottomBar.dart';
 import 'package:neurithm/widgets/wavesBackground.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -21,7 +22,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  final AuthMethods _authMethods = AuthMethods();
+  final AuthService _authService = AuthService();
   Patient? _currentUser;
   bool _isLoading = true;
   double _userRating = 0;
@@ -33,7 +34,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> _fetchUser() async {
-    Patient? user = await _authMethods.getCurrentUser();
+    Patient? user = await _authService.getCurrentUser();
     if (mounted) {
       setState(() {
         _currentUser = user;
@@ -63,7 +64,7 @@ class _HomePageState extends State<HomePage> {
       builder: (BuildContext context) {
         return AlertDialog(
           backgroundColor: Color(0xFF1A2A3A),
-          title: Text(
+          title: const Text(
             'Rate Our App',
             style: TextStyle(
               fontSize: 24,
@@ -74,14 +75,14 @@ class _HomePageState extends State<HomePage> {
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              Text(
+              const Text(
                 "Please rate our app by selecting stars!",
                 style: TextStyle(
                   fontSize: 18,
                   color: Colors.white,
                 ),
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               RatingBar.builder(
                 initialRating: _userRating,
                 minRating: 1,
@@ -89,8 +90,8 @@ class _HomePageState extends State<HomePage> {
                 allowHalfRating: true,
                 itemCount: 5,
                 itemSize: 50,
-                itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
-                itemBuilder: (context, _) => Icon(
+                itemPadding: const EdgeInsets.symmetric(horizontal: 4.0),
+                itemBuilder: (context, _) => const Icon(
                   Icons.star_border,
                   color: Colors.amber,
                   size: 50,
@@ -106,10 +107,11 @@ class _HomePageState extends State<HomePage> {
           actions: <Widget>[
             TextButton(
               style: TextButton.styleFrom(
-                padding: EdgeInsets.symmetric(vertical: 15, horizontal: 30),
+                padding:
+                    const EdgeInsets.symmetric(vertical: 15, horizontal: 30),
                 backgroundColor: Colors.blue,
               ),
-              child: Text(
+              child: const Text(
                 'Submit',
                 style: TextStyle(
                   fontSize: 20,
@@ -125,10 +127,11 @@ class _HomePageState extends State<HomePage> {
             ),
             TextButton(
               style: TextButton.styleFrom(
-                padding: EdgeInsets.symmetric(vertical: 15, horizontal: 30),
+                padding:
+                    const EdgeInsets.symmetric(vertical: 15, horizontal: 30),
                 backgroundColor: Colors.grey,
               ),
-              child: Text(
+              child: const Text(
                 'Later',
                 style: TextStyle(
                   fontSize: 20,
@@ -149,14 +152,13 @@ class _HomePageState extends State<HomePage> {
     if (_currentUser != null) {
       String ratingId =
           FirebaseFirestore.instance.collection('ratings').doc().id;
-      DateTime today = DateTime.now(); 
+      DateTime today = DateTime.now();
 
       try {
         await FirebaseFirestore.instance.collection('ratings').add({
           'patientId': _currentUser!.uid,
           'rating': _userRating.toInt(),
-          'submittedAt':
-              today.toIso8601String(),
+          'submittedAt': today.toIso8601String(),
         });
 
         print("Rating saved with ratingId: $ratingId");
@@ -181,7 +183,7 @@ class _HomePageState extends State<HomePage> {
         padding: EdgeInsets.all(spacing(5)),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(15.0),
-          child: bottomappBar(context),
+          child: BottomBar(context),
         ),
       ),
       body: SingleChildScrollView(
@@ -196,9 +198,7 @@ class _HomePageState extends State<HomePage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Drawer appBar
                     appBar(_scaffoldKey),
-
                     SizedBox(height: spacing(15)),
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: spacing(10)),
@@ -234,9 +234,8 @@ class _HomePageState extends State<HomePage> {
                             ),
                             SizedBox(height: spacing(10)),
 
-                            // Show loading or user name
                             _isLoading
-                                ? CircularProgressIndicator()
+                                ? const CircularProgressIndicator()
                                 : Text(
                                     "Welcome, ${_currentUser?.firstName ?? ''} ${_currentUser?.lastName ?? ''}",
                                     style: TextStyle(
@@ -264,7 +263,7 @@ class _HomePageState extends State<HomePage> {
                                     context,
                                     MaterialPageRoute(
                                       builder: (context) =>
-                                           SetUpConnectionPage(),
+                                          SetUpConnectionPage(),
                                     ),
                                   );
                                 },
@@ -293,7 +292,14 @@ class _HomePageState extends State<HomePage> {
                             SizedBox(
                               width: double.infinity,
                               child: ElevatedButton(
-                                onPressed: () {},
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => HelpPage(),
+                                    ),
+                                  );
+                                },
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor:
                                       const Color.fromARGB(255, 240, 240, 240),
@@ -333,7 +339,14 @@ class _HomePageState extends State<HomePage> {
                         IconButton(
                           icon: const Icon(Icons.arrow_forward_ios,
                               color: Color.fromARGB(255, 206, 206, 206)),
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ConversationHistoryPage(),
+                              ),
+                            );
+                          },
                         )
                       ],
                     ),

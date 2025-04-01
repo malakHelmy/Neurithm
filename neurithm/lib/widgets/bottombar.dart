@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:neurithm/screens/history.dart';
 import 'package:neurithm/screens/homepage.dart';
-import 'package:neurithm/screens/settings.dart';
-import 'package:neurithm/screens/wordBank.dart';
+import 'package:neurithm/screens/patient/conversationHistoryPage.dart';
+import 'package:neurithm/screens/patient/settingsPage.dart';
+import 'package:neurithm/screens/patient/wordBankPage.dart';
 
-BottomNavigationBar bottomappBar(BuildContext context) {
+BottomNavigationBar BottomBar(BuildContext context) {
   void _onItemTapped(int index) {
     switch (index) {
       case 0:
@@ -29,7 +29,7 @@ BottomNavigationBar bottomappBar(BuildContext context) {
       case 3:
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => HistoryPage()),
+          MaterialPageRoute(builder: (context) => ConversationHistoryPage()),
         );
         break;
     }

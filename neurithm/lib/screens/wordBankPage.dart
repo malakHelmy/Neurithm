@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:neurithm/services/addwordBank.dart';
+import 'package:neurithm/services/wordBankService.dart';
 import 'package:neurithm/models/wordBankCategories.dart';
-import '../widgets/appbar.dart';
-import '../widgets/bottombar.dart';
-import '../widgets/wavesBackground.dart';
-import "../widgets/wordBankPhrases.dart";
+import 'package:neurithm/widgets/appBar.dart';
+import 'package:neurithm/widgets/bottomBar.dart';
+import 'package:neurithm/widgets/wavesBackground.dart';
+import 'package:neurithm/widgets/wordBankPhrases.dart';
 
 class WordBankPage extends StatefulWidget {
   const WordBankPage({super.key});
@@ -15,7 +15,7 @@ class WordBankPage extends StatefulWidget {
 
 class _WordBankPageState extends State<WordBankPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  final FirestoreService _firestoreService = FirestoreService();
+  final WordBankService _wordBankService = WordBankService();
   TextEditingController searchController = TextEditingController();
   List<WordBankCategory> categories = [];
   bool isLoading = true;
@@ -28,7 +28,7 @@ class _WordBankPageState extends State<WordBankPage> {
 
   Future<void> _fetchCategories() async {
     try {
-      final fetchedCategories = await _firestoreService.fetchCategories();
+      final fetchedCategories = await _wordBankService.fetchCategories();
       setState(() {
         categories = fetchedCategories;
         isLoading = false;
@@ -50,7 +50,7 @@ class _WordBankPageState extends State<WordBankPage> {
         padding: EdgeInsets.all(spacing(5, getScreenHeight(context))),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(15.0),
-          child: bottomappBar(context),
+          child: BottomBar(context),
         ),
       ),
       body: SingleChildScrollView(

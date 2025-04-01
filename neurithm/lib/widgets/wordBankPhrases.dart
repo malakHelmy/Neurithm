@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:neurithm/models/wordBank.dart';
 import 'package:neurithm/models/wordBankCategories.dart';
-import 'package:neurithm/services/addWordBank.dart';
+import 'package:neurithm/services/wordBankService.dart';
 
 class WordBankPhrases extends StatefulWidget {
   final WordBankCategory category;
@@ -12,7 +12,7 @@ class WordBankPhrases extends StatefulWidget {
 }
 
 class _PhrasesPageState extends State<WordBankPhrases> {
-  final FirestoreService _firestoreService = FirestoreService();
+  final WordBankService _wordBankService = WordBankService();
   List<WordBankPhrase> phrases = [];
   bool isLoading = true;
 
@@ -24,7 +24,7 @@ class _PhrasesPageState extends State<WordBankPhrases> {
 
   Future<void> _fetchPhrases() async {
     try {
-      final fetchedPhrases = await _firestoreService.fetchPhrases(widget.category.id);
+      final fetchedPhrases = await _wordBankService.fetchPhrases(widget.category.id);
       setState(() {
         phrases = fetchedPhrases;
         isLoading = false;

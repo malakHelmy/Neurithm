@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
-import '../widgets/appBar.dart';
-import '../widgets/wavesBackground.dart';
-import '../screens/signalReadingPage.dart';
+import 'package:neurithm/screens/patient/signalReadingPage.dart';
+import 'package:neurithm/widgets/appBar.dart';
+import 'package:neurithm/widgets/wavesBackground.dart';
 
 class SetUpConnectionPage extends StatefulWidget {
   const SetUpConnectionPage({super.key});
@@ -41,14 +41,14 @@ class _SetUpConnectionPageState extends State<SetUpConnectionPage>
     });
 
     _controller.repeat();
-    final flutterBlue = FlutterBluePlus(); // Use without instance
+    final flutterBlue = FlutterBluePlus();
 
-    await FlutterBluePlus.startScan(
-        timeout: const Duration(seconds: 5)); // Await it
+    await FlutterBluePlus.startScan(timeout: const Duration(seconds: 5));
 
     FlutterBluePlus.scanResults.listen((results) {
       for (ScanResult result in results) {
-        if (result.device.name.isNotEmpty ) {
+        if (result.device.name.isNotEmpty &&
+            result.device.name.startsWith("EPOCX")) {
           if (!bciHeadsets.any((d) => d.id == result.device.id)) {
             setState(() {
               bciHeadsets.add(result.device);
@@ -57,10 +57,9 @@ class _SetUpConnectionPageState extends State<SetUpConnectionPage>
         }
       }
     });
-    //&& result.device.name.startsWith("EPOCX")
-    
+
     await Future.delayed(const Duration(seconds: 5));
-    await FlutterBluePlus.stopScan(); // Await it
+    await FlutterBluePlus.stopScan();
 
     _controller.stop();
     setState(() {
@@ -74,7 +73,7 @@ class _SetUpConnectionPageState extends State<SetUpConnectionPage>
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => const Signalreadingpage(),
+        builder: (context) => const SignalReadingpage(),
       ),
     );
   }

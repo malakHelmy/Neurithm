@@ -1,26 +1,24 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
+import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart';
-import 'package:neurithm/models/feedback.dart';
 import 'package:neurithm/models/patient.dart';
-import 'package:neurithm/services/addFeedback.dart';
-import 'package:neurithm/services/auth.dart';
+import 'package:neurithm/screens/homepage.dart';
+import 'package:neurithm/services/feedbackService.dart';
+import 'package:neurithm/services/authService.dart';
+import 'package:neurithm/widgets/wavesBackground.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../widgets/wavesBackground.dart';
-import 'homePage.dart';
 
-class FeedbackScreen extends StatefulWidget {
-  const FeedbackScreen({super.key});
+class FeedbackPage extends StatefulWidget {
+  const FeedbackPage({super.key});
 
   @override
-  _FeedbackScreenState createState() => _FeedbackScreenState();
+  _FeedbackPageState createState() => _FeedbackPageState();
 }
 
-class _FeedbackScreenState extends State<FeedbackScreen> {
+class _FeedbackPageState extends State<FeedbackPage> {
   final FeedbackService _feedbackService = FeedbackService();
-  final AuthMethods _authMethods = AuthMethods();
+  final AuthService _authService = AuthService();
 
   Map<String, List<String>> _feedbackData = {};
   Set<String> _selectedComments = {};
@@ -80,7 +78,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
       feedbackData[category]!.add(comment);
     }
 
-    // ✅ Cache the data locally
+    // Cache the data locally
     final prefs = await SharedPreferences.getInstance();
     prefs.setString('cached_feedback', jsonEncode(feedbackData));
 
@@ -93,7 +91,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
   }
 
   Future<void> _fetchUser() async {
-    Patient? user = await _authMethods.getCurrentUser();
+    Patient? user = await _authService.getCurrentUser();
     if (mounted) {
       setState(() {
         _currentUser = user;
@@ -125,7 +123,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
       }
     }
 
-    // Now we only create entries in 'patient_feedback' using the feedbackId
+    // Create entries in 'patient_feedback' using the feedbackId
     for (var feedbackId in feedbackIds) {
       await FirebaseFirestore.instance.collection('patient_feedback').add({
         'patientId': _currentUser?.uid,
@@ -167,7 +165,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         systemOverlayStyle:
-            SystemUiOverlayStyle.light, // Ensure status bar is light-themed
+            SystemUiOverlayStyle.light, 
       ),
       resizeToAvoidBottomInset: false,
       body: Stack(
@@ -181,7 +179,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
               left: 16.0,
               right: 16.0,
               top: MediaQuery.of(context).padding.top +
-                  kToolbarHeight, // ✅ Fixes AppBar overlapping
+                  kToolbarHeight, 
               bottom: 24.0,
             ),
             child: Column(

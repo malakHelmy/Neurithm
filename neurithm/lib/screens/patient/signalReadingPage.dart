@@ -1,18 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:neurithm/models/wordBankCategories.dart';
-import 'package:neurithm/screens/feedbackScreen.dart';
-import 'package:neurithm/widgets/wordBankPhrases.dart';
-import '../widgets/appBar.dart';
-import '../widgets/wavesBackground.dart';
-import 'homePage.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import '../screens/confirmationPage.dart';
-import '../widgets/wordBankPhrases.dart'; // Make sure this import exists
+import 'package:neurithm/models/wordBankCategories.dart';
+import 'package:neurithm/screens/patient/confirmContextPage.dart';
+import 'package:neurithm/widgets/appBar.dart';
+import 'package:neurithm/widgets/wavesBackground.dart';
+import 'package:neurithm/widgets/wordBankPhrases.dart';
 
-class Signalreadingpage extends StatelessWidget {
-  const Signalreadingpage({super.key});
+class SignalReadingpage extends StatelessWidget {
+  const SignalReadingpage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -93,7 +89,7 @@ class Signalreadingpage extends StatelessWidget {
 
                     SizedBox(height: 20),
 
-                    // Categories - horizontal scrollable
+                    // Word Bank Categories
                     StreamBuilder<QuerySnapshot>(
                       stream: FirebaseFirestore.instance
                           .collection('word_bank_categories')
@@ -215,7 +211,7 @@ class Signalreadingpage extends StatelessWidget {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => ConfirmationPage(
+                                  builder: (context) => ConfirmContextPage(
                                     processedSentence: predictedText,
                                   ),
                                 ),
@@ -243,15 +239,12 @@ class Signalreadingpage extends StatelessWidget {
                     children: [
                       Expanded(
                         child: _actionButton(
-                            Icons.skip_next, 'Move to Next Word', () {
-                          // Move to next word logic
-                        }),
+                            Icons.skip_next, 'Move to Next Word', () {}),
                       ),
                       const SizedBox(width: 10),
                       Expanded(
-                        child: _actionButton(Icons.restart_alt, 'Restart', () {
-                          // Restart logic
-                        }),
+                        child:
+                            _actionButton(Icons.restart_alt, 'Restart', () {}),
                       ),
                     ],
                   ),

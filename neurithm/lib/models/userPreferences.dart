@@ -1,4 +1,4 @@
-import 'package:neurithm/screens/voicesettings.dart';
+import 'package:neurithm/screens/patient/voiceSettingsPage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 class UserPreferences {
   static const String _pitchKey = 'pitch';

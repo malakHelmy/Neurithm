@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:neurithm/screens/feedbackScreen.dart';
-import '../widgets/appBar.dart';
-import '../widgets/wavesBackground.dart';
-import 'recitePage.dart';
+import 'package:neurithm/screens/patient/feedbackPage.dart';
+import 'package:neurithm/screens/patient/reciteContextPage.dart';
+import 'package:neurithm/widgets/appBar.dart';
+import 'package:neurithm/widgets/wavesBackground.dart';
 
-class ConfirmationPage extends StatefulWidget {
+class ConfirmContextPage extends StatefulWidget {
   final String processedSentence;
 
-  const ConfirmationPage({super.key, required this.processedSentence});
+  const ConfirmContextPage({super.key, required this.processedSentence});
 
   @override
-  State<ConfirmationPage> createState() => _ConfirmationPageState();
+  State<ConfirmContextPage> createState() => _ConfirmationPageState();
 }
 
-class _ConfirmationPageState extends State<ConfirmationPage> {
+class _ConfirmationPageState extends State<ConfirmContextPage> {
   bool _isRegenerating = false;
 
   @override
@@ -40,15 +40,15 @@ class _ConfirmationPageState extends State<ConfirmationPage> {
                 horizontal: spacing(15, getScreenHeight(context)),
               ),
               child: _isRegenerating
-                  ? Column(
+                  ? const Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const CircularProgressIndicator(
+                        CircularProgressIndicator(
                           valueColor:
                               AlwaysStoppedAnimation<Color>(Colors.white),
                         ),
-                        const SizedBox(height: 20),
-                        const Text(
+                        SizedBox(height: 20),
+                        Text(
                           "Regenerating...",
                           style: TextStyle(
                             fontSize: 18,
@@ -166,7 +166,7 @@ class _ConfirmationPageState extends State<ConfirmationPage> {
                       context,
                       MaterialPageRoute(
                         builder: (context) =>
-                            RecitePage(sentence: widget.processedSentence),
+                            ReciteContextPage(sentence: widget.processedSentence),
                       ),
                     );
                   },
@@ -204,7 +204,7 @@ class _ConfirmationPageState extends State<ConfirmationPage> {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => const FeedbackScreen()),
+                MaterialPageRoute(builder: (context) => const FeedbackPage()),
               );
             },
             style: ElevatedButton.styleFrom(

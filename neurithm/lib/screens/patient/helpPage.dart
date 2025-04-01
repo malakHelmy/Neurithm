@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:neurithm/screens/homepage.dart';
-import '../widgets/appbar.dart';
-import '../widgets/bottombar.dart';
-import '../widgets/wavesBackground.dart';
-import '../widgets/customTextField.dart';
+import 'package:neurithm/widgets/appBar.dart';
+import 'package:neurithm/widgets/bottomBar.dart';
+import 'package:neurithm/widgets/customTextField.dart';
+import 'package:neurithm/widgets/wavesBackground.dart';
 
 class HelpPage extends StatelessWidget {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
@@ -20,7 +20,7 @@ class HelpPage extends StatelessWidget {
         ),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(15.0),
-          child: bottomappBar(context),
+          child: BottomBar(context),
         ),
       ),
       body: SingleChildScrollView(
@@ -59,20 +59,20 @@ class HelpPage extends StatelessWidget {
                           TextFormField(
                             style: const TextStyle(
                                 fontSize: 20, color: Colors.white),
-                            decoration: customTextFieldDecoration('Full name'),
+                            decoration: customTextField('Full name'),
                             // validator: _validateEmail,
                           ),
                           TextFormField(
                             style: const TextStyle(
                                 fontSize: 20, color: Colors.white),
-                            decoration: customTextFieldDecoration('Email'),
+                            decoration: customTextField('Email'),
                             // validator: _validateEmail,
                           ),
                           TextFormField(
                               keyboardType: TextInputType.number,
                               style: const TextStyle(
                                   fontSize: 20, color: Colors.white),
-                              decoration: customTextFieldDecoration(
+                              decoration: customTextField(
                                   'Comment or Message')
                               // validator: _validateAge,
                               ),
