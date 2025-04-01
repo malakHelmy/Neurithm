@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:local_auth/local_auth.dart';
@@ -50,7 +51,8 @@ class _LoginFormState extends State<LoginForm> {
   }
 
   Future<void> _authenticateUser() async {
-    bool isAuthenticated = await BiometricAuthService.authenticateWithFaceID(context);
+    bool isAuthenticated =
+        await BiometricAuthService.authenticateWithFaceID(context);
     if (isAuthenticated && mounted) {
       Navigator.pushReplacement(
         context,
@@ -96,14 +98,14 @@ class _LoginFormState extends State<LoginForm> {
                     controller: _passwordController,
                     obscureText: true,
                     style: const TextStyle(fontSize: 20, color: Colors.white),
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       labelText: "Password",
-                      labelStyle: const TextStyle(
-                          color: Color.fromARGB(115, 255, 255, 255)),
-                      focusedBorder: const UnderlineInputBorder(
+                      labelStyle:
+                          TextStyle(color: Color.fromARGB(115, 255, 255, 255)),
+                      focusedBorder: UnderlineInputBorder(
                         borderSide: BorderSide(color: Colors.white, width: 2),
                       ),
-                      enabledBorder: const UnderlineInputBorder(
+                      enabledBorder: UnderlineInputBorder(
                         borderSide: BorderSide(color: Colors.grey, width: 1),
                       ),
                     ),
@@ -120,7 +122,38 @@ class _LoginFormState extends State<LoginForm> {
                   Align(
                     alignment: Alignment.centerRight,
                     child: TextButton(
-                      onPressed: () {},
+                      onPressed: () async {
+                        final email = _emailController.text.trim();
+
+                        if (email.isEmpty) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                                content: Text('Please enter your email')),
+                          );
+                          return;
+                        }
+
+                        bool exists = await _authService.doesEmailExist(email);
+                        if (!exists) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                                content: Text('This email is not registered.')),
+                          );
+                          return;
+                        }
+
+                        try {
+                          await _authService.sendPasswordResetEmail(email);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                                content: Text('Password reset email sent!')),
+                          );
+                        } catch (e) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text('Error: ${e.toString()}')),
+                          );
+                        }
+                      },
                       child: const Text(
                         "Forgot password?",
                         style: TextStyle(color: Colors.white, fontSize: 17),
@@ -250,7 +283,7 @@ class _LoginFormState extends State<LoginForm> {
           // Navigate to admin dashboard
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => AdminDashboardPage()),
+            MaterialPageRoute(builder: (context) => const AdminDashboardPage()),
           );
         } else {
           // Navigate to patient homepage

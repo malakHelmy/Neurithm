@@ -182,4 +182,17 @@ class AuthService {
       print('Error during sign-out: $e');
     }
   }
+
+  Future<void> sendPasswordResetEmail(String email) async {
+    await _auth.sendPasswordResetEmail(email: email);
+  }
+
+  Future<bool> doesEmailExist(String email) async {
+    final snapshot = await FirebaseFirestore.instance
+        .collection('patients')
+        .where('email', isEqualTo: email)
+        .get();
+
+    return snapshot.docs.isNotEmpty;
+  }
 }
