@@ -1,9 +1,11 @@
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:neurithm/helpers/phraseTrackerDbHelper.dart';
 import 'package:neurithm/models/patient.dart';
 import 'package:neurithm/models/wordBank.dart';
 import 'package:neurithm/models/wordBankCategories.dart';
 import 'package:neurithm/services/wordBankService.dart';
+import 'package:neurithm/services/ttsService.dart'; // Import the TTS service
 
 class WordBankPhrases extends StatefulWidget {
   final WordBankCategory category;
@@ -16,12 +18,16 @@ class WordBankPhrases extends StatefulWidget {
 }
 
 class _PhrasesPageState extends State<WordBankPhrases> {
+  final AudioPlayer _audioPlayer = AudioPlayer();
+
   final WordBankService _wordBankService = WordBankService();
   List<WordBankPhrase> phrases = [];
   bool isLoading = true;
   Map<String, int> phraseClicks = {}; // Track phrase clicks
   final PhraseTrackerDbHelper _phraseTrackerDbHelper =
       PhraseTrackerDbHelper.instance;
+
+  final TTSService _ttsService = TTSService(); // Initialize TTSService
 
   @override
   void initState() {
@@ -59,6 +65,17 @@ class _PhrasesPageState extends State<WordBankPhrases> {
         widget.currentUser!.uid, phraseID);
   }
 
+  Future<void> _playPhraseAudio(String phrase) async {
+    String? audioFilePath = await _ttsService.synthesizeSpeech(phrase);
+    if (audioFilePath != "error") {
+      await _audioPlayer.play(DeviceFileSource(audioFilePath!));
+      print("Audio file path: $audioFilePath");
+      // Add audio playing logic here, for example using the `audioplayers` package
+    } else {
+      print("Failed to synthesize speech.");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -75,6 +92,7 @@ class _PhrasesPageState extends State<WordBankPhrases> {
                       leading: Icon(Icons.chat),
                       onTap: () async {
                         await _trackPhraseClick(phrases[index].id);
+                        await _playPhraseAudio(phrases[index].phrase);
                         ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(content: Text('Tracked phrase usage')));
                       },

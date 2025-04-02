@@ -28,14 +28,14 @@ class _VoiceSettingsState extends State<VoiceSettingsPage> {
   //default voice
   VoiceSettings _userSettings = VoiceSettings(
     pitch: 1.0,
-    gender: "male",
+    gender: "female",
     language: "en-US",
-    voiceName: "Orus",
+    voiceName: "Aoede",
   );
   List<String> _availableVoices = [];
   String? _selectedVoice;
 
-  String _textToSynthesize = "Hello, ahahahaha yes of course.";
+  String _textToSynthesize = "";
   bool _isPlaying = false;
   bool _isGenerating = false;
   final TextEditingController _textController = TextEditingController();
@@ -49,26 +49,28 @@ class _VoiceSettingsState extends State<VoiceSettingsPage> {
 
   void _updateVoiceList() {
     setState(() {
-      _availableVoices = _userSettings.gender == "male"
-          ? _voiceSettingService.maleVoices
-          : _voiceSettingService.femaleVoices;
+      if (_userSettings.gender == "male") {
+        _availableVoices = _voiceSettingService.maleVoices;
+      }
+      if (_userSettings.gender == "female") {
+        _availableVoices = _voiceSettingService.femaleVoices;
+      }
+
       _selectedVoice = _availableVoices.isNotEmpty ? _availableVoices[0] : null;
     });
   }
 
   Future<void> _loadPreferences() async {
     final settings = await UserPreferences.loadVoiceSettings();
-    setState(() {
-      _userSettings = settings;
-    });
+    if (settings != null) {
+      setState(() {
+        _userSettings = settings;
+      });
+    }
   }
 
   Future<void> _savePreferences() async {
-    await UserPreferences.saveVoiceSettings(
-        pitch: _userSettings.pitch,
-        gender: _userSettings.gender,
-        language: _userSettings.language,
-        voiceName: _userSettings.voiceName);
+    await UserPreferences.saveVoiceSettings(_userSettings);
   }
 
   Future<void> synthesizeSpeech(String text) async {
@@ -77,7 +79,8 @@ class _VoiceSettingsState extends State<VoiceSettingsPage> {
     setState(() {
       _isGenerating = true;
     });
-    String? filePath = await _ttsService.synthesizeSpeech(text);
+    String? filePath =
+        await _ttsService.synthesizeSpeechWithSettings(text, _userSettings);
     if (filePath == "error") return;
     setState(() {
       _audioFilePath = filePath;
@@ -200,7 +203,6 @@ class _VoiceSettingsState extends State<VoiceSettingsPage> {
                                         setState(() {
                                           _userSettings.pitch = value;
                                         });
-                                        _savePreferences();
                                       },
                                       divisions: 15,
                                       label: _userSettings.pitch
@@ -234,7 +236,6 @@ class _VoiceSettingsState extends State<VoiceSettingsPage> {
                                     setState(() {
                                       _userSettings.language = value!;
                                     });
-                                    _savePreferences();
                                   },
                                   items: const [
                                     DropdownMenuItem(
@@ -243,7 +244,7 @@ class _VoiceSettingsState extends State<VoiceSettingsPage> {
                                             style: TextStyle(
                                                 color: Colors.white))),
                                     DropdownMenuItem(
-                                        value: "ar",
+                                        value: "ar-XA",
                                         child: Text("Arabic",
                                             style: TextStyle(
                                                 color: Colors.white))),
@@ -278,7 +279,6 @@ class _VoiceSettingsState extends State<VoiceSettingsPage> {
                                       _userSettings.gender = value!;
                                       _updateVoiceList();
                                     });
-                                    _savePreferences();
                                   },
                                   items: const [
                                     DropdownMenuItem(
@@ -321,7 +321,6 @@ class _VoiceSettingsState extends State<VoiceSettingsPage> {
                                     setState(() {
                                       _userSettings.voiceName = value!;
                                     });
-                                    _savePreferences();
                                   },
                                   items: _availableVoices.map((voice) {
                                     return DropdownMenuItem(
@@ -422,6 +421,35 @@ class _VoiceSettingsState extends State<VoiceSettingsPage> {
                                           : Icons.play_arrow),
                                       label: Text(
                                         _isPlaying ? "Playing.." : "Replay",
+                                        style:
+                                            TextStyle(fontSize: fontSize(20)),
+                                      ),
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: Colors.white,
+                                        foregroundColor: Color(0xFF1A2A3A),
+                                        padding: EdgeInsets.symmetric(
+                                          horizontal: spacing(20),
+                                          vertical: spacing(12),
+                                        ),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(50),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: 15,
+                                  ),
+                                  SizedBox(
+                                    width: double.infinity,
+                                    child: ElevatedButton.icon(
+                                      onPressed: () {
+                                        _savePreferences();
+                                      },
+                                      icon: Icon(Icons.record_voice_over),
+                                      label: Text(
+                                        "Save Changes",
                                         style:
                                             TextStyle(fontSize: fontSize(20)),
                                       ),

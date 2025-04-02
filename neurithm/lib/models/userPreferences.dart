@@ -6,17 +6,12 @@ class UserPreferences {
   static const String _languageKey = 'language';
   static const String _voiceNameKey = 'voice';
 
-  static Future<void> saveVoiceSettings({
-    required double pitch,
-    required String gender,
-    required String language,
-    required String voiceName,
-  }) async {
+  static Future<void> saveVoiceSettings( VoiceSettings voiceSettings) async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setDouble(_pitchKey, pitch);
-    await prefs.setString(_genderKey, gender);
-    await prefs.setString(_languageKey, language);
-    await prefs.setString(_voiceNameKey, voiceName);
+    await prefs.setDouble(_pitchKey, voiceSettings.pitch);
+    await prefs.setString(_genderKey, voiceSettings.gender);
+    await prefs.setString(_languageKey, voiceSettings.language);
+    await prefs.setString(_voiceNameKey, voiceSettings.voiceName);
   }
 
   static Future<VoiceSettings> loadVoiceSettings() async {
