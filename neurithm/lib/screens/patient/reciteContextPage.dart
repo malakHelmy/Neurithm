@@ -1,12 +1,8 @@
 import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'package:audioplayers/audioplayers.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'dart:convert';
-import 'dart:io';
+import 'package:neurithm/services/ttsService.dart';
 import 'package:neurithm/screens/patient/feedbackPage.dart';
 import 'package:neurithm/screens/patient/signalReadingPage.dart';
 import 'package:neurithm/widgets/wavesBackground.dart';
@@ -22,13 +18,15 @@ class ReciteContextPage extends StatefulWidget {
 
 class _ReciteContextPageState extends State<ReciteContextPage>
     with SingleTickerProviderStateMixin {
+  final TTSService _ttsService = TTSService();
+  // Store the path of the generated audio file
   late AnimationController _animationController;
   late Timer _waveTimer;
   List<double> waveHeights = List.filled(20, 0); // Initial wave heights
   final AudioPlayer _audioPlayer = AudioPlayer();
   bool _isPlaying = false;
   bool _isGenerating = false;
-  String? _audioFilePath; // Store the path of the generated audio file
+  String? _audioFilePath;
 
   @override
   void initState() {
@@ -62,59 +60,21 @@ class _ReciteContextPageState extends State<ReciteContextPage>
   }
 
   Future<void> synthesizeSpeech(String text) async {
-    String? accessToken = dotenv.env['GOOGLE_CLOUD_TTS_API_KEY'];
     if (!mounted) return;
 
     setState(() {
       _isGenerating = true;
     });
+    String? filePath = _ttsService.synthesizeSpeech(text) as String?;
+    if(filePath == "error") return;
+    setState(() {
+      _audioFilePath = filePath;
+    });
 
-    try {
-      final url = Uri.parse(
-          'https://texttospeech.googleapis.com/v1/text:synthesize?key=$accessToken');
-
-      final response = await http.post(
-        url,
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({
-          "input": {"text": text},
-          "voice": {
-            "languageCode": "ar-XA", // Arabic voice
-            "name": "ar-XA-Standard-D" // Example Arabic voice
-          },
-          "audioConfig": {
-            "audioEncoding": "LINEAR16" // WAV format
-          }
-        }),
-      );
-
-      if (response.statusCode == 200) {
-        final Map<String, dynamic> responseData = jsonDecode(response.body);
-        final String audioContent = responseData['audioContent'];
-
-        final directory = await getTemporaryDirectory();
-        final filePath = '${directory.path}/output.wav';
-        File audioFile = File(filePath);
-        await audioFile.writeAsBytes(base64Decode(audioContent));
-
-        setState(() {
-          _audioFilePath = filePath;
-        });
-
-        await _playAudio(filePath);
-      } else {
-        print(
-            'Failed to generate speech: ${response.statusCode} - ${response.body}');
-      }
-    } catch (e) {
-      print('Error in synthesizeSpeech: $e');
-    } finally {
-      if (mounted) {
-        setState(() {
-          _isGenerating = false;
-        });
-      }
-    }
+    await _playAudio(filePath!);
+    setState(() {
+      _isGenerating = false;
+    });
   }
 
   Future<void> _playAudio(String filePath) async {

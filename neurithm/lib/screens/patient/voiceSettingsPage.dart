@@ -8,52 +8,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:neurithm/widgets/wavesBackground.dart';
 import 'package:neurithm/widgets/appbar.dart';
 import 'package:neurithm/widgets/bottombar.dart';
-
-class VoiceSettings {
-  double pitch;
-  String gender;
-  String accent;
-
-  VoiceSettings({
-    required this.pitch,
-    required this.gender,
-    required this.accent,
-  });
-
-  Map<String, dynamic> toJson() {
-    return {
-      'pitch': pitch,
-      'gender': gender,
-      'language': accent,
-    };
-  }
-}
-
-class UserPreferences {
-  static const String _pitchKey = 'pitch';
-  static const String _genderKey = 'gender';
-  static const String _accentKey = 'accent';
-
-  static Future<void> saveVoiceSettings({
-    required double pitch,
-    required String gender,
-    required String accent,
-  }) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setDouble(_pitchKey, pitch);
-    await prefs.setString(_genderKey, gender);
-    await prefs.setString(_accentKey, accent);
-  }
-
-  static Future<VoiceSettings> loadVoiceSettings() async {
-    final prefs = await SharedPreferences.getInstance();
-    return VoiceSettings(
-      pitch: prefs.getDouble(_pitchKey) ?? 1.0,
-      gender: prefs.getString(_genderKey) ?? 'male',
-      accent: prefs.getString(_accentKey) ?? 'en',
-    );
-  }
-}
+import 'package:neurithm/services/ttsService.dart';
+import 'package:neurithm/models/voiceSettings.dart';
+import 'package:neurithm/models/userPreferences.dart';
 
 class VoiceSettingsPage extends StatefulWidget {
   @override
@@ -61,8 +18,10 @@ class VoiceSettingsPage extends StatefulWidget {
 }
 
 class _VoiceSettingsState extends State<VoiceSettingsPage> {
+  final TTSService _ttsService = TTSService();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final AudioPlayer _audioPlayer = AudioPlayer();
+  String? _audioFilePath;
 
   VoiceSettings _userSettings = VoiceSettings(
     pitch: 1.0,
@@ -97,57 +56,27 @@ class _VoiceSettingsState extends State<VoiceSettingsPage> {
     );
   }
 
-  Future<void> synthesizeSpeech(String text, VoiceSettings settings) async {
+  Future<void> synthesizeSpeech(String text) async {
+    if (!mounted) return;
+
     setState(() {
       _isGenerating = true;
     });
+    String? filePath = await _ttsService.synthesizeSpeech(text);
+    if (filePath == "error") return;
+    setState(() {
+      _audioFilePath = filePath;
+    });
 
-    final url = Uri.parse('http://192.168.1.3:5000/synthesize');
-    print("synthesizeSpeech");
-    try {
-      print("inside try");
-      final response = await http.post(
-        url,
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({
-          'text': text,
-          'pitch': settings.pitch,
-          'language': settings.accent,
-          'gender': settings.gender,
-        }),
-      );
-
-      if (response.statusCode == 200) {
-        final directory = await getTemporaryDirectory();
-        final filePath = '${directory.path}/output.wav';
-        File audioFile = File(filePath);
-        await audioFile.writeAsBytes(response.bodyBytes);
-
-        print('Audio file saved at: $filePath');
-
-        // Verify the file exists
-        bool fileExists = await audioFile.exists();
-        print('File exists: $fileExists');
-
-        if (fileExists) {
-          await _playAudio(filePath);
-        } else {
-          print('File does not exist at path: $filePath');
-        }
-      } else {
-        print(
-            'Failed to generate speech: ${response.statusCode} - ${response.body}');
-      }
-    } catch (e) {
-      print('Error: $e');
-    } finally {
-      setState(() {
-        _isGenerating = false;
-      });
-    }
+    await _playAudio(filePath!);
+    setState(() {
+      _isGenerating = false;
+    });
   }
 
   Future<void> _playAudio(String filePath) async {
+    if (!mounted) return;
+
     setState(() {
       _isPlaying = true;
     });
@@ -159,19 +88,24 @@ class _VoiceSettingsState extends State<VoiceSettingsPage> {
       print('Audio playback started');
 
       _audioPlayer.onPlayerStateChanged.listen((state) {
+        if (!mounted) return; // Check if the widget is still mounted
         print('Player state: $state');
         if (state == PlayerState.completed) {
-          setState(() {
-            _isPlaying = false;
-          });
+          if (mounted) {
+            setState(() {
+              _isPlaying = false;
+            });
+          }
           print('Audio playback completed');
         }
       });
     } catch (e) {
       print('Error playing audio: $e');
-      setState(() {
-        _isPlaying = false;
-      });
+      if (mounted) {
+        setState(() {
+          _isPlaying = false;
+        });
+      }
     }
   }
 
@@ -390,75 +324,71 @@ class _VoiceSettingsState extends State<VoiceSettingsPage> {
                               ),
                               SizedBox(height: spacing(16)),
                               Column(
-                               
                                 children: [
-                                 SizedBox(
-                                  width: double.infinity,
-                                   child: ElevatedButton.icon(
-                                        onPressed: _isGenerating
-                                            ? null
-                                            : () {
-                                                synthesizeSpeech(
-                                                    _textToSynthesize,
-                                                    _userSettings);
-                                              },
-                                        icon: Icon(Icons.record_voice_over),
-                                        label: Text(
-                                          "Generate & Play Voice",
-                                          style:
-                                              TextStyle(fontSize: fontSize(20)),
-                                        ),
-                                        style: ElevatedButton.styleFrom(
-                                          backgroundColor: Colors.white,
-                                          foregroundColor: Color(0xFF1A2A3A),
-                                          padding: EdgeInsets.symmetric(
-                                            horizontal: spacing(20),
-                                            vertical: spacing(12),
-                                          ),
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(50),
-                                          ),
-                                        ),
-                                      ),
-                                 ),
-                                  
-                                  SizedBox(height: 15,),
                                   SizedBox(
                                     width: double.infinity,
                                     child: ElevatedButton.icon(
-                                        onPressed: _isPlaying || _isGenerating
-                                            ? null
-                                            : () async {
-                                                final directory =
-                                                    await getTemporaryDirectory();
-                                                final filePath =
-                                                    '${directory.path}/output.wav';
-                                                await _playAudio(filePath);
-                                              },
-                                        icon: Icon(_isPlaying
-                                            ? Icons.pause
-                                            : Icons.play_arrow),
-                                        label: Text(
-                                          _isPlaying ? "Playing.." : "Replay",
-                                          style:
-                                              TextStyle(fontSize: fontSize(20)),
+                                      onPressed: _isGenerating
+                                          ? null
+                                          : () {
+                                              synthesizeSpeech(
+                                                  _textToSynthesize,
+                                                  );
+                                            },
+                                      icon: Icon(Icons.record_voice_over),
+                                      label: Text(
+                                        "Generate & Play Voice",
+                                        style:
+                                            TextStyle(fontSize: fontSize(20)),
+                                      ),
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: Colors.white,
+                                        foregroundColor: Color(0xFF1A2A3A),
+                                        padding: EdgeInsets.symmetric(
+                                          horizontal: spacing(20),
+                                          vertical: spacing(12),
                                         ),
-                                        style: ElevatedButton.styleFrom(
-                                          backgroundColor: Colors.white,
-                                          foregroundColor: Color(0xFF1A2A3A),
-                                          padding: EdgeInsets.symmetric(
-                                            horizontal: spacing(20),
-                                            vertical: spacing(12),
-                                          ),
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(50),
-                                          ),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(50),
                                         ),
                                       ),
+                                    ),
                                   ),
-                                  
+                                  SizedBox(
+                                    height: 15,
+                                  ),
+                                  SizedBox(
+                                    width: double.infinity,
+                                    child: ElevatedButton.icon(
+                                      onPressed: _isPlaying || _isGenerating
+                                          ? null
+                                          : () async {
+                                              
+                                              await _playAudio(_audioFilePath!);
+                                            },
+                                      icon: Icon(_isPlaying
+                                          ? Icons.pause
+                                          : Icons.play_arrow),
+                                      label: Text(
+                                        _isPlaying ? "Playing.." : "Replay",
+                                        style:
+                                            TextStyle(fontSize: fontSize(20)),
+                                      ),
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: Colors.white,
+                                        foregroundColor: Color(0xFF1A2A3A),
+                                        padding: EdgeInsets.symmetric(
+                                          horizontal: spacing(20),
+                                          vertical: spacing(12),
+                                        ),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(50),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
                                 ],
                               ),
                             ],
