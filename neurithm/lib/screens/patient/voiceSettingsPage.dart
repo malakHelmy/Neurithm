@@ -9,6 +9,7 @@ import 'package:neurithm/widgets/wavesBackground.dart';
 import 'package:neurithm/widgets/appbar.dart';
 import 'package:neurithm/widgets/bottombar.dart';
 import 'package:neurithm/services/ttsService.dart';
+import 'package:neurithm/services/voiceSettingService.dart';
 import 'package:neurithm/models/voiceSettings.dart';
 import 'package:neurithm/models/userPreferences.dart';
 
@@ -22,12 +23,17 @@ class _VoiceSettingsState extends State<VoiceSettingsPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final AudioPlayer _audioPlayer = AudioPlayer();
   String? _audioFilePath;
+  final VoiceSettingService _voiceSettingService = VoiceSettingService();
 
+  //default voice
   VoiceSettings _userSettings = VoiceSettings(
     pitch: 1.0,
     gender: "male",
-    accent: "en",
+    language: "en-US",
+    voiceName: "Orus",
   );
+  List<String> _availableVoices = [];
+  String? _selectedVoice;
 
   String _textToSynthesize = "Hello, ahahahaha yes of course.";
   bool _isPlaying = false;
@@ -41,6 +47,15 @@ class _VoiceSettingsState extends State<VoiceSettingsPage> {
     _textController.text = _textToSynthesize;
   }
 
+  void _updateVoiceList() {
+    setState(() {
+      _availableVoices = _userSettings.gender == "male"
+          ? _voiceSettingService.maleVoices
+          : _voiceSettingService.femaleVoices;
+      _selectedVoice = _availableVoices.isNotEmpty ? _availableVoices[0] : null;
+    });
+  }
+
   Future<void> _loadPreferences() async {
     final settings = await UserPreferences.loadVoiceSettings();
     setState(() {
@@ -50,10 +65,10 @@ class _VoiceSettingsState extends State<VoiceSettingsPage> {
 
   Future<void> _savePreferences() async {
     await UserPreferences.saveVoiceSettings(
-      pitch: _userSettings.pitch,
-      gender: _userSettings.gender,
-      accent: _userSettings.accent,
-    );
+        pitch: _userSettings.pitch,
+        gender: _userSettings.gender,
+        language: _userSettings.language,
+        voiceName: _userSettings.voiceName);
   }
 
   Future<void> synthesizeSpeech(String text) async {
@@ -214,16 +229,16 @@ class _VoiceSettingsState extends State<VoiceSettingsPage> {
                                   color: Colors.white.withOpacity(0.1),
                                 ),
                                 child: DropdownButton<String>(
-                                  value: _userSettings.accent,
+                                  value: _userSettings.language,
                                   onChanged: (value) {
                                     setState(() {
-                                      _userSettings.accent = value!;
+                                      _userSettings.language = value!;
                                     });
                                     _savePreferences();
                                   },
                                   items: const [
                                     DropdownMenuItem(
-                                        value: "en",
+                                        value: "en-US",
                                         child: Text("English",
                                             style: TextStyle(
                                                 color: Colors.white))),
@@ -261,6 +276,7 @@ class _VoiceSettingsState extends State<VoiceSettingsPage> {
                                   onChanged: (value) {
                                     setState(() {
                                       _userSettings.gender = value!;
+                                      _updateVoiceList();
                                     });
                                     _savePreferences();
                                   },
@@ -276,6 +292,41 @@ class _VoiceSettingsState extends State<VoiceSettingsPage> {
                                             style: TextStyle(
                                                 color: Colors.white))),
                                   ],
+                                  isExpanded: true,
+                                  dropdownColor: Color(0xFF1A2A3A),
+                                  underline: SizedBox(),
+                                ),
+                              ),
+                              SizedBox(height: spacing(20)),
+                              Text(
+                                "Voice",
+                                style: TextStyle(
+                                  fontSize: fontSize(18),
+                                  color: Colors.white,
+                                ),
+                              ),
+                              SizedBox(height: spacing(8)),
+                              Container(
+                                width: double.infinity,
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: spacing(12)),
+                                decoration: BoxDecoration(
+                                  border: Border.all(color: Colors.grey),
+                                  borderRadius: BorderRadius.circular(4),
+                                  color: Colors.white.withOpacity(0.1),
+                                ),
+                                child: DropdownButton<String>(
+                                  value: _userSettings.voiceName,
+                                  onChanged: (value) {
+                                    setState(() {
+                                      _userSettings.voiceName = value!;
+                                    });
+                                    _savePreferences();
+                                  },
+                                  items: _availableVoices.map((voice) {
+                                    return DropdownMenuItem(
+                                        value: voice, child: Text(voice));
+                                  }).toList(),
                                   isExpanded: true,
                                   dropdownColor: Color(0xFF1A2A3A),
                                   underline: SizedBox(),
@@ -332,8 +383,8 @@ class _VoiceSettingsState extends State<VoiceSettingsPage> {
                                           ? null
                                           : () {
                                               synthesizeSpeech(
-                                                  _textToSynthesize,
-                                                  );
+                                                _textToSynthesize,
+                                              );
                                             },
                                       icon: Icon(Icons.record_voice_over),
                                       label: Text(
@@ -364,7 +415,6 @@ class _VoiceSettingsState extends State<VoiceSettingsPage> {
                                       onPressed: _isPlaying || _isGenerating
                                           ? null
                                           : () async {
-                                              
                                               await _playAudio(_audioFilePath!);
                                             },
                                       icon: Icon(_isPlaying

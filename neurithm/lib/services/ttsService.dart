@@ -2,11 +2,14 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class TTSService {
+  final AudioPlayer _audioPlayer = AudioPlayer();
+  String? _audioFilePath;
 
-  Future<String> synthesizeSpeech(String text) async {
+  Future<String?> synthesizeSpeech(String text) async {
     String? accessToken = dotenv.env['GOOGLE_CLOUD_TTS_API_KEY'];
     if (accessToken == null) {
       print('Google Cloud TTS API key is missing.');
@@ -32,10 +35,10 @@ class TTSService {
         final String audioContent = responseData['audioContent'];
 
         final directory = await getTemporaryDirectory();
-        String audioFilePath = '${directory.path}/output.wav';
-        File audioFile = File(audioFilePath);
+        _audioFilePath = '${directory.path}/output.wav';
+        File audioFile = File(_audioFilePath!);
         await audioFile.writeAsBytes(base64Decode(audioContent));
-        return audioFilePath;
+        return _audioFilePath;
       } else {
         print(
             'Failed to generate speech: ${response.statusCode} - ${response.body}');

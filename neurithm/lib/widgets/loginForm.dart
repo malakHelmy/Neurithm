@@ -86,7 +86,7 @@ class _LoginFormState extends State<LoginForm> {
                         return 'Please enter your email';
                       } else if (!RegExp(r'^[^@]+@[^@]+\.[^@]+')
                           .hasMatch(value)) {
-                        return 'Enter a valid email';
+                        return 'nter a valid email';
                       }
                       return null;
                     },
