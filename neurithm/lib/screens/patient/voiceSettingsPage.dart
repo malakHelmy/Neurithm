@@ -50,9 +50,11 @@ class _VoiceSettingsState extends State<VoiceSettingsPage> {
   void _updateVoiceList() {
     setState(() {
       if (_userSettings.gender == "male") {
+        _userSettings.voiceName = "Puck";
         _availableVoices = _voiceSettingService.maleVoices;
       }
       if (_userSettings.gender == "female") {
+        _userSettings.voiceName = "Aoede";
         _availableVoices = _voiceSettingService.femaleVoices;
       }
 
