@@ -174,4 +174,29 @@ class WordBankService {
         .map((doc) => WordBankPhrase.fromMap(doc.data(), doc.id))
         .toList();
   }
+
+  Future<String> getCategoryId(String name) async {
+    final snapshot = await FirebaseFirestore.instance
+        .collection('word_bank_categories')
+        .where('name', isEqualTo: name)
+        .limit(1)
+        .get();
+
+    if (snapshot.docs.isNotEmpty) {
+      print("category id: " + snapshot.docs.first.id);
+      final categoryId = snapshot.docs.first.id;
+
+      return categoryId;
+    } else {
+      throw Exception("Frequent used phrases category not found");
+    }
+  }
+
+  Future<void> addPhraseToCategory(
+      WordBankPhrase phrase, String categoryId) async {
+    await FirebaseFirestore.instance.collection('word_bank').add({
+      'phrase': phrase.phrase,
+      'category_id': categoryId,
+    });
+  }
 }

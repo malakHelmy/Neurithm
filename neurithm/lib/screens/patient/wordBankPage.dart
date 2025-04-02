@@ -174,7 +174,7 @@ class _WordBankPageState extends State<WordBankPage> {
                                       Text(
                                         category.name,
                                         style: const TextStyle(
-                                          fontSize: 20,
+                                          fontSize: 17,
                                           color: Color(0xFF1A2A3A),
                                           fontWeight: FontWeight.bold,
                                         ),

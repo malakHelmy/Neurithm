@@ -15,6 +15,7 @@ class _PhrasesPageState extends State<WordBankPhrases> {
   final WordBankService _wordBankService = WordBankService();
   List<WordBankPhrase> phrases = [];
   bool isLoading = true;
+  Map<String, int> phraseClicks = {}; // Track phrase clicks
 
   @override
   void initState() {
@@ -37,6 +38,32 @@ class _PhrasesPageState extends State<WordBankPhrases> {
     }
   }
 
+  Future<void> _handlePhraseClick(WordBankPhrase phrase) async {
+    // Increment click count
+    setState(() {
+      phraseClicks[phrase.id] = (phraseClicks[phrase.id] ?? 0) + 1;
+    });
+
+    // If clicked more than 3 times, move to "Frequent used phrases"
+    if (phraseClicks[phrase.id]! >= 3) {
+      await _addToFrequentUsedPhrases(phrase);
+    }
+  }
+
+  Future<void> _addToFrequentUsedPhrases(WordBankPhrase phrase) async {
+    try {
+      // Fetch the ID of "Frequent used phrases" category
+      final frequentCategoryId = await _wordBankService.getCategoryId("Frequent Used Phrases");
+
+      // Add the phrase to the "Frequent used phrases" category
+      await _wordBankService.addPhraseToCategory(phrase, frequentCategoryId);
+
+      print("Phrase '${phrase.phrase}' added to Frequent Used Phrases");
+    } catch (e) {
+      print("Error adding phrase to Frequent Used Phrases: $e");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -49,6 +76,7 @@ class _PhrasesPageState extends State<WordBankPhrases> {
                 return ListTile(
                   title: Text(phrases[index].phrase, style: const TextStyle(fontSize: 24)),
                   leading: const Icon(Icons.chat),
+                  onTap: () => _handlePhraseClick(phrases[index]), // Track clicks
                 );
               },
             ),
