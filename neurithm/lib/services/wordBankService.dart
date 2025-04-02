@@ -199,4 +199,19 @@ class WordBankService {
       'category_id': categoryId,
     });
   }
+
+  Future<WordBankPhrase?> getPhraseById(String phraseID) async {
+     try {
+       DocumentSnapshot doc =
+           await _db.collection('word_bank').doc(phraseID).get();
+ 
+       if (doc.exists && doc.data() != null) {
+         return WordBankPhrase.fromMap(
+             doc.data() as Map<String, dynamic>, doc.id);
+       }
+     } catch (e) {
+       print("Error fetching phrase by ID: $e");
+     }
+     return null;
+   }
 }

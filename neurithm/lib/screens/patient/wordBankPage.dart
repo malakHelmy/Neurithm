@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:neurithm/models/patient.dart';
+import 'package:neurithm/services/authService.dart';
 import 'package:neurithm/services/wordBankService.dart';
 import 'package:neurithm/models/wordBankCategories.dart';
 import 'package:neurithm/widgets/appBar.dart';
@@ -18,12 +20,24 @@ class _WordBankPageState extends State<WordBankPage> {
   final WordBankService _wordBankService = WordBankService();
   TextEditingController searchController = TextEditingController();
   List<WordBankCategory> categories = [];
+  final AuthService _authService = AuthService();
+  Patient? _currentUser;
   bool isLoading = true;
 
   @override
   void initState() {
     super.initState();
+    _fetchUser();
     _fetchCategories();
+  }
+
+  Future<void> _fetchUser() async {
+    Patient? user = await _authService.getCurrentUser();
+    if (mounted) {
+      setState(() {
+        _currentUser = user;
+      });
+    }
   }
 
   Future<void> _fetchCategories() async {
@@ -148,14 +162,16 @@ class _WordBankPageState extends State<WordBankPage> {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) =>
-                                          WordBankPhrases(category: category),
+                                      builder: (context) => WordBankPhrases(
+                                          currentUser: _currentUser,
+                                          category: category),
                                     ),
                                   );
                                 },
                                 child: Container(
                                   decoration: BoxDecoration(
-                                    color: const Color.fromARGB(255, 226, 226, 226),
+                                    color: const Color.fromARGB(
+                                        255, 226, 226, 226),
                                     borderRadius: BorderRadius.circular(15),
                                     boxShadow: [
                                       BoxShadow(
@@ -169,8 +185,11 @@ class _WordBankPageState extends State<WordBankPage> {
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       Icon(getIconForCategory(category.name),
-                                          size: 40, color: const Color(0xFF1A2A3A)),
-                                      SizedBox(height: spacing(5, getScreenHeight(context))),
+                                          size: 40,
+                                          color: const Color(0xFF1A2A3A)),
+                                      SizedBox(
+                                          height: spacing(
+                                              5, getScreenHeight(context))),
                                       Text(
                                         category.name,
                                         style: const TextStyle(

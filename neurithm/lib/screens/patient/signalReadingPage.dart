@@ -1,14 +1,39 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:neurithm/models/patient.dart';
 import 'package:neurithm/models/wordBankCategories.dart';
 import 'package:neurithm/screens/patient/confirmContextPage.dart';
+import 'package:neurithm/services/authService.dart';
 import 'package:neurithm/widgets/appBar.dart';
 import 'package:neurithm/widgets/wavesBackground.dart';
 import 'package:neurithm/widgets/wordBankPhrases.dart';
 
-class SignalReadingpage extends StatelessWidget {
+class SignalReadingpage extends StatefulWidget {
   const SignalReadingpage({super.key});
+
+  @override
+  State<SignalReadingpage> createState() => _SignalReadingpageState();
+}
+
+class _SignalReadingpageState extends State<SignalReadingpage> {
+  final AuthService _authService = AuthService();
+  Patient? _currentUser;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchUser();
+  }
+
+  Future<void> _fetchUser() async {
+    Patient? user = await _authService.getCurrentUser();
+    if (mounted) {
+      setState(() {
+        _currentUser = user;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -125,8 +150,9 @@ class SignalReadingpage extends StatelessWidget {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) =>
-                                          WordBankPhrases(category: category),
+                                      builder: (context) => WordBankPhrases(
+                                          currentUser: _currentUser,
+                                          category: category),
                                     ),
                                   );
                                 },
