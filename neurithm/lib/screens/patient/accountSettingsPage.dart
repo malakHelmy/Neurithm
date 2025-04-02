@@ -162,7 +162,7 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
                       ],
                     ),
                   ),
-                  SizedBox(height: 30,),
+                  SizedBox(height: 10,),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 25),
                     child: SizedBox(
