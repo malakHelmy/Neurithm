@@ -29,47 +29,6 @@ class _PhrasesPageState extends State<WordBankPhrases> {
     _fetchPhrases();
   }
 
-  // Future<void> _fetchPhrases() async {
-  //   try {
-  //     final fetchedPhrases = await _wordBankService.fetchPhrases(widget.category.id);
-  //     setState(() {
-  //       phrases = fetchedPhrases;
-  //       isLoading = false;
-  //     });
-  //   } catch (e) {
-  //     print("Error fetching phrases: $e");
-  //     setState(() {
-  //       isLoading = false;
-  //     });
-  //   }
-  // }
-
-  // Future<void> _handlePhraseClick(WordBankPhrase phrase) async {
-  //   // Increment click count
-  //   setState(() {
-  //     phraseClicks[phrase.id] = (phraseClicks[phrase.id] ?? 0) + 1;
-  //   });
-
-  //   // If clicked more than 3 times, move to "Frequent used phrases"
-  //   if (phraseClicks[phrase.id]! >= 3) {
-  //     await _addToFrequentUsedPhrases(phrase);
-  //   }
-  // }
-
-  // Future<void> _addToFrequentUsedPhrases(WordBankPhrase phrase) async {
-  //   try {
-  //     // Fetch the ID of "Frequent used phrases" category
-  //     final frequentCategoryId = await _wordBankService.getCategoryId("Frequent Used Phrases");
-
-  //     // Add the phrase to the "Frequent used phrases" category
-  //     await _wordBankService.addPhraseToCategory(phrase, frequentCategoryId);
-
-  //     print("Phrase '${phrase.phrase}' added to Frequent Used Phrases");
-  //   } catch (e) {
-  //     print("Error adding phrase to Frequent Used Phrases: $e");
-  //   }
-  // }
-
   Future<void> _fetchPhrases() async {
     try {
       if (widget.category.name == "Frequent Used Phrases") {

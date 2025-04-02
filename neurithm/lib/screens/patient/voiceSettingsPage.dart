@@ -389,72 +389,76 @@ class _VoiceSettingsState extends State<VoiceSettingsPage> {
                                 },
                               ),
                               SizedBox(height: spacing(16)),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
+                              Column(
+                               
                                 children: [
-                                  Expanded(
+                                 SizedBox(
+                                  width: double.infinity,
+                                   child: ElevatedButton.icon(
+                                        onPressed: _isGenerating
+                                            ? null
+                                            : () {
+                                                synthesizeSpeech(
+                                                    _textToSynthesize,
+                                                    _userSettings);
+                                              },
+                                        icon: Icon(Icons.record_voice_over),
+                                        label: Text(
+                                          "Generate & Play Voice",
+                                          style:
+                                              TextStyle(fontSize: fontSize(20)),
+                                        ),
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: Colors.white,
+                                          foregroundColor: Color(0xFF1A2A3A),
+                                          padding: EdgeInsets.symmetric(
+                                            horizontal: spacing(20),
+                                            vertical: spacing(12),
+                                          ),
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(50),
+                                          ),
+                                        ),
+                                      ),
+                                 ),
+                                  
+                                  SizedBox(height: 15,),
+                                  SizedBox(
+                                    width: double.infinity,
                                     child: ElevatedButton.icon(
-                                      onPressed: _isGenerating
-                                          ? null
-                                          : () {
-                                              synthesizeSpeech(
-                                                  _textToSynthesize,
-                                                  _userSettings);
-                                            },
-                                      icon: Icon(Icons.record_voice_over),
-                                      label: Text(
-                                        "Generate & Play Voice",
-                                        style:
-                                            TextStyle(fontSize: fontSize(16)),
-                                      ),
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: Colors.white,
-                                        foregroundColor: Color(0xFF1A2A3A),
-                                        padding: EdgeInsets.symmetric(
-                                          horizontal: spacing(20),
-                                          vertical: spacing(12),
+                                        onPressed: _isPlaying || _isGenerating
+                                            ? null
+                                            : () async {
+                                                final directory =
+                                                    await getTemporaryDirectory();
+                                                final filePath =
+                                                    '${directory.path}/output.wav';
+                                                await _playAudio(filePath);
+                                              },
+                                        icon: Icon(_isPlaying
+                                            ? Icons.pause
+                                            : Icons.play_arrow),
+                                        label: Text(
+                                          _isPlaying ? "Playing.." : "Replay",
+                                          style:
+                                              TextStyle(fontSize: fontSize(20)),
                                         ),
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(50),
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: Colors.white,
+                                          foregroundColor: Color(0xFF1A2A3A),
+                                          padding: EdgeInsets.symmetric(
+                                            horizontal: spacing(20),
+                                            vertical: spacing(12),
+                                          ),
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(50),
+                                          ),
                                         ),
                                       ),
-                                    ),
                                   ),
-                                  Expanded(
-                                    child: ElevatedButton.icon(
-                                      onPressed: _isPlaying || _isGenerating
-                                          ? null
-                                          : () async {
-                                              final directory =
-                                                  await getTemporaryDirectory();
-                                              final filePath =
-                                                  '${directory.path}/output.wav';
-                                              await _playAudio(filePath);
-                                            },
-                                      icon: Icon(_isPlaying
-                                          ? Icons.pause
-                                          : Icons.play_arrow),
-                                      label: Text(
-                                        _isPlaying ? "Playing.." : "Replay",
-                                        style:
-                                            TextStyle(fontSize: fontSize(16)),
-                                      ),
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: Colors.white,
-                                        foregroundColor: Color(0xFF1A2A3A),
-                                        padding: EdgeInsets.symmetric(
-                                          horizontal: spacing(20),
-                                          vertical: spacing(12),
-                                        ),
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(50),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
+                                  
                                 ],
                               ),
                             ],

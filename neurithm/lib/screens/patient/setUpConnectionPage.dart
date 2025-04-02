@@ -196,7 +196,7 @@ class _SetUpConnectionPageState extends State<SetUpConnectionPage>
                                 Icon(Icons.arrow_back_ios,
                                     color: Color(0xFF1A2A3A), size: 20),
                                 SizedBox(width: 5),
-                                Text("Go Back")
+                                Text("Go Back",style: TextStyle(fontSize: 18,color: Color(0xFF1A2A3A,)))
                               ],
                             ),
                           ),

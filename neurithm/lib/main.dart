@@ -8,14 +8,14 @@ Future<void> main() async {
   await dotenv.load();
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
-    options: const FirebaseOptions(
-      messagingSenderId: "49235168369",
-      appId: "neurithm",
-      apiKey: "AIzaSyB_ZfiJIMRQv1mHBLOyM9hxnXqRn9A7DC8",
-      authDomain: "neurithm-8ac92.firebaseapp.com",
-      databaseURL: "https://neurithm-8ac92-default-rtdb.firebaseio.com",
-      projectId: "neurithm-8ac92",
-      storageBucket: "neurithm-8ac92.firebasestorage.app",
+      options: const FirebaseOptions(
+    messagingSenderId: "49235168369",
+    appId: "neurithm",
+    apiKey: "AIzaSyB_ZfiJIMRQv1mHBLOyM9hxnXqRn9A7DC8",
+    authDomain: "neurithm-8ac92.firebaseapp.com",
+    databaseURL: "https://neurithm-8ac92-default-rtdb.firebaseio.com",
+    projectId: "neurithm-8ac92",
+    storageBucket: "neurithm-8ac92.firebasestorage.app",
   ));
   FirebaseFirestore.instance.settings = const Settings(
     persistenceEnabled: true,
