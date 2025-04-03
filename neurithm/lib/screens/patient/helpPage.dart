@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:neurithm/screens/homepage.dart';
+import 'package:neurithm/screens/patient/connectionTutorialPage.dart';
 import 'package:neurithm/widgets/appBar.dart';
 import 'package:neurithm/widgets/bottomBar.dart';
 import 'package:neurithm/widgets/customTextField.dart';
@@ -70,7 +71,6 @@ class HelpPage extends StatelessWidget {
                             // validator: _validateEmail,
                           ),
                           TextFormField(
-                              keyboardType: TextInputType.number,
                               style: const TextStyle(
                                   fontSize: 20, color: Colors.white),
                               decoration: customTextField(
@@ -142,7 +142,7 @@ class HelpPage extends StatelessWidget {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => HomePage(showRatingPopup: false),
+                                builder: (context) => TutorialPage(),
                               ),
                             );
                           },

@@ -193,10 +193,13 @@ class _WordBankPageState extends State<WordBankPage> {
                                       Text(
                                         category.name,
                                         style: const TextStyle(
-                                          fontSize: 17,
+                                          fontSize: 20,
                                           color: Color(0xFF1A2A3A),
                                           fontWeight: FontWeight.bold,
+                                          overflow: TextOverflow.visible
+                                          
                                         ),
+                                        textAlign: TextAlign.center,
                                       ),
                                     ],
                                   ),
