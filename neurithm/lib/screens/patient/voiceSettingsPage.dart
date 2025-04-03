@@ -55,6 +55,7 @@ class _VoiceSettingsState extends State<VoiceSettingsPage> {
       }
       if (_userSettings.gender == "female") {
         _userSettings.voiceName = "Aoede";
+
         _availableVoices = _voiceSettingService.femaleVoices;
       }
 

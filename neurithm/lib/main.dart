@@ -37,7 +37,7 @@ class ThoughtToSpeechApp extends StatelessWidget {
       //   GlobalCupertinoLocalizations.delegate,
       // ],
       // supportedLocales: S.delegate.supportedLocales,
-      // debugShowCheckedModeBanner: false,
+      debugShowCheckedModeBanner: false,
       theme: ThemeData.dark().copyWith(
         scaffoldBackgroundColor: const Color(0xFF1A2A3A),
         primaryColor: const Color(0xFF394B58),
