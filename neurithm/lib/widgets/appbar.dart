@@ -5,6 +5,7 @@ import 'package:neurithm/screens/patient/helpPage.dart';
 import 'package:neurithm/screens/homepage.dart';
 import 'package:neurithm/screens/introPage.dart';
 import 'package:neurithm/screens/patient/wordBankPage.dart';
+import 'package:neurithm/screens/patient/contactUsPage.dart';
 import 'package:neurithm/services/authService.dart';
 
 Drawer sideAppBar(context) {
@@ -47,7 +48,7 @@ Drawer sideAppBar(context) {
           },
         ),
         ListTile(
-            title: const Text('Contact',
+            title: const Text('Contact Us',
                 style: TextStyle(
                   color: Color.fromARGB(255, 206, 206, 206),
                   fontSize: 25,
@@ -55,7 +56,11 @@ Drawer sideAppBar(context) {
                   fontWeight: FontWeight.bold,
                 )),
             onTap: () {
-              Navigator.pop(context);
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ContactUsPage(),
+                ));
             }),
         ListTile(
           title: const Text('Help and Support',
