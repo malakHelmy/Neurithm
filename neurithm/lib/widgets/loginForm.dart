@@ -1,11 +1,10 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
-import 'package:local_auth/local_auth.dart';
 import 'package:neurithm/screens/admin/adminDashboardPage.dart';
 import 'package:neurithm/screens/homepage.dart';
 import 'package:neurithm/services/authService.dart';
 import 'package:neurithm/services/biometricAuthService.dart';
+import 'package:neurithm/services/emailService.dart';
 import 'package:neurithm/widgets/customTextField.dart';
 
 class LoginForm extends StatefulWidget {
@@ -26,7 +25,7 @@ class LoginForm extends StatefulWidget {
 
 class _LoginFormState extends State<LoginForm> {
   final AuthService _authService = AuthService();
-  final LocalAuthentication _localAuth = LocalAuthentication();
+  final EmailService _emailService = EmailService();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
@@ -133,6 +132,7 @@ class _LoginFormState extends State<LoginForm> {
                           return;
                         }
 
+                        // Check if the email exists in the system (you can use any method here)
                         bool exists = await _authService.doesEmailExist(email);
                         if (!exists) {
                           ScaffoldMessenger.of(context).showSnackBar(
@@ -143,7 +143,9 @@ class _LoginFormState extends State<LoginForm> {
                         }
 
                         try {
-                          await _authService.sendPasswordResetEmail(email);
+                          // Use the custom email service to send the password reset email
+                          await _emailService.sendPasswordResetEmail(email,
+                              email); // Send email from neurithm1@gmail.com
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
                                 content: Text('Password reset email sent!')),

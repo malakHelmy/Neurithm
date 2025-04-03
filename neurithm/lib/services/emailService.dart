@@ -16,4 +16,20 @@ class EmailService {
       throw Exception('Error sending email: $e');
     }
   }
+
+  Future<void> sendPasswordResetEmail(String email, String userEmail) async {
+    final Email resetEmail = Email(
+      body: 'Click the link to reset your password.',
+      subject: 'Password Reset Request',
+      recipients: [email],
+      cc: [userEmail],
+      isHTML: false,
+    );
+
+    try {
+      await FlutterEmailSender.send(resetEmail);
+    } catch (e) {
+      throw Exception('Error sending email: $e');
+    }
+  }
 }
