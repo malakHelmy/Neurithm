@@ -87,7 +87,7 @@ class _ContactUsPageState extends State<ContactUsPage> {
         decoration: gradientBackground,
         child: Stack(
           children: [
-            wavesBackground(getScreenWidth(context), getScreenHeight(context)),
+            waveBackground,
             Padding(
               padding: EdgeInsets.symmetric(
                 horizontal: spacing(15, getScreenHeight(context)),

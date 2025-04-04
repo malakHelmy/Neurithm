@@ -74,6 +74,19 @@ class _VoiceSettingsState extends State<VoiceSettingsPage> {
 
   Future<void> _savePreferences() async {
     await UserPreferences.saveVoiceSettings(_userSettings);
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text("Your preferences have been saved successfully."),
+        backgroundColor: Colors.white,
+        behavior: SnackBarBehavior.floating,
+        duration: Duration(seconds: 3),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+        margin: EdgeInsets.all(16),
+      ),
+    );
   }
 
   Future<void> synthesizeSpeech(String text) async {
@@ -160,7 +173,7 @@ class _VoiceSettingsState extends State<VoiceSettingsPage> {
           decoration: gradientBackground,
           child: Stack(
             children: [
-              wavesBackground(screenWidth, screenHeight),
+              waveBackground,
               Column(
                 children: [
                   appBar(_scaffoldKey),

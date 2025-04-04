@@ -8,6 +8,8 @@ import 'package:neurithm/screens/patient/wordBankPage.dart';
 import 'package:neurithm/screens/patient/contactUsPage.dart';
 import 'package:neurithm/services/authService.dart';
 
+bool isConnected = false;
+
 Drawer sideAppBar(context) {
   final AuthService _authService = AuthService();
 
@@ -158,9 +160,11 @@ AppBar Appbar(GlobalKey<ScaffoldState> scaffoldKey) {
     centerTitle: true,
     actions: [
       IconButton(
-        icon: const Icon(
+        icon: Icon(
           Icons.signal_wifi_statusbar_4_bar_rounded,
-          color: Color.fromARGB(255, 130, 197, 116),
+          color: isConnected
+              ? const Color.fromARGB(255, 130, 197, 116) // Green if connected
+              : const Color.fromARGB(255, 244, 67, 54), // Red if not connected
           size: 25,
         ),
         onPressed: () {},
@@ -200,3 +204,5 @@ getScreenHeight(context) {
 
 double fontSize(double size, screenWidth) => size * screenWidth / 400;
 double spacing(double size, screenHeight) => size * screenHeight / 800;
+
+

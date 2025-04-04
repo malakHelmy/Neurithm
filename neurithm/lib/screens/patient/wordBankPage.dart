@@ -3,7 +3,7 @@ import 'package:neurithm/models/patient.dart';
 import 'package:neurithm/services/authService.dart';
 import 'package:neurithm/services/wordBankService.dart';
 import 'package:neurithm/models/wordBankCategories.dart';
-import 'package:neurithm/widgets/appBar.dart';
+import 'package:neurithm/widgets/appbar.dart';
 import 'package:neurithm/widgets/bottomBar.dart';
 import 'package:neurithm/widgets/wavesBackground.dart';
 import 'package:neurithm/widgets/wordBankPhrases.dart';

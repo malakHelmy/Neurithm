@@ -58,6 +58,9 @@ class _SetUpConnectionPageState extends State<SetUpConnectionPage>
 
   void _connectToDevice(BluetoothDevice device) async {
     await _bluetoothService.connectToDevice(device);
+    setState(() {
+    isConnected = true; 
+  });
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => const SignalReadingpage()),

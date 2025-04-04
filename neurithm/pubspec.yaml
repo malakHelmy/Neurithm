@@ -35,7 +35,7 @@ dependencies:
   path: ^1.8.3
   flutter_localizations:
         sdk: flutter
-  flutter_email_sender: ^5.0.2
+  flutter_email_sender: ^7.0.0
 
 dev_dependencies:
   flutter_test:
