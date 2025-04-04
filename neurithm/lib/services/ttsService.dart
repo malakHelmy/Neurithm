@@ -73,7 +73,7 @@ class TTSService {
         body: jsonEncode({
           "input": {"text": text},
           "voice": {"languageCode": settings.language, "name": audioCode},
-          "audioConfig": {"audioEncoding": "LINEAR16"}
+          "audioConfig": {"audioEncoding": "LINEAR16",}
         }),
       );
 

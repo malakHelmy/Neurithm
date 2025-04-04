@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:neurithm/screens/admin/adminDashboardPage.dart';
 import 'package:neurithm/screens/homepage.dart';
+import 'package:neurithm/screens/patient/forgetPasswordPage.dart';
 import 'package:neurithm/services/authService.dart';
 import 'package:neurithm/services/biometricAuthService.dart';
 import 'package:neurithm/services/emailService.dart';
@@ -85,7 +86,7 @@ class _LoginFormState extends State<LoginForm> {
                         return 'Please enter your email';
                       } else if (!RegExp(r'^[^@]+@[^@]+\.[^@]+')
                           .hasMatch(value)) {
-                        return 'nter a valid email';
+                        return 'Enter a valid email';
                       }
                       return null;
                     },
@@ -110,7 +111,7 @@ class _LoginFormState extends State<LoginForm> {
                     ),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Please enter your password';
+                         return 'Please enter your password';
                       } else if (value.length < 6) {
                         return 'Password must be at least 6 characters';
                       }
@@ -121,40 +122,10 @@ class _LoginFormState extends State<LoginForm> {
                   Align(
                     alignment: Alignment.centerRight,
                     child: TextButton(
-                      onPressed: () async {
-                        final email = _emailController.text.trim();
-
-                        if (email.isEmpty) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                                content: Text('Please enter your email')),
-                          );
-                          return;
-                        }
-
-                        // Check if the email exists in the system (you can use any method here)
-                        bool exists = await _authService.doesEmailExist(email);
-                        if (!exists) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                                content: Text('This email is not registered.')),
-                          );
-                          return;
-                        }
-
-                        try {
-                          // Use the custom email service to send the password reset email
-                          await _emailService.sendPasswordResetEmail(email,
-                              email); // Send email from neurithm1@gmail.com
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                                content: Text('Password reset email sent!')),
-                          );
-                        } catch (e) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text('Error: ${e.toString()}')),
-                          );
-                        }
+                      onPressed: () {Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => ForgetPasswordForm()));
                       },
                       child: const Text(
                         "Forgot password?",

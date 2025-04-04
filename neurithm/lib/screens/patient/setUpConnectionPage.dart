@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
+import 'package:neurithm/screens/homepage.dart';
 import 'package:neurithm/screens/patient/signalReadingPage.dart';
 import 'package:neurithm/widgets/appBar.dart';
 import 'package:neurithm/widgets/wavesBackground.dart';
@@ -59,8 +60,8 @@ class _SetUpConnectionPageState extends State<SetUpConnectionPage>
   void _connectToDevice(BluetoothDevice device) async {
     await _bluetoothService.connectToDevice(device);
     setState(() {
-    isConnected = true; 
-  });
+      isConnected = true;
+    });
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => const SignalReadingpage()),
@@ -113,6 +114,20 @@ class _SetUpConnectionPageState extends State<SetUpConnectionPage>
                       ),
                     ),
                     SizedBox(height: spacing(50, getScreenHeight(context))),
+                     if (_isScanning) ...[
+                            RippleCircle(
+                                animation: _controller,
+                                radius: 350,
+                                opacity: 0.3),
+                            RippleCircle(
+                                animation: _controller,
+                                radius: 300,
+                                opacity: 0.5),
+                            RippleCircle(
+                                animation: _controller,
+                                radius: 250,
+                                opacity: 0.7),
+                          ],
                     GestureDetector(
                       onTap: _isScanning ? null : _startScanning,
                       child: Container(
@@ -153,7 +168,7 @@ class _SetUpConnectionPageState extends State<SetUpConnectionPage>
                         style: const TextStyle(
                             color: Color.fromARGB(255, 254, 255, 255),
                             fontSize: 20,
-                            fontWeight: FontWeight.bold),
+                            fontWeight: FontWeight.normal),
                       ),
                     ),
                     if (_isScanComplete && bciHeadsets.isNotEmpty) ...[
@@ -183,7 +198,14 @@ class _SetUpConnectionPageState extends State<SetUpConnectionPage>
                         SizedBox(
                           width: 165,
                           child: ElevatedButton(
-                            onPressed: () => Navigator.pop(context),
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        HomePage(showRatingPopup: false,)),
+                              );
+                            },
                             style: ElevatedButton.styleFrom(
                               backgroundColor:
                                   const Color.fromARGB(255, 240, 240, 240),
@@ -199,7 +221,12 @@ class _SetUpConnectionPageState extends State<SetUpConnectionPage>
                                 Icon(Icons.arrow_back_ios,
                                     color: Color(0xFF1A2A3A), size: 20),
                                 SizedBox(width: 5),
-                                Text("Go Back",style: TextStyle(fontSize: 18,color: Color(0xFF1A2A3A,)))
+                                Text("Go Back",
+                                    style: TextStyle(
+                                        fontSize: 18,
+                                        color: Color(
+                                          0xFF1A2A3A,
+                                        )))
                               ],
                             ),
                           ),
@@ -213,6 +240,36 @@ class _SetUpConnectionPageState extends State<SetUpConnectionPage>
           ),
         ),
       ),
+    );
+  }
+}
+
+class RippleCircle extends StatelessWidget {
+  final Animation<double> animation;
+  final double radius;
+  final double opacity;
+
+  const RippleCircle({
+    required this.animation,
+    required this.radius,
+    required this.opacity,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: animation,
+      builder: (context, child) {
+        return Container(
+          width: radius,
+          height: radius,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: const Color.fromARGB(255, 62, 99, 135)
+                .withOpacity(opacity * (1 - animation.value)),
+          ),
+        );
+      },
     );
   }
 }
