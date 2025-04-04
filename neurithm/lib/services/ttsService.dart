@@ -7,9 +7,12 @@ import 'package:path_provider/path_provider.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:neurithm/models/userPreferences.dart';
 
+
 class TTSService {
   final VoiceSettingService voiceSettingService = new VoiceSettingService();
-  String? _audioFilePath;
+  String _audioFilePath = "";
+
+  
 
   Future<String?> synthesizeSpeech(String text) async {
     String? accessToken = dotenv.env['GOOGLE_CLOUD_TTS_API_KEY'];
@@ -30,7 +33,7 @@ class TTSService {
         body: jsonEncode({
           "input": {"text": text},
           "voice": {"languageCode": settings.language, "name": audioCode},
-          "audioConfig": {"audioEncoding": "LINEAR16", "pitch": settings.pitch,}
+          "audioConfig": {"audioEncoding": "LINEAR16"}
         }),
       );
 

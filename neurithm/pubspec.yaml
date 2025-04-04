@@ -36,6 +36,7 @@ dependencies:
   flutter_localizations:
         sdk: flutter
   flutter_email_sender: ^7.0.0
+  just_audio: ^0.9.46
 
 dev_dependencies:
   flutter_test:

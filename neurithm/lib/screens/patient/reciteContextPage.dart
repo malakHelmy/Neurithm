@@ -1,7 +1,9 @@
 import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:audioplayers/audioplayers.dart';
+import 'package:just_audio/just_audio.dart';
+import 'package:neurithm/models/userPreferences.dart';
+import 'package:neurithm/models/voiceSettings.dart';
 import 'package:neurithm/services/ttsService.dart';
 import 'package:neurithm/screens/patient/feedbackPage.dart';
 import 'package:neurithm/screens/patient/signalReadingPage.dart';
@@ -19,11 +21,10 @@ class ReciteContextPage extends StatefulWidget {
 class _ReciteContextPageState extends State<ReciteContextPage>
     with SingleTickerProviderStateMixin {
   final TTSService _ttsService = TTSService();
-  // Store the path of the generated audio file
   late AnimationController _animationController;
   late Timer _waveTimer;
   List<double> waveHeights = List.filled(20, 0); // Initial wave heights
-  final AudioPlayer _audioPlayer = AudioPlayer();
+  final _audioPlayer = AudioPlayer();
   bool _isPlaying = false;
   bool _isGenerating = false;
   String? _audioFilePath;
@@ -65,59 +66,32 @@ class _ReciteContextPageState extends State<ReciteContextPage>
     setState(() {
       _isGenerating = true;
     });
-    String? filePath = _ttsService.synthesizeSpeech(text) as String?;
-    if(filePath == "error") return;
+    VoiceSettings settings = await UserPreferences.loadVoiceSettings();
+    String? audioFilePath = await _ttsService.synthesizeSpeech(text);
+    if (audioFilePath != "error") {
+      await _audioPlayer.setPitch(settings.pitch);
+      await _audioPlayer.setFilePath(audioFilePath!);
+      await _audioPlayer.play();
+      print("Audio file path: $audioFilePath");
+    } else {
+      print("Failed to synthesize speech.");
+    }
     setState(() {
-      _audioFilePath = filePath;
+      _audioFilePath = audioFilePath;
     });
 
-    await _playAudio(filePath!);
     setState(() {
       _isGenerating = false;
     });
   }
-
-  Future<void> _playAudio(String filePath) async {
-    if (!mounted) return;
-
-    setState(() {
-      _isPlaying = true;
-    });
-
-    print('Attempting to play audio from: $filePath');
-
-    try {
-      await _audioPlayer.play(DeviceFileSource(filePath));
-      print('Audio playback started');
-
-      _audioPlayer.onPlayerStateChanged.listen((state) {
-        if (!mounted) return; // Check if the widget is still mounted
-        print('Player state: $state');
-        if (state == PlayerState.completed) {
-          if (mounted) {
-            setState(() {
-              _isPlaying = false;
-            });
-          }
-          print('Audio playback completed');
-        }
-      });
-    } catch (e) {
-      print('Error playing audio: $e');
-      if (mounted) {
-        setState(() {
-          _isPlaying = false;
-        });
-      }
-    }
-  }
-
   Future<void> _reciteAgain() async {
     if (!mounted) return;
+    VoiceSettings settings = await UserPreferences.loadVoiceSettings();
 
     if (_audioFilePath != null) {
-      // If audio file already exists, play it immediately
-      await _playAudio(_audioFilePath!);
+      await _audioPlayer.setPitch(settings.pitch);
+      await _audioPlayer.setFilePath(_audioFilePath!);
+      await _audioPlayer.play();
     } else {
       // If audio file doesn't exist, generate it first
       await synthesizeSpeech(widget.sentence);

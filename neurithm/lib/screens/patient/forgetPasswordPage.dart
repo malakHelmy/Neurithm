@@ -61,7 +61,6 @@ class _ForgetPasswordFormState extends State<ForgetPasswordForm> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       key: _scaffoldKey,
-      drawer: sideAppBar(context),
       body: Container(
         decoration: darkGradientBackground,
         child: Stack(children: [

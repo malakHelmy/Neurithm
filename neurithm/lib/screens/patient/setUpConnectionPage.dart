@@ -58,14 +58,16 @@ class _SetUpConnectionPageState extends State<SetUpConnectionPage>
   }
 
   void _connectToDevice(BluetoothDevice device) async {
-    await _bluetoothService.connectToDevice(device);
-    setState(() {
-      isConnected = true;
-    });
+    print("attempting to connect to bluetooth device");
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => const SignalReadingpage()),
+      MaterialPageRoute(builder: (context) => SignalReadingpage()),
     );
+    try {
+      await _bluetoothService.connectToDevice(device);
+    } catch (e) {
+      print(e);
+    }
   }
 
   @override
@@ -114,20 +116,6 @@ class _SetUpConnectionPageState extends State<SetUpConnectionPage>
                       ),
                     ),
                     SizedBox(height: spacing(50, getScreenHeight(context))),
-                     if (_isScanning) ...[
-                            RippleCircle(
-                                animation: _controller,
-                                radius: 350,
-                                opacity: 0.3),
-                            RippleCircle(
-                                animation: _controller,
-                                radius: 300,
-                                opacity: 0.5),
-                            RippleCircle(
-                                animation: _controller,
-                                radius: 250,
-                                opacity: 0.7),
-                          ],
                     GestureDetector(
                       onTap: _isScanning ? null : _startScanning,
                       child: Container(
@@ -168,7 +156,7 @@ class _SetUpConnectionPageState extends State<SetUpConnectionPage>
                         style: const TextStyle(
                             color: Color.fromARGB(255, 254, 255, 255),
                             fontSize: 20,
-                            fontWeight: FontWeight.normal),
+                            fontWeight: FontWeight.bold),
                       ),
                     ),
                     if (_isScanComplete && bciHeadsets.isNotEmpty) ...[
@@ -177,16 +165,30 @@ class _SetUpConnectionPageState extends State<SetUpConnectionPage>
                           itemCount: bciHeadsets.length,
                           itemBuilder: (context, index) {
                             return ListTile(
-                              title: Text(bciHeadsets[index].name,
-                                  style: const TextStyle(color: Colors.white)),
-                              subtitle: Text(bciHeadsets[index].id.toString(),
-                                  style: const TextStyle(color: Colors.grey)),
-                              trailing: ElevatedButton(
-                                onPressed: () =>
-                                    _connectToDevice(bciHeadsets[index]),
-                                child: const Text("Connect"),
-                              ),
-                            );
+                                title: Text(bciHeadsets[index].name,
+                                    style:
+                                        const TextStyle(color: Colors.white)),
+                                subtitle: Text(bciHeadsets[index].id.toString(),
+                                    style: const TextStyle(color: Colors.grey)),
+                                trailing: ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: const Color.fromARGB(
+                                        255, 240, 240, 240),
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(50)),
+                                  ),
+                                  onPressed: () =>
+                                      _connectToDevice(bciHeadsets[index]),
+                                  child: const Text(
+                                    "Connect",
+                                    style: TextStyle(
+                                      color: Color(
+                                        0xFF1A2A3A,
+                                      ),
+                                    ),
+                                  ),
+                                ));
                           },
                         ),
                       ),
@@ -202,8 +204,9 @@ class _SetUpConnectionPageState extends State<SetUpConnectionPage>
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) =>
-                                        HomePage(showRatingPopup: false,)),
+                                    builder: (context) => HomePage(
+                                          showRatingPopup: false,
+                                        )),
                               );
                             },
                             style: ElevatedButton.styleFrom(
@@ -240,36 +243,6 @@ class _SetUpConnectionPageState extends State<SetUpConnectionPage>
           ),
         ),
       ),
-    );
-  }
-}
-
-class RippleCircle extends StatelessWidget {
-  final Animation<double> animation;
-  final double radius;
-  final double opacity;
-
-  const RippleCircle({
-    required this.animation,
-    required this.radius,
-    required this.opacity,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return AnimatedBuilder(
-      animation: animation,
-      builder: (context, child) {
-        return Container(
-          width: radius,
-          height: radius,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: const Color.fromARGB(255, 62, 99, 135)
-                .withOpacity(opacity * (1 - animation.value)),
-          ),
-        );
-      },
     );
   }
 }

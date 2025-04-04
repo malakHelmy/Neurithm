@@ -1,10 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'package:audioplayers/audioplayers.dart';
-import 'dart:convert';
-import 'dart:io';
-import 'package:path_provider/path_provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:just_audio/just_audio.dart';
 import 'package:neurithm/widgets/wavesBackground.dart';
 import 'package:neurithm/widgets/appbar.dart';
 import 'package:neurithm/widgets/bottombar.dart';
@@ -21,7 +16,7 @@ class VoiceSettingsPage extends StatefulWidget {
 class _VoiceSettingsState extends State<VoiceSettingsPage> {
   final TTSService _ttsService = TTSService();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  final AudioPlayer _audioPlayer = AudioPlayer();
+  final _audioPlayer = AudioPlayer();
   String? _audioFilePath;
   final VoiceSettingService _voiceSettingService = VoiceSettingService();
 
@@ -35,7 +30,7 @@ class _VoiceSettingsState extends State<VoiceSettingsPage> {
   List<String> _availableVoices = [];
   String? _selectedVoice;
 
-  String _textToSynthesize = "";
+  String _textToSynthesize = "Sample text to listen to the voice";
   bool _isPlaying = false;
   bool _isGenerating = false;
   final TextEditingController _textController = TextEditingController();
@@ -90,7 +85,7 @@ class _VoiceSettingsState extends State<VoiceSettingsPage> {
   }
 
   Future<void> synthesizeSpeech(String text) async {
-    if (!mounted) return;
+    if (!mounted || text.trim().isEmpty) return;
 
     setState(() {
       _isGenerating = true;
@@ -117,29 +112,17 @@ class _VoiceSettingsState extends State<VoiceSettingsPage> {
 
     print('Attempting to play audio from: $filePath');
 
-    try {
-      await _audioPlayer.play(DeviceFileSource(filePath));
-      print('Audio playback started');
-
-      _audioPlayer.onPlayerStateChanged.listen((state) {
-        if (!mounted) return; // Check if the widget is still mounted
-        print('Player state: $state');
-        if (state == PlayerState.completed) {
-          if (mounted) {
-            setState(() {
-              _isPlaying = false;
-            });
-          }
-          print('Audio playback completed');
-        }
+    if (filePath != "error") {      
+      await _audioPlayer.setPitch(_userSettings.pitch);
+      await _audioPlayer.setFilePath(filePath);
+      await _audioPlayer.play();
+      print("Audio file path: $filePath");
+      setState(() {
+        _isPlaying = false;
       });
-    } catch (e) {
-      print('Error playing audio: $e');
-      if (mounted) {
-        setState(() {
-          _isPlaying = false;
-        });
-      }
+      // Add audio playing logic here, for example using the `audioplayers` package
+    } else {
+      print("Failed to synthesize speech.");
     }
   }
 
@@ -213,8 +196,8 @@ class _VoiceSettingsState extends State<VoiceSettingsPage> {
                                   Expanded(
                                     child: Slider(
                                       value: _userSettings.pitch,
-                                      min: 0.5,
-                                      max: 2.0,
+                                      min: 0.7,
+                                      max: 1.5,
                                       onChanged: (value) {
                                         setState(() {
                                           _userSettings.pitch = value;
@@ -397,9 +380,33 @@ class _VoiceSettingsState extends State<VoiceSettingsPage> {
                                       onPressed: _isGenerating
                                           ? null
                                           : () {
-                                              synthesizeSpeech(
-                                                _textToSynthesize,
-                                              );
+                                              if (_textToSynthesize
+                                                  .trim()
+                                                  .isEmpty) {
+                                                ScaffoldMessenger.of(context)
+                                                    .showSnackBar(
+                                                  SnackBar(
+                                                    content: Text(
+                                                        "Please enter some text to generate speech."),
+                                                    backgroundColor:
+                                                        Colors.white,
+                                                    behavior: SnackBarBehavior
+                                                        .floating,
+                                                    duration:
+                                                        Duration(seconds: 2),
+                                                    shape:
+                                                        RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              10),
+                                                    ),
+                                                    margin: EdgeInsets.all(16),
+                                                  ),
+                                                );
+                                              } else {
+                                                synthesizeSpeech(
+                                                    _textToSynthesize);
+                                              }
                                             },
                                       icon: Icon(Icons.record_voice_over),
                                       label: Text(

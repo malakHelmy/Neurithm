@@ -5,21 +5,32 @@ class ConnectToBluetoothService {
     Duration timeout = const Duration(seconds: 5),
     String prefix = "EPOCX",
   }) async {
+    print("inside bluetooth connection");
     List<BluetoothDevice> foundDevices = [];
+    bool isScanning = true;
 
-    await FlutterBluePlus.startScan(timeout: timeout);
+    // Start scanning
+    FlutterBluePlus.startScan(timeout: timeout);
 
-    final scanResults = await FlutterBluePlus.scanResults.first;
-    for (var result in scanResults) {
-      if (result.device.name.isNotEmpty &&
-          result.device.name.startsWith(prefix)) {
-        if (!foundDevices.any((d) => d.id == result.device.id)) {
-          foundDevices.add(result.device);
+    // Listen for scan results
+    final scanSubscription = FlutterBluePlus.scanResults.listen((scanResults) {
+      for (var result in scanResults) {
+        if (result.device.name.isNotEmpty) {
+          // Add unique devices only
+          if (!foundDevices.any((d) => d.id == result.device.id)) {
+            foundDevices.add(result.device);
+          }
         }
       }
-    }
+    });
 
+    // Wait for the scan to finish (using timeout duration)
+    await Future.delayed(timeout);
+
+    // Stop scanning after the timeout
     await FlutterBluePlus.stopScan();
+    scanSubscription.cancel();
+
     return foundDevices;
   }
 
