@@ -92,7 +92,57 @@ def run_notebook(folder_path):
         return None
     
 
-    
+def run_predictions_in_memory(folder_path, model_path, label_encoder_path):
+    """Predict on preprocessed EEG segments directly in memory"""
+    try:
+        # Load model and label encoder again (optional, or reuse already loaded ones)
+        model = tf.keras.models.load_model(model_path)
+        with open(label_encoder_path, 'rb') as f:
+            label_encoder = pickle.load(f)
+        model.trainable = False
+
+        all_predictions = {}
+
+        SEGMENT_LENGTH = 1200
+        NUM_CHANNELS = 12
+
+        for filename in sorted(os.listdir(folder_path)):
+            if filename.endswith('.csv'):
+                file_path = os.path.join(folder_path, filename)
+                df = pd.read_csv(file_path)
+
+                df = df.select_dtypes(include=[np.number])
+
+                num_columns = df.shape[1]
+                expected_features = SEGMENT_LENGTH * NUM_CHANNELS
+                columns_to_trim = num_columns % expected_features
+                if columns_to_trim != 0:
+                    df = df.iloc[:, :-columns_to_trim]
+
+                total_elements = df.shape[0] * df.shape[1]
+                if total_elements % (SEGMENT_LENGTH * NUM_CHANNELS) != 0:
+                    logger.warning(f"⚠ Skipping {filename} due to size mismatch.")
+                    continue  # Skip bad files safely
+
+                # Reshape
+                X_temp = df.values.reshape(-1, SEGMENT_LENGTH, NUM_CHANNELS)
+                X_new = np.transpose(X_temp, (0, 2, 1))
+                X_new = X_new[..., np.newaxis]
+
+                # Predict
+                y_pred_probs = model.predict(X_new)
+                y_pred_labels = np.argmax(y_pred_probs, axis=-1)
+                predicted_values = label_encoder.inverse_transform(y_pred_labels)
+
+                all_predictions[filename] = predicted_values.tolist()
+
+        return all_predictions
+
+    except Exception as e:
+        logger.error(f"⚠ Error in prediction: {e}")
+        raise e
+
+
 @app.route('/predict', methods=['POST'])
 def handle_request():
     if 'file' not in request.files:
