@@ -212,7 +212,17 @@ def setup_folders():
 
 def get_next_word_id():
     """Get next sequential word ID (1, 2, 3...)"""
-    existing = [int(f.name[7:]) for f in OUTPUT_DIR.glob("word*") if f.is_dir() and f.name[7:].isdigit()]
+    existing = []
+    for f in OUTPUT_DIR.glob("word*"):
+        if f.is_dir():
+            try:
+                # Extract number from "word1", "word2", etc.
+                num = int(f.name[4:])  # Changed from 7 to 4 (since "word" is 4 chars)
+                existing.append(num)
+            except ValueError:
+                continue  # Skip folders like "wordABC" (invalid numbers)
+    
+    print(f"DEBUG: Existing folders = {existing}")  # Debug output
     return max(existing) + 1 if existing else 1
 
 def process_eeg_data(df, sample_rate=128, letter_duration=10, gap=1):
@@ -232,7 +242,7 @@ def handle_upload(file):
     setup_folders()
     word_id = get_next_word_id()
     word_path = OUTPUT_DIR / f"word{word_id}"
-    word_path.mkdir()
+    word_path.mkdir(exist_ok=True)  # <-- Fix: Allow existing directory without error
 
     # Read and clean data
     df = pd.read_csv(file)
