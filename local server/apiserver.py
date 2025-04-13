@@ -1,16 +1,16 @@
-# import os
-# import json
-# import numpy as np
-# import tensorflow as tf
-# import tempfile
-# import logging
-# import pandas as pd
-# import pickle
-# from flask import Flask, request, jsonify
-# from nbconvert.preprocessors import ExecutePreprocessor
-# import nbformat
-# from pyngrok import ngrok
-# from tensorflow.keras.utils import to_categorical
+import os
+import json
+import numpy as np
+import tensorflow as tf
+import tempfile
+import logging
+import pandas as pd
+import pickle
+from flask import Flask, request, jsonify
+from nbconvert.preprocessors import ExecutePreprocessor
+import nbformat
+from pyngrok import ngrok
+from tensorflow.keras.utils import to_categorical
 
 # # Setup Logging
 # logging.basicConfig(level=logging.DEBUG)
@@ -21,15 +21,7 @@
 # # Load trained model
 # MODEL_PATH = "models/cnn_model.keras"
 # try:
-#     # ✅ MODIFICATION 1: Load model with compile=False to avoid TF version issues
-#     model = tf.keras.models.load_model(MODEL_PATH, compile=False)
-    
-#     # ✅ MODIFICATION 2: Re-compile model with the same settings as training
-#     model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
-    
-#     # ✅ MODIFICATION 3: Print model summary to verify architecture
-#     model.summary()
-    
+#     model = tf.keras.models.load_model(MODEL_PATH)
 #     logger.info("✅ Model loaded successfully.")
 # except Exception as e:
 #     logger.error(f"❌ Error loading model: {e}")
@@ -42,7 +34,6 @@
 #         label_encoder = pickle.load(f)
 #     num_classes = len(label_encoder.classes_)
 #     logger.info(f"✅ Label Encoder loaded successfully. Total classes: {num_classes}")
-#     logger.info(f"✅ Label classes: {label_encoder.classes_}")
 # except Exception as e:
 #     logger.error(f"❌ Error loading label encoder: {e}")
 #     raise e
@@ -104,17 +95,10 @@
 #         preprocessed_eeg = pd.read_csv(processed_csv_path).values
 #         logger.info(f"✅ Preprocessed data shape: {preprocessed_eeg.shape}")
 
-#         # ✅ MODIFICATION 4: Save a copy of preprocessed data for troubleshooting
-#         np.savetxt("debug_preprocessed_data.csv", preprocessed_eeg, delimiter=",")
-#         logger.info(f"✅ Saved copy of preprocessed data for debugging")
-
 #         # ✅ Step 4: Ensure compatibility with model input shape
 #         expected_shape = model.input_shape  # (None, segment_length, num_channels)
 #         segment_length = expected_shape[1]
 #         num_channels = expected_shape[2]
-        
-#         # ✅ Log expected shape for debugging
-#         logger.info(f"✅ Expected model input shape: (batch, {segment_length}, {num_channels})")
 
 #         # ✅ Ensure the data has the correct number of channels
 #         if preprocessed_eeg.shape[1] != num_channels:
@@ -129,23 +113,14 @@
 
 #         # Trim to full segments only
 #         valid_samples = num_segments * segment_length
-#         preprocessed_eeg = preprocessed_eeg[:valid_samples]
-        
-#         # ✅ MODIFICATION 5: Ensure proper data type matching training
-#         preprocessed_eeg = preprocessed_eeg.astype(np.float32)
-        
-#         preprocessed_eeg = np.reshape(preprocessed_eeg, (num_segments, segment_length, num_channels))
+#         preprocessed_eeg = np.reshape(preprocessed_eeg[:valid_samples], (num_segments, segment_length, num_channels))
 #         logger.info(f"✅ Preprocessed data reshaped to: {preprocessed_eeg.shape}")
 
 #         # ✅ Step 6: Run model prediction
 #         try:
-#             # ✅ MODIFICATION 6: Remove temperature scaling - use raw predictions
 #             predictions = model.predict(preprocessed_eeg)
-            
-#             # ✅ MODIFICATION 7: Add confidence values to output
-#             confidence_scores = np.max(predictions, axis=-1)
-#             logger.info(f"Confidence scores: {confidence_scores}")
-            
+#             temperature = 2.0  # Increase temperature to smooth predictions
+#             predictions = np.exp(predictions / temperature) / np.sum(np.exp(predictions / temperature), axis=-1, keepdims=True)
 #         except Exception as prediction_error:
 #             logger.error(f"❌ Prediction failed: {prediction_error}")
 #             return jsonify({"error": f"Prediction failed: {str(prediction_error)}"}), 500
@@ -155,34 +130,14 @@
 
 #         # Debug: Print model raw outputs
 #         logger.info(f"Raw Model Predictions (first 5 rows): {predictions[:5]}")
-
-#         # ✅ MODIFICATION 8: Add more detailed logging of predictions
-#         for i in range(min(5, len(predictions))):
-#             top_indices = np.argsort(predictions[i])[-3:][::-1]  # Top 3 predictions
-#             top_letters = [label_encoder.classes_[idx] for idx in top_indices]
-#             top_probs = [predictions[i][idx] for idx in top_indices]
-#             logger.info(f"Segment {i+1} - Top 3 predictions: {list(zip(top_letters, top_probs))}")
-
+#         logger.info(f"✅ Label Encoder Mapping: {label_encoder.classes_}")
 #         # Convert from one-hot encoding
 #         predicted_indices = np.argmax(predictions, axis=-1)
 #         predicted_letters = [label_encoder.classes_[idx] for idx in predicted_indices]
 
 #         logger.info(f"✅ Final Predictions: {predicted_letters}")
-        
-#         # ✅ MODIFICATION 9: Check for prediction consistency
-#         most_frequent_letter = max(set(predicted_letters), key=predicted_letters.count)
-#         consistency = predicted_letters.count(most_frequent_letter) / len(predicted_letters)
-#         logger.info(f"✅ Prediction consistency: {consistency:.2f} - Most frequent: {most_frequent_letter}")
 
-#         # ✅ MODIFICATION 10: Include consistency information in the response
-#         response = {
-#             "predictions": predicted_letters,
-#             "most_frequent": most_frequent_letter,
-#             "consistency": float(consistency),
-#             "confidence_scores": confidence_scores.tolist()
-#         }
-
-#         return json.dumps(response, ensure_ascii=False)
+#         return json.dumps({"predictions": predicted_letters}, ensure_ascii=False)
 
 #     except Exception as e:
 #         logger.error(f"❌ Unexpected Error: {e}")
@@ -206,10 +161,50 @@ import numpy as np
 import os
 from pathlib import Path
 
+# Setup Logging
+logging.basicConfig(level=logging.DEBUG)
+logger = logging.getLogger(__name__)
+
 app = Flask(__name__)
 
+
+NOTEBOOK_PATH = "notebooks/Letters_notebook_file_by_file.ipynb"
+
+
 # Configuration
-OUTPUT_DIR = Path("processed_results")  
+OUTPUT_DIR = Path("processed_results")
+
+# Function to execute the preprocessing notebook
+def run_notebook(folder_path):
+    try:
+        safe_folder_path = folder_path.replace("\\", "/")
+        with open(NOTEBOOK_PATH, "r", encoding="utf-8") as f:
+            nb = nbformat.read(f, as_version=4)
+
+        # Insert the CSV path into the notebook
+        new_cell = nbformat.v4.new_code_cell(f'CSV_Folder_PATH = r"{safe_folder_path}"')
+        nb.cells.insert(0, new_cell)
+
+        ep = ExecutePreprocessor(timeout=600, kernel_name="python3")
+        logger.info("🔄 Running Jupyter Notebook preprocessing...")
+
+        try:
+            ep.preprocess(nb, {"metadata": {"path": os.path.dirname(NOTEBOOK_PATH)}})
+            logger.info("✅ Notebook executed successfully.")
+        except Exception as e:
+            logger.error(f"⚠ Notebook execution error: {e}")
+            return None
+
+        # # Ensure the segmented CSV file exists
+        # if not os.path.exists(SEGMENTED_CSV_Folder_PATH):
+        #     logger.error(f"⚠ Segmented EEG CSV Folder not found: {SEGMENTED_CSV_Folder_PATH}")
+        #     return None
+
+        return folder_path
+
+    except Exception as e:
+        logger.error(f"⚠ Critical error running notebook: {e}")
+        return None
 
 def setup_folders():
     """Ensure output directory exists"""
@@ -269,6 +264,12 @@ def handle_request():
     try:
         zip_data, save_path = handle_upload(file)
         app.logger.info(f"Data saved to: {save_path}")
+
+        # ✅ Step 2: Run preprocessing notebook
+        processed_folder_path = run_notebook(save_path)
+        if processed_folder_path is None:
+            return jsonify({"error": "Preprocessing failed"}), 500
+
         return send_file(
             zip_data,
             mimetype='application/zip',
@@ -278,6 +279,13 @@ def handle_request():
     except Exception as e:
         app.logger.error(f"Processing error: {str(e)}")
         return jsonify(error="Processing failed"), 500
+    
+# # Start ngrok tunnel for external access
+# try:
+#     ngrok_tunnel = ngrok.connect(5000)
+#     logger.info(f"🌍 Public URL: {ngrok_tunnel.public_url}")
+# except Exception as e:
+#     logger.error(f"❌ Failed to establish ngrok tunnel: {e}")
 
 if __name__ == '__main__':
     setup_folders()
