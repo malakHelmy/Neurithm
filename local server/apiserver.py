@@ -18,6 +18,31 @@ logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
 
+# Constants
+NOTEBOOK_PATH = "notebooks/Letters_notebook_file_by_file.ipynb"
+MODEL_PATH = "models/eegnet_model_letters 79.63.keras"
+LABEL_ENCODER_PATH = "models/label_encoder_eegnet_letters 79.63.pkl"
+OUTPUT_DIR = Path("processed_results")
+
+# Load model once
+try:
+    model = tf.keras.models.load_model(MODEL_PATH)
+    logger.info("✅ Model loaded successfully.")
+except Exception as e:
+    logger.error(f"❌ Error loading model: {e}")
+    raise e
+
+# Load label encoder once
+try:
+    with open(LABEL_ENCODER_PATH, "rb") as f:
+        label_encoder = pickle.load(f)
+    num_classes = len(label_encoder.classes_)
+    logger.info(f"✅ Label Encoder loaded successfully. Total classes: {num_classes}")
+except Exception as e:
+    logger.error(f"❌ Error loading label encoder: {e}")
+    raise e
+
+
 # Ensure output folder exists
 def setup_folders():
     OUTPUT_DIR.mkdir(exist_ok=True)
