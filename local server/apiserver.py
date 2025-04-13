@@ -11,6 +11,10 @@ import nbformat
 from nbconvert.preprocessors import ExecutePreprocessor
 import tensorflow as tf
 import pickle
+from functools import lru_cache
+import requests
+from dotenv import load_dotenv
+import os
 
 # Setup Logging
 logging.basicConfig(level=logging.DEBUG)
@@ -18,11 +22,24 @@ logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
 
+# Load environment variables from .env file
+load_dotenv()
+
+
 # Constants
 NOTEBOOK_PATH = "notebooks/Letters_notebook_file_by_file.ipynb"
 MODEL_PATH = "models/eegnet_model_letters 79.63.keras"
 LABEL_ENCODER_PATH = "models/label_encoder_eegnet_letters 79.63.pkl"
 OUTPUT_DIR = Path("processed_results")
+
+# Access the API key from the environment
+OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
+OPENROUTER_API_URL = "https://openrouter.ai/api/v1/chat/completions"
+MODEL_NAME = "deepseek/deepseek-chat-v3-0324"
+MAX_RETRIES = 3
+
+# You can now use OPENROUTER_API_KEY safely
+print(f"Your OpenRouter API Key is: {OPENROUTER_API_KEY}")
 
 # Load model once
 try:
@@ -173,6 +190,56 @@ def run_predictions_in_memory(folder_path, model_path, label_encoder_path):
     except Exception as e:
         logger.error(f"⚠ Error in prediction: {e}")
         raise e
+    
+@lru_cache(maxsize=100)
+def correct_via_api(text):
+    """Returns ONLY the corrected Arabic text"""
+    headers = {
+        "Authorization": f"Bearer {OPENROUTER_API_KEY}",
+        "HTTP-Referer": "http://localhost:5000",
+        "X-Title": "Arabic Text Corrector",
+        "Content-Type": "application/json"
+    }
+
+    logger.debug(f"Request headers: {headers}")
+
+    prompt = (
+        "صحح هذا النص العربي مع الحفاظ على المعنى والطول. "
+        "أرجع النص المصحح فقط بدون أي شرح أو تعليقات.\n\n"
+        f"النص: {text}\n\n"
+        "النص المصحح:"
+    )
+
+    payload = {
+        "model": MODEL_NAME,
+        "messages": [{"role": "user", "content": prompt}],
+        "temperature": 0.1,
+        "max_tokens": 100
+    }
+
+    for attempt in range(MAX_RETRIES):
+        try:
+            response = requests.post(
+                OPENROUTER_API_URL,
+                headers=headers,
+                json=payload,
+                timeout=10
+            )
+
+            # Log the response details
+            logger.debug(f"Response status code: {response.status_code}")
+            logger.debug(f"Response text: {response.text}")
+
+            response.raise_for_status()
+
+            # Extract and return ONLY the corrected text
+            corrected = response.json()["choices"][0]["message"]["content"]
+            return corrected.strip()
+
+        except requests.exceptions.RequestException as e:
+            logger.warning(f"Attempt {attempt + 1} failed: {str(e)}")
+            if attempt == MAX_RETRIES - 1:
+                return text  # Fallback to original
 
 
 @app.route('/predict', methods=['POST'])
@@ -201,15 +268,37 @@ def handle_request():
             label_encoder_path=LABEL_ENCODER_PATH
         )
 
-        # Step 4: Return predictions in HTTP response
+        # Debugging: Log the predictions response
+        logger.debug(f"Predictions received: {json.dumps(predictions, ensure_ascii=False)}")
+
+        # Step 4: Extract letters from predictions (assumes predictions is a dict like {"letter_1.csv": ["أ"], ...})
+        letters = []
+        for key, value in predictions.items():
+            if isinstance(value, list) and len(value) > 0:
+                letters.append(value[0])  # Append the first letter in the list (if present)
+
+        # Concatenate all letters into a single text string
+        predictions_text = "".join(letters)
+
+        # Log the predictions text before correction
+        logger.debug(f"Predictions before correction: {predictions_text}")
+
+        # Step 5: Correct the text via the API (send the concatenated predictions text)
+        corrected_text = correct_via_api(predictions_text)
+
+        # Log the corrected text
+        logger.debug(f"Predictions after correction: {corrected_text}")
+
+        # Step 6: Return the corrected text in HTTP response
         return Response(
-            json.dumps(predictions, ensure_ascii=False),
+            json.dumps({"corrected_text": corrected_text}, ensure_ascii=False),
             mimetype='application/json'
         )
 
     except Exception as e:
         app.logger.error(f"Processing error: {str(e)}")
         return jsonify(error="Processing failed"), 500
+
 
 if __name__ == '__main__':
     setup_folders()
