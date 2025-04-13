@@ -53,23 +53,30 @@ def get_next_word_id():
     for f in OUTPUT_DIR.glob("word*"):
         if f.is_dir():
             try:
-                num = int(f.name[4:])  # Extract after 'word'
+                num = int(f.name[4:]) 
                 existing.append(num)
             except ValueError:
                 continue
     return max(existing) + 1 if existing else 1
 
-def process_eeg_data(df, sample_rate=128, letter_duration=10, gap=1):
-    """Split EEG DataFrame into letter segments"""
+def process_eeg_data(df, sample_rate=128, letter_duration=10, gap=0.5):
+    """Split EEG DataFrame into letter segments with gap between them, no gap after the last one."""
     rows_per_letter = sample_rate * letter_duration
-    rows_per_gap = sample_rate * gap
+    rows_per_gap = int(sample_rate * gap)
     segments = []
 
     for start in range(0, len(df), rows_per_letter + rows_per_gap):
-        end = min(start + rows_per_letter, len(df))
+        # For the last segment, avoid adding a gap after it
+        if start + rows_per_letter + rows_per_gap > len(df):
+            end = min(start + rows_per_letter, len(df))
+        else:
+            end = min(start + rows_per_letter, len(df))
+        
+        # Add the segment to the list
         segments.append(df.iloc[start:end].copy())
 
     return segments
+
 
 def handle_upload(file):
     """Handle uploaded EEG CSV file, split into segments"""
