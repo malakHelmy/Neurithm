@@ -300,6 +300,12 @@ def handle_request():
         app.logger.error(f"Processing error: {str(e)}")
         return jsonify(error="Processing failed"), 500
 
+# # Start ngrok tunnel for external access
+# try:
+#     ngrok_tunnel = ngrok.connect(5000)
+#     logger.info(f"🌍 Public URL: {ngrok_tunnel.public_url}")
+# except Exception as e:
+#     logger.error(f"❌ Failed to establish ngrok tunnel: {e}")
 
 if __name__ == '__main__':
     setup_folders()
