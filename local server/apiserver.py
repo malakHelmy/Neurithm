@@ -12,6 +12,7 @@ from nbconvert.preprocessors import ExecutePreprocessor
 import tensorflow as tf
 import pickle
 from functools import lru_cache
+from pyngrok import ngrok
 import requests
 from dotenv import load_dotenv
 import os
