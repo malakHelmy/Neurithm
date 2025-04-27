@@ -346,10 +346,10 @@ def extract_frequency_features(X, fs=250):
 
     return X_freq_normalized.reshape(batch_size, channels, len(bands))
 
+# Main prediction function
 def run_transformer_predictions(folder_path):
     """Run predictions with the alternative EEGTransformer model"""
     try:
-        # Load the alternative model and label encoder if not already loaded
         global alt_model, alt_label_encoder
 
         if alt_model is None:
@@ -363,7 +363,6 @@ def run_transformer_predictions(folder_path):
 
         alt_model.trainable = False
 
-        # Load model and label encoder again (optional, or reuse already loaded ones)
         all_predictions = {}
 
         SEGMENT_LENGTH = 1200
@@ -387,22 +386,49 @@ def run_transformer_predictions(folder_path):
                     logger.warning(f"⚠ Skipping {filename} due to size mismatch.")
                     continue  # Skip bad files safely
 
-                # Reshape
+                # Reshape EEG data
                 X_temp = df.values.reshape(-1, SEGMENT_LENGTH, NUM_CHANNELS)
-                X_new = np.transpose(X_temp, (0, 2, 1))
-                X_new = X_new[..., np.newaxis]
+                X_new = np.transpose(X_temp, (0, 2, 1))  # Shape: (samples, channels, time_steps)
+                X_new = X_new[..., np.newaxis]  # Adding the last dimension (shape: (samples, channels, time_steps, 1))
 
-                # Predict
-                y_pred_probs = model.predict(X_new)
+                # Debugging: Log the shape of reshaped data
+                logger.debug(f"X_new shape: {X_new.shape}")
+
+                # Apply augmentations (same as in training)
+                X_new_augmented = advanced_augmentation(X_new, aug_intensity=0.8)
+
+                # Debugging: Log augmented data shape
+                logger.debug(f"X_new_augmented shape: {X_new_augmented.shape}")
+
+                # Feature extraction
+                X_new_freq = extract_frequency_features(X_new_augmented)
+
+                # Debugging: Log frequency features shape
+                logger.debug(f"X_new_freq shape: {X_new_freq.shape}")
+
+                # Generate positional encoding for the second input
+                batch_size = X_new.shape[0]
+                seq_len = 12  # Expected sequence length (time steps)
+                embedding_dim = 5  # Expected dimensions for the second input (positional encoding)
+                X_input2 = generate_positional_encoding(seq_len, embedding_dim)  # Generate positional encoding for the second input
+
+                # Repeat the positional encoding for the batch size (to match X_new shape)
+                X_input2 = tf.repeat(X_input2[tf.newaxis, :, :], batch_size, axis=0)  # Shape: (batch_size, seq_len, embedding_dim)
+
+                # Debugging: Log positional encoding shape
+                logger.debug(f"X_input2 shape: {X_input2.shape}")
+
+                # Run prediction with both inputs
+                y_pred_probs = alt_model.predict([X_new_augmented, X_input2])
                 y_pred_labels = np.argmax(y_pred_probs, axis=-1)
-                predicted_values = label_encoder.inverse_transform(y_pred_labels)
+                predicted_values = alt_label_encoder.inverse_transform(y_pred_labels)
 
                 all_predictions[filename] = predicted_values.tolist()
 
         return all_predictions
 
     except Exception as e:
-        logger.error(f"⚠ Error in transformer prediction: {e}")
+        logger.error(f"⚠ Error in prediction: {e}")
         raise e
 
 
