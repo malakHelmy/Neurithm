@@ -15,6 +15,8 @@ from functools import lru_cache
 from pyngrok import ngrok
 import requests
 from dotenv import load_dotenv
+from scipy import signal
+from sklearn.preprocessing import StandardScaler
 import os
 import re
 
