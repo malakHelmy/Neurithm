@@ -239,6 +239,112 @@ def run_predictions_in_memory(folder_path, model_path, label_encoder_path):
         logger.error(f"⚠ Error in prediction: {e}")
         raise e
 
+def generate_positional_encoding(seq_len, depth):
+    """Generate fixed sinusoidal positional encodings"""
+    positions = np.arange(seq_len)[:, np.newaxis]
+    depths = np.arange(depth)[np.newaxis, :] / depth
+    angle_rates = 1 / (10000**depths)
+    angle_rads = positions * angle_rates
+
+    pos_encoding = np.zeros(angle_rads.shape)
+    pos_encoding[:, 0::2] = np.sin(angle_rads[:, 0::2])
+    pos_encoding[:, 1::2] = np.cos(angle_rads[:, 1::2])
+
+    return tf.cast(pos_encoding, dtype=tf.float32)
+
+def add_noise(signal, noise_level=0.05):
+    noise = np.random.normal(0, noise_level, signal.shape)
+    return signal + noise
+
+def time_shift(signal, shift_max=50):
+    shift = np.random.randint(-shift_max, shift_max)
+    return np.roll(signal, shift, axis=0)
+
+def scale_amplitude(signal, scale_range=(0.8, 1.2)):
+    scale = np.random.uniform(scale_range[0], scale_range[1])
+    return signal * scale
+
+def frequency_mask(signal, mask_fraction=0.1):
+    signal_shape = signal.shape
+    signal_flat = signal.reshape(-1, signal_shape[-1])
+
+    for i in range(signal_flat.shape[0]):
+        sig = signal_flat[i]
+        sig_fft = np.fft.rfft(sig)
+        num_freqs = len(sig_fft)
+        num_masked = int(mask_fraction * num_freqs)
+        if num_masked > 0:
+            mask_idx = np.random.choice(num_freqs, num_masked, replace=False)
+            sig_fft[mask_idx] = 0
+        signal_flat[i] = np.fft.irfft(sig_fft, len(sig))
+
+    return signal_flat.reshape(signal_shape)
+
+def contrast_enhancement(signal, factor_range=(0.8, 1.5)):
+    factor = np.random.uniform(factor_range[0], factor_range[1])
+    mean = np.mean(signal)
+    return (signal - mean) * factor + mean
+
+def advanced_augmentation(segments, aug_intensity=0.8):
+    augmented = segments.copy()
+    batch_size = segments.shape[0]
+
+    noise_mask = np.random.random(batch_size) < aug_intensity
+    shift_mask = np.random.random(batch_size) < aug_intensity * 0.8
+    scale_mask = np.random.random(batch_size) < aug_intensity * 0.7
+    freq_mask = np.random.random(batch_size) < aug_intensity * 0.6
+    contrast_mask = np.random.random(batch_size) < aug_intensity * 0.5
+
+    if np.any(noise_mask):
+        noise_levels = np.random.uniform(0.01, 0.05, batch_size)
+        for i in np.where(noise_mask)[0]:
+            augmented[i] = add_noise(segments[i], noise_level=noise_levels[i])
+
+    if np.any(shift_mask):
+        shift_values = np.random.randint(-20, 20, batch_size)
+        for i in np.where(shift_mask)[0]:
+            augmented[i] = np.roll(segments[i], shift_values[i], axis=1)
+
+    if np.any(scale_mask):
+        scale_values = np.random.uniform(0.85, 1.15, batch_size)
+        for i in np.where(scale_mask)[0]:
+            augmented[i] = segments[i] * scale_values[i]
+
+    if np.any(freq_mask):
+        mask_fractions = np.random.uniform(0.05, 0.15, batch_size)
+        for i in np.where(freq_mask)[0]:
+            augmented[i] = frequency_mask(segments[i], mask_fraction=mask_fractions[i])
+
+    if np.any(contrast_mask):
+        factor_ranges = [(0.9, 1.3) for _ in range(batch_size)]
+        for i in np.where(contrast_mask)[0]:
+            augmented[i] = contrast_enhancement(segments[i], factor_range=factor_ranges[i])
+
+    return augmented
+
+def extract_frequency_features(X, fs=250):
+    bands = {
+        'delta': (0.5, 4), 'theta': (4, 8), 'alpha': (8, 13),
+        'beta': (13, 30), 'gamma': (30, 50)
+    }
+
+    batch_size, channels, samples, _ = X.shape
+    X_freq = np.zeros((batch_size, channels, len(bands)))
+
+    for i in range(batch_size):
+        for c in range(channels):
+            signal_data = X[i, c, :, 0]
+            freqs, psd = signal.welch(signal_data, fs=fs, nperseg=min(256, len(signal_data)))
+            for j, (band_name, (low, high)) in enumerate(bands.items()):
+                idx_band = np.logical_and(freqs >= low, freqs <= high)
+                if np.any(idx_band):
+                    X_freq[i, c, j] = np.mean(psd[idx_band])
+
+    X_freq_reshaped = X_freq.reshape(batch_size, -1)
+    scaler = StandardScaler()
+    X_freq_normalized = scaler.fit_transform(X_freq_reshaped)
+
+    return X_freq_normalized.reshape(batch_size, channels, len(bands))
 
 def run_transformer_predictions(folder_path):
     """Run predictions with the alternative EEGTransformer model"""
