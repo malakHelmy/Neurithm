@@ -445,7 +445,7 @@ def regenerate():
     """Regenerate predictions for a specific preprocessed word folder using the EEGTransformer model"""
     try:
         data = request.json
-        word_folder = data.get('word_folder')  # e.g., "word 1"
+        word_folder = data.get('word_folder')
         num_options = data.get('num_options', 5)
 
         if not word_folder:
@@ -482,7 +482,7 @@ def regenerate():
     except Exception as e:
         logger.exception("Regeneration failed.")
         return jsonify(error="Regeneration failed", message=str(e)), 500
-
+   
 # # Start ngrok tunnel for external access
 # try:
 #     ngrok_tunnel = ngrok.connect(5000)
