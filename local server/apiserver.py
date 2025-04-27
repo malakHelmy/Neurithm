@@ -243,58 +243,60 @@ def run_transformer_predictions(folder_path):
     try:
         # Load the alternative model and label encoder if not already loaded
         global alt_model, alt_label_encoder
-        
+
         if alt_model is None:
             alt_model = tf.keras.models.load_model(ALT_MODEL_PATH)
             logger.info("✅ Alternative model loaded on demand.")
-            
+
         if alt_label_encoder is None:
             with open(ALT_LABEL_ENCODER_PATH, "rb") as f:
                 alt_label_encoder = pickle.load(f)
             logger.info("✅ Alternative label encoder loaded on demand.")
-            
+
         alt_model.trainable = False
-        
-        # For EEGTransformer, the input shape or preprocessing might be different
-        # Adjust the code below based on your EEGTransformer requirements
-        
+
+        # Load model and label encoder again (optional, or reuse already loaded ones)
         all_predictions = {}
-        
-        # Assuming similar dimensions for simplicity, adjust if needed
-        SEGMENT_LENGTH = 1200  # Or whatever your transformer expects
-        NUM_CHANNELS = 12      # Or whatever your transformer expects
-        
+
+        SEGMENT_LENGTH = 1200
+        NUM_CHANNELS = 12
+
         for filename in sorted(os.listdir(folder_path)):
             if filename.endswith('.csv'):
                 file_path = os.path.join(folder_path, filename)
                 df = pd.read_csv(file_path)
-                
-                # Process for transformer - may need adjustments based on your model
+
                 df = df.select_dtypes(include=[np.number])
-                
-                # Handle potential shape differences
-                # Note: Adjust this preprocessing according to your transformer model's requirements
-                # This is just a placeholder based on typical transformer input needs
-                
-                # Example: Reshape for transformer (adjust as needed)
+
+                num_columns = df.shape[1]
+                expected_features = SEGMENT_LENGTH * NUM_CHANNELS
+                columns_to_trim = num_columns % expected_features
+                if columns_to_trim != 0:
+                    df = df.iloc[:, :-columns_to_trim]
+
+                total_elements = df.shape[0] * df.shape[1]
+                if total_elements % (SEGMENT_LENGTH * NUM_CHANNELS) != 0:
+                    logger.warning(f"⚠ Skipping {filename} due to size mismatch.")
+                    continue  # Skip bad files safely
+
+                # Reshape
                 X_temp = df.values.reshape(-1, SEGMENT_LENGTH, NUM_CHANNELS)
-                
-                # Your transformer might need different input shape
-                # For example, transformers often expect [batch, seq_len, features]
-                X_transformer = X_temp  # Adjust as needed
-                
-                # Predict with transformer
-                y_pred_probs = alt_model.predict(X_transformer)
+                X_new = np.transpose(X_temp, (0, 2, 1))
+                X_new = X_new[..., np.newaxis]
+
+                # Predict
+                y_pred_probs = model.predict(X_new)
                 y_pred_labels = np.argmax(y_pred_probs, axis=-1)
-                predicted_values = alt_label_encoder.inverse_transform(y_pred_labels)
-                
+                predicted_values = label_encoder.inverse_transform(y_pred_labels)
+
                 all_predictions[filename] = predicted_values.tolist()
-                
+
         return all_predictions
-        
+
     except Exception as e:
         logger.error(f"⚠ Error in transformer prediction: {e}")
         raise e
+
 
 
 @lru_cache(maxsize=100)
