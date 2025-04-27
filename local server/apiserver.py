@@ -33,8 +33,8 @@ NOTEBOOK_PATH = "notebooks/Letters_notebook_file_by_file.ipynb"
 MODEL_PATH = "models/eegnet_model_letters 79.63.keras"
 LABEL_ENCODER_PATH = "models/label_encoder_eegnet_letters 79.63.pkl"
 # Add path for the alternative model
-ALT_MODEL_PATH = "models/yarab.keras"
-ALT_LABEL_ENCODER_PATH = "models/yarab.pkl"
+ALT_MODEL_PATH = "models/without_pos_encoding.keras"
+ALT_LABEL_ENCODER_PATH = "models/without_pos_encoding.pkl"
 OUTPUT_DIR = Path("processed_results")
 
 # Access the API key from the environment
