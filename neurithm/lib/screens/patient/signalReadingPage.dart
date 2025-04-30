@@ -43,7 +43,7 @@ class _SignalReadingpageState extends State<SignalReadingpage> {
   }
 
   // Function to handle the file upload and prediction request
-  Future<void> _uploadFileAndPredict() async {
+ Future<void> _uploadFileAndPredict() async {
     // Pick the file from the user's device
     FilePickerResult? result = await FilePicker.platform.pickFiles(type: FileType.custom, allowedExtensions: ['csv']);
     if (result == null) return; // No file selected
@@ -69,15 +69,16 @@ class _SignalReadingpageState extends State<SignalReadingpage> {
         var responseData = await response.stream.bytesToString();
         var data = json.decode(responseData);
 
-        // Extract predicted text from the server response
+        // Extract predicted text and corrected options from the server response
         String predictedText = data['original_text'];
+        List<String> correctedTexts = List<String>.from(data['corrected_texts']);
 
-        // Navigate to the ConfirmContextPage with the predicted text
+        // Navigate to the ConfirmContextPage with the predicted text and options
         Navigator.push(
           context,
           MaterialPageRoute(
             builder: (context) => ConfirmContextPage(
-              processedSentence: predictedText,
+              correctedTexts: correctedTexts,  // Pass the corrected options
             ),
           ),
         );

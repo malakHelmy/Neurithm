@@ -5,9 +5,12 @@ import 'package:neurithm/widgets/appBar.dart';
 import 'package:neurithm/widgets/wavesBackground.dart';
 
 class ConfirmContextPage extends StatefulWidget {
-  final String processedSentence;
+  final List<String> correctedTexts;  // Receiving corrected texts
 
-  const ConfirmContextPage({super.key, required this.processedSentence});
+  const ConfirmContextPage({
+    super.key,
+    required this.correctedTexts,  // Pass the corrected texts here
+  });
 
   @override
   State<ConfirmContextPage> createState() => _ConfirmationPageState();
@@ -15,6 +18,7 @@ class ConfirmContextPage extends StatefulWidget {
 
 class _ConfirmationPageState extends State<ConfirmContextPage> {
   bool _isRegenerating = false;
+  String? _selectedText;  // To store the selected corrected text
 
   @override
   Widget build(BuildContext context) {
@@ -66,7 +70,7 @@ class _ConfirmationPageState extends State<ConfirmContextPage> {
                             bottom: spacing(20, getScreenHeight(context)),
                           ),
                           child: const Text(
-                            'Review Your Thought:',
+                            'Choose Your Preferred Correction:',
                             style: TextStyle(
                               fontSize: 22,
                               fontWeight: FontWeight.w900,
@@ -75,29 +79,37 @@ class _ConfirmationPageState extends State<ConfirmContextPage> {
                             ),
                           ),
                         ),
-                        Container(
-                          padding: EdgeInsets.all(
-                              spacing(20, getScreenHeight(context))),
-                          decoration: BoxDecoration(
-                            color: const Color.fromARGB(255, 29, 29, 29)
-                                .withOpacity(0.35),
-                            borderRadius: BorderRadius.circular(20),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withOpacity(0.1),
-                                blurRadius: 10,
-                                offset: const Offset(0, 5),
-                              ),
-                            ],
-                          ),
-                          child: Text(
-                            widget.processedSentence,
-                            style: const TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                            ),
-                            textAlign: TextAlign.center,
+                        // Display all corrected text options
+                        Expanded(
+                          child: ListView.builder(
+                            itemCount: widget.correctedTexts.length,
+                            itemBuilder: (context, index) {
+                              return Padding(
+                                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                                child: ElevatedButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      _selectedText = widget.correctedTexts[index];
+                                    });
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: _selectedText == widget.correctedTexts[index]
+                                        ? Colors.blue
+                                        : Colors.white,
+                                    foregroundColor: Colors.black,
+                                    padding: EdgeInsets.symmetric(vertical: 16),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                    minimumSize: Size(double.infinity, 50),
+                                  ),
+                                  child: Text(
+                                    widget.correctedTexts[index],
+                                    style: TextStyle(fontSize: 18),
+                                  ),
+                                ),
+                              );
+                            },
                           ),
                         ),
                         SizedBox(height: spacing(40, getScreenHeight(context))),
@@ -161,15 +173,16 @@ class _ConfirmationPageState extends State<ConfirmContextPage> {
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            ReciteContextPage(sentence: widget.processedSentence),
-                      ),
-                    );
-                  },
+                  onPressed: _selectedText == null
+                      ? null
+                      : () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ReciteContextPage(sentence: _selectedText!),
+                            ),
+                          );
+                        },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color.fromARGB(255, 240, 240, 240),
                     shape: RoundedRectangleBorder(
