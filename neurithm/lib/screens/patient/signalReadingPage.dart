@@ -8,6 +8,10 @@ import 'package:neurithm/services/authService.dart';
 import 'package:neurithm/widgets/appBar.dart';
 import 'package:neurithm/widgets/wavesBackground.dart';
 import 'package:neurithm/widgets/wordBankPhrases.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'dart:io';
+import 'package:file_picker/file_picker.dart';
 
 class SignalReadingpage extends StatefulWidget {
   const SignalReadingpage({super.key});
@@ -19,6 +23,9 @@ class SignalReadingpage extends StatefulWidget {
 class _SignalReadingpageState extends State<SignalReadingpage> {
   final AuthService _authService = AuthService();
   Patient? _currentUser;
+
+  // Update this with your local Flask server's IP address and port
+  final String localServerUrl = 'http://192.168.1.14:5000/predict'; // Local server IP address
 
   @override
   void initState() {
@@ -32,6 +39,59 @@ class _SignalReadingpageState extends State<SignalReadingpage> {
       setState(() {
         _currentUser = user;
       });
+    }
+  }
+
+  // Function to handle the file upload and prediction request
+  Future<void> _uploadFileAndPredict() async {
+    // Pick the file from the user's device
+    FilePickerResult? result = await FilePicker.platform.pickFiles(type: FileType.custom, allowedExtensions: ['csv']);
+    if (result == null) return; // No file selected
+
+    final file = File(result.files.single.path!); // Get the selected file
+
+    try {
+      // Create a POST request to the Flask server
+      var request = http.MultipartRequest(
+        'POST',
+        Uri.parse(localServerUrl) // Use the local Flask server URL
+      );
+
+      // Add the file to the request
+      request.files.add(await http.MultipartFile.fromPath('file', file.path));
+
+      // Send the request and wait for the response
+      var response = await request.send();
+
+      // Check if the response is successful
+      if (response.statusCode == 200) {
+        // If successful, decode the JSON response
+        var responseData = await response.stream.bytesToString();
+        var data = json.decode(responseData);
+
+        // Extract predicted text from the server response
+        String predictedText = data['original_text'];
+
+        // Navigate to the ConfirmContextPage with the predicted text
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ConfirmContextPage(
+              processedSentence: predictedText,
+            ),
+          ),
+        );
+      } else {
+        // Show an error message if the server responds with an error
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to get prediction. Please try again.')),
+        );
+      }
+    } catch (e) {
+      // Handle network errors or other exceptions
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error: $e')),
+      );
     }
   }
 
@@ -206,57 +266,7 @@ class _SignalReadingpageState extends State<SignalReadingpage> {
                       const SizedBox(width: 10),
                       Expanded(
                         child: _actionButton(
-                            Icons.check_circle, 'Done Thinking', () async {
-                          final User? user = FirebaseAuth.instance.currentUser;
-                          if (user == null) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('No user is logged in.'),
-                              ),
-                            );
-                            return;
-                          }
-
-                          final String userId = user.uid;
-                          final sessionsQuery = await FirebaseFirestore.instance
-                              .collection('session')
-                              .where('patientId', isEqualTo: userId)
-                              .get();
-
-                          if (sessionsQuery.docs.isNotEmpty) {
-                            final sessionId = sessionsQuery.docs.first.id;
-                            final predictionsQuery = await FirebaseFirestore
-                                .instance
-                                .collection('predictions')
-                                .where('sessionId', isEqualTo: sessionId)
-                                .get();
-
-                            if (predictionsQuery.docs.isNotEmpty) {
-                              final predictedText =
-                                  predictionsQuery.docs.first['predictedText'];
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => ConfirmContextPage(
-                                    processedSentence: predictedText,
-                                  ),
-                                ),
-                              );
-                            } else {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text('No prediction found.'),
-                                ),
-                              );
-                            }
-                          } else {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('No session found.'),
-                              ),
-                            );
-                          }
-                        }),
+                            Icons.check_circle, 'Done Thinking', _uploadFileAndPredict),
                       ),
                     ],
                   ),

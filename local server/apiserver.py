@@ -25,6 +25,7 @@ logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
+CORS(app)
 
 # Load environment variables from .env file
 load_dotenv()
@@ -32,8 +33,8 @@ load_dotenv()
 
 # Constants
 NOTEBOOK_PATH = "notebooks/Letters_notebook_file_by_file.ipynb"
-MODEL_PATH = "models/eegnet_model_letters 79.63.keras"
-LABEL_ENCODER_PATH = "models/label_encoder_eegnet_letters 79.63.pkl"
+MODEL_PATH = "models/eegnet_model_letters 81.31.keras"
+LABEL_ENCODER_PATH = "models/label_encoder_eegnet_letters 81.31.pkl"
 # Add path for the alternative model
 ALT_MODEL_PATH = "models/without_pos_encoding.keras"
 ALT_LABEL_ENCODER_PATH = "models/without_pos_encoding.pkl"
@@ -617,12 +618,12 @@ def regenerate():
         logger.exception("Regeneration failed.")
         return jsonify(error="Regeneration failed", message=str(e)), 500
    
-# # Start ngrok tunnel for external access
-# try:
-#     ngrok_tunnel = ngrok.connect(5000)
-#     logger.info(f"🌍 Public URL: {ngrok_tunnel.public_url}")
-# except Exception as e:
-#     logger.error(f"❌ Failed to establish ngrok tunnel: {e}")
+# Start ngrok tunnel for external access
+try:
+    ngrok_tunnel = ngrok.connect(5000)
+    logger.info(f"🌍 Public URL: {ngrok_tunnel.public_url}")
+except Exception as e:
+    logger.error(f"❌ Failed to establish ngrok tunnel: {e}")
 
 if __name__ == '__main__':
     setup_folders()
