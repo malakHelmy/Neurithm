@@ -26,6 +26,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "arabic": MessageLookupByLibrary.simpleMessage("Arabic"),
     "chooseLanguage": MessageLookupByLibrary.simpleMessage("Choose Language"),
     "english": MessageLookupByLibrary.simpleMessage("English"),
+    "history": MessageLookupByLibrary.simpleMessage("History"),
+    "home": MessageLookupByLibrary.simpleMessage("Home"),
     "languageSettings": MessageLookupByLibrary.simpleMessage(
       "Language Settings",
     ),
@@ -33,6 +35,8 @@ class MessageLookup extends MessageLookupByLibrary {
       "Language updated successfully",
     ),
     "next": MessageLookupByLibrary.simpleMessage("Next"),
+    "settings": MessageLookupByLibrary.simpleMessage("Settings"),
     "voiceSettings": MessageLookupByLibrary.simpleMessage("Voice Settings"),
+    "wordBank": MessageLookupByLibrary.simpleMessage("Word Bank"),
   };
 }

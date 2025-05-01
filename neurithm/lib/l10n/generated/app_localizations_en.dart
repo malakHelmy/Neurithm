@@ -29,4 +29,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get languageSettings => 'Language Settings';
+
+  @override
+  String get home => 'Home';
+
+  @override
+  String get wordBank => 'Word Bank';
+
+  @override
+  String get settings => 'Settings';
+
+  @override
+  String get history => 'History';
 }

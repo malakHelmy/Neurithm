@@ -142,6 +142,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Language Settings'**
   String get languageSettings;
+
+  /// No description provided for @home.
+  ///
+  /// In en, this message translates to:
+  /// **'Home'**
+  String get home;
+
+  /// No description provided for @wordBank.
+  ///
+  /// In en, this message translates to:
+  /// **'Word Bank'**
+  String get wordBank;
+
+  /// No description provided for @settings.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get settings;
+
+  /// No description provided for @history.
+  ///
+  /// In en, this message translates to:
+  /// **'History'**
+  String get history;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

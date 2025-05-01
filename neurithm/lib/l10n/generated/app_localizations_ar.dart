@@ -29,4 +29,16 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get languageSettings => 'إعدادات اللغة';
+
+  @override
+  String get home => 'الرئيسية';
+
+  @override
+  String get wordBank => 'قاعدة الكلمات';
+
+  @override
+  String get settings => 'الإعدادات';
+
+  @override
+  String get history => 'التاريخ';
 }

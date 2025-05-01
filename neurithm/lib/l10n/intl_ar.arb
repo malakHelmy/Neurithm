@@ -6,5 +6,9 @@
   "next": "التالي",
   "accountSettings": "إعدادات الحساب",
   "voiceSettings": "إعدادات الصوت",
-  "languageSettings": "إعدادات اللغة"
+  "languageSettings": "إعدادات اللغة",
+  "home": "الرئيسية",
+  "wordBank": "قاعدة الكلمات",
+  "settings": "الإعدادات",
+  "history": "التاريخ"
 }

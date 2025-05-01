@@ -26,11 +26,15 @@ class MessageLookup extends MessageLookupByLibrary {
     "arabic": MessageLookupByLibrary.simpleMessage("العربية"),
     "chooseLanguage": MessageLookupByLibrary.simpleMessage("اختر اللغة"),
     "english": MessageLookupByLibrary.simpleMessage("الإنجليزية"),
+    "history": MessageLookupByLibrary.simpleMessage("التاريخ"),
+    "home": MessageLookupByLibrary.simpleMessage("الرئيسية"),
     "languageSettings": MessageLookupByLibrary.simpleMessage("إعدادات اللغة"),
     "languageUpdated": MessageLookupByLibrary.simpleMessage(
       "تم تحديث اللغة بنجاح",
     ),
     "next": MessageLookupByLibrary.simpleMessage("التالي"),
+    "settings": MessageLookupByLibrary.simpleMessage("الإعدادات"),
     "voiceSettings": MessageLookupByLibrary.simpleMessage("إعدادات الصوت"),
+    "wordBank": MessageLookupByLibrary.simpleMessage("قاعدة الكلمات"),
   };
 }

@@ -6,5 +6,9 @@
   "next": "Next",
   "accountSettings": "Account Settings",
   "voiceSettings": "Voice Settings",
-  "languageSettings": "Language Settings"
+  "languageSettings": "Language Settings",
+  "home": "Home",
+  "wordBank": "Word Bank",
+  "settings": "Settings",
+  "history": "History"
 }

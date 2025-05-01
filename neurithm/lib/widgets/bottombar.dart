@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:neurithm/generated/l10n.dart';
 import 'package:neurithm/screens/homepage.dart';
 import 'package:neurithm/screens/patient/conversationHistoryPage.dart';
 import 'package:neurithm/screens/patient/settingsPage.dart';
 import 'package:neurithm/screens/patient/wordBankPage.dart';
+import 'package:neurithm/l10n/generated/app_localizations.dart';
+import 'package:neurithm/models/locale.dart'; 
 
 BottomNavigationBar BottomBar(BuildContext context) {
+  
   void _onItemTapped(int index) {
     switch (index) {
       case 0:
@@ -40,22 +44,22 @@ BottomNavigationBar BottomBar(BuildContext context) {
     selectedItemColor: Color.fromARGB(255, 255, 255, 255),
     unselectedItemColor: Color.fromARGB(255, 168, 167, 167),
     onTap: _onItemTapped, // Use the onItemTapped method here
-    items: const [
+    items:  [
       BottomNavigationBarItem(
-        icon: Icon(Icons.home),
-        label: 'Home',
+        icon:  Icon(Icons.home),
+        label: AppLocalizations.of(context)!.home,
       ),
-      BottomNavigationBarItem(
+       BottomNavigationBarItem(
         icon: Icon(Icons.saved_search),
-        label: 'Word Bank',
+        label: AppLocalizations.of(context)!.wordBank,
       ),
       BottomNavigationBarItem(
         icon: Icon(Icons.settings),
-        label: 'Settings',
+        label: AppLocalizations.of(context)!.settings,
       ),
       BottomNavigationBarItem(
         icon: Icon(Icons.history),
-        label: 'History',
+        label: AppLocalizations.of(context)!.history,
       ),
     ],
     type: BottomNavigationBarType.fixed,
