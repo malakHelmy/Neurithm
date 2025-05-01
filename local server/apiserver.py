@@ -25,7 +25,6 @@ logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
-CORS(app)
 
 # Load environment variables from .env file
 load_dotenv()
@@ -508,8 +507,13 @@ def get_multiple_corrections(text, num_options=5):
     return [text]  # Fallback if all else fails
 
 
-@app.route('/predict', methods=['POST'])
-def handle_request():
+# Global variable to store the concatenated word
+concatenated_word = ""
+
+@app.route('/start_thinking', methods=['POST'])
+def start_thinking():
+    global concatenated_word  # Use the global variable to store the concatenated word
+
     if 'file' not in request.files:
         return jsonify(error="No file provided"), 400
 
@@ -522,8 +526,7 @@ def handle_request():
         zip_data, save_path = handle_upload(file)
         app.logger.info(f"✅ Data saved to: {save_path}")
 
-        # Store the folder path in the session or a global variable
-        # so we can reuse it for regeneration
+        # Store the folder path for later regeneration
         app.config['LAST_PROCESSED_PATH'] = save_path
 
         # Step 2: Run preprocessing notebook
@@ -531,7 +534,7 @@ def handle_request():
         if processed_folder_path is None:
             return jsonify(error="Preprocessing failed"), 500
 
-        # Step 3: Predict directly without saving
+        # Step 3: Predict directly without OpenAI correction
         predictions = run_predictions_in_memory(
             folder_path=save_path,
             model_path=MODEL_PATH,
@@ -548,32 +551,79 @@ def handle_request():
                 letters.append(value[0])  # Append the first letter in the list (if present)
 
         # Concatenate all letters into a single text string
-        predictions_text = "".join(letters)
+        predicted_word = "".join(letters)
 
-        # Log the predictions text before correction
-        logger.debug(f"Predictions before correction: {predictions_text}")
+        # Step 5: Concatenate the predicted word with the previous concatenated word (if any)
+        concatenated_word = f"{concatenated_word} {predicted_word}".strip() if concatenated_word else predicted_word
 
-        # Step 5: Get multiple possible corrections via the API (default is 5)
-        num_options = request.args.get('num_options', default=5, type=int)
-        corrected_texts = get_multiple_corrections(predictions_text, num_options)
+        # Log the concatenated word before returning (no OpenAI correction)
+        logger.debug(f"Concatenated word (no correction): {concatenated_word}")
 
-        # Log the corrected texts
-        logger.debug(f"Multiple predictions after correction: {corrected_texts}")
-
-        # Step 6: Return the corrected texts in HTTP response
-        return Response(
-            json.dumps({
-                "original_text": predictions_text,
-                "corrected_texts": corrected_texts,
-                "folder_path": save_path  # Include the folder path for later regeneration
-            }, ensure_ascii=False),
-            mimetype='application/json'
-        )
+        # Step 6: Return the concatenated word (no OpenAI correction)
+        return jsonify({
+            "concatenated_word": concatenated_word,
+            "folder_path": save_path  # Include the folder path for later regeneration
+        })
 
     except Exception as e:
         app.logger.error(f"Processing error: {str(e)}")
         return jsonify(error="Processing failed"), 500
 
+
+
+@app.route('/done_thinking', methods=['POST'])
+def done_thinking():
+    global concatenated_word  # Declare global variable before using it
+    
+    try:
+        # Check if the concatenated_word exists (i.e., not empty)
+        if not concatenated_word:
+            return jsonify(error="No concatenated word available. Please run 'start_thinking' first."), 400
+
+        # Log the concatenated text received
+        logger.debug(f"Concatenated text received for correction: {concatenated_word}")
+
+        # Step 2: Get multiple possible corrections via OpenAI (using OpenRouter API)
+        num_options = request.args.get('num_options', default=5, type=int)
+        corrected_texts = get_multiple_corrections(concatenated_word, num_options)
+
+        # Log the corrected texts
+        logger.debug(f"Multiple predictions after OpenAI correction: {corrected_texts}")
+
+        # Step 3: Return the original and corrected texts in HTTP response
+        response = jsonify({
+            "original_text": concatenated_word,  # Concatenated word sent in response
+            "corrected_texts": corrected_texts
+        })
+
+        # Step 4: Reset the concatenated_word after processing
+        concatenated_word = ""  # Reset the concatenated word to empty
+
+        return response
+
+    except Exception as e:
+        app.logger.error(f"Processing error: {str(e)}")
+        return jsonify(error="Processing failed"), 500
+
+@app.route('/restart', methods=['POST'])
+def restart():
+    global concatenated_word  # Declare the global variable
+
+    try:
+        # Step 1: Reset the concatenated_word to an empty string
+        concatenated_word = ""  # Clear the concatenated word
+
+        # Log the reset action
+        logger.debug("Concatenated word has been reset.")
+
+        # Step 2: Respond with a success message
+        return jsonify({
+            "message": "Server has been restarted. Concatenated word reset.",
+        })
+
+    except Exception as e:
+        app.logger.error(f"Error during reset: {str(e)}")
+        return jsonify(error="Failed to reset the server"), 500
 
 @app.route('/regenerate', methods=['POST'])
 def regenerate():
@@ -617,13 +667,17 @@ def regenerate():
     except Exception as e:
         logger.exception("Regeneration failed.")
         return jsonify(error="Regeneration failed", message=str(e)), 500
+
+
+
+
    
-# Start ngrok tunnel for external access
-try:
-    ngrok_tunnel = ngrok.connect(5000)
-    logger.info(f"🌍 Public URL: {ngrok_tunnel.public_url}")
-except Exception as e:
-    logger.error(f"❌ Failed to establish ngrok tunnel: {e}")
+# # Start ngrok tunnel for external access
+# try:
+#     ngrok_tunnel = ngrok.connect(5000)
+#     logger.info(f"🌍 Public URL: {ngrok_tunnel.public_url}")
+# except Exception as e:
+#     logger.error(f"❌ Failed to establish ngrok tunnel: {e}")
 
 if __name__ == '__main__':
     setup_folders()
