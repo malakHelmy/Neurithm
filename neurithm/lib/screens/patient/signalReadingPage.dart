@@ -199,7 +199,7 @@ class _SignalReadingpageState extends State<SignalReadingpage> {
                     children: [
                       Expanded(
                         child: _actionButton(Icons.play_arrow, 'Start Thinking',() {
-                            signalReadingService.uploadFileAndStartThinking(context);  
+                            signalReadingService.uploadFileAndStartThinking(context, isNewWord: false);
                           }),
                       ),
                       const SizedBox(width: 10),
@@ -217,7 +217,7 @@ class _SignalReadingpageState extends State<SignalReadingpage> {
                       Expanded(
                         child: _actionButton(
                             Icons.skip_next, 'Move to Next Word',() {
-                            signalReadingService.uploadFileAndStartThinking(context);  
+                            signalReadingService.uploadFileAndStartThinking(context, isNewWord: true);
                           }),
                       ),
                       const SizedBox(width: 10),

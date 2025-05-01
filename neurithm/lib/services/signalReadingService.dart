@@ -8,8 +8,8 @@ import 'package:neurithm/screens/patient/confirmContextPage.dart';
 class SignalReadingService {
 
   // Function to handle the file upload and prediction request for start thinking
-  Future<void> uploadFileAndStartThinking(BuildContext context) async {
-    final String localServerUrl = 'http://10.0.2.2:5000/start_thinking'; 
+  Future<void> uploadFileAndStartThinking(BuildContext context, {bool isNewWord = false}) async {
+    final String localServerUrl = 'http://10.0.2.2:5000/start_thinking'; // Local server IP address inside the function
 
     // Pick the file from the user's device
     FilePickerResult? result = await FilePicker.platform.pickFiles(type: FileType.custom, allowedExtensions: ['csv']);
@@ -39,9 +39,13 @@ class SignalReadingService {
         // Extract predicted text from the server response
         String predictedText = data['concatenated_word'];
 
-        // Show the predicted word to the user
+        // Show a customized SnackBar message based on the type of action
+        String snackBarMessage = isNewWord
+            ? 'New word added successfully: $predictedText'
+            : 'Start Thinking Processed Successfully: $predictedText';
+        
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Predicted Text: $predictedText')),
+          SnackBar(content: Text(snackBarMessage)),
         );
       } else {
         // Show an error message if the server responds with an error
@@ -79,6 +83,11 @@ class SignalReadingService {
               correctedTexts: correctedTexts,  // Pass the corrected options
             ),
           ),
+        );
+
+        // Show a success SnackBar
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Done Thinking Processed Successfully: $originalText')),
         );
       } else {
         // Show an error message if the server responds with an error
