@@ -3,5 +3,8 @@
   "english": "الإنجليزية",
   "arabic": "العربية",
   "languageUpdated": "تم تحديث اللغة بنجاح",
-  "next": "التالي"
+  "next": "التالي",
+  "accountSettings": "إعدادات الحساب",
+  "voiceSettings": "إعدادات الصوت",
+  "languageSettings": "إعدادات اللغة"
 }

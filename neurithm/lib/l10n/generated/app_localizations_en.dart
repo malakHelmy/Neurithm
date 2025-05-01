@@ -20,4 +20,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get next => 'Next';
+
+  @override
+  String get accountSettings => 'Account Settings';
+
+  @override
+  String get voiceSettings => 'Voice Settings';
+
+  @override
+  String get languageSettings => 'Language Settings';
 }

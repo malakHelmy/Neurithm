@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:neurithm/l10n/generated/app_localizations.dart';
 import 'package:neurithm/screens/patient/accountSettingsPage.dart';
 import 'package:neurithm/screens/patient/setLanguage.dart';
 import 'package:neurithm/screens/patient/voiceSettingsPage.dart';
@@ -16,6 +17,8 @@ class SettingsPage extends StatelessWidget {
 
     double fontSize(double size) => size * screenWidth / 400;
     double spacing(double size) => size * screenHeight / 800;
+
+    var t = AppLocalizations.of(context)!;  
 
     return Scaffold(
       key: _scaffoldKey,
@@ -72,7 +75,7 @@ class SettingsPage extends StatelessWidget {
                               color: Color.fromARGB(255, 11, 3, 26), size: 20),
                           SizedBox(width: spacing(10)),
                           Text(
-                            "Account Settings",
+                            t.accountSettings,
                             style: TextStyle(
                               fontSize: fontSize(20),
                               color: const Color.fromARGB(255, 9, 5, 32),
@@ -107,7 +110,7 @@ class SettingsPage extends StatelessWidget {
                               color: Color.fromARGB(255, 11, 3, 26), size: 20),
                           SizedBox(width: spacing(10)),
                           Text(
-                            "Voice Settings",
+                            t.voiceSettings,
                             style: TextStyle(
                               fontSize: fontSize(20),
                               color: const Color.fromARGB(255, 9, 5, 32),
@@ -142,7 +145,7 @@ class SettingsPage extends StatelessWidget {
                               color: Color.fromARGB(255, 11, 3, 26), size: 20),
                           SizedBox(width: spacing(10)),
                           Text(
-                            "Language Settings",
+                            t.chooseLanguage,
                             style: TextStyle(
                               fontSize: fontSize(20),
                               color: const Color.fromARGB(255, 9, 5, 32),

@@ -3,5 +3,8 @@
   "english": "English",
   "arabic": "Arabic",
   "languageUpdated": "Language updated successfully",
-  "next": "Next"
+  "next": "Next",
+  "accountSettings": "Account Settings",
+  "voiceSettings": "Voice Settings",
+  "languageSettings": "Language Settings"
 }

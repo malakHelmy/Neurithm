@@ -20,4 +20,13 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get next => 'التالي';
+
+  @override
+  String get accountSettings => 'إعدادات الحساب';
+
+  @override
+  String get voiceSettings => 'إعدادات الصوت';
+
+  @override
+  String get languageSettings => 'إعدادات اللغة';
 }
