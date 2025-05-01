@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:neurithm/screens/patient/accountSettingsPage.dart';
+import 'package:neurithm/screens/patient/setLanguage.dart';
 import 'package:neurithm/screens/patient/voiceSettingsPage.dart';
 import 'package:neurithm/widgets/appbar.dart';
 import 'package:neurithm/widgets/bottomBar.dart';
@@ -107,6 +108,41 @@ class SettingsPage extends StatelessWidget {
                           SizedBox(width: spacing(10)),
                           Text(
                             "Voice Settings",
+                            style: TextStyle(
+                              fontSize: fontSize(20),
+                              color: const Color.fromARGB(255, 9, 5, 32),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: spacing(20)),
+
+                  //Set Language Page
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => SetLanguageScreen()),
+                      );
+                    },
+                    child: Container(
+                      width: screenWidth,
+                      padding: EdgeInsets.symmetric(
+                          vertical: spacing(15), horizontal: spacing(20)),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: const Color.fromARGB(255, 255, 255, 255),
+                      ),
+                      child: Row(
+                        children: [
+                          const Icon(Icons.arrow_forward_ios,
+                              color: Color.fromARGB(255, 11, 3, 26), size: 20),
+                          SizedBox(width: spacing(10)),
+                          Text(
+                            "Language Settings",
                             style: TextStyle(
                               fontSize: fontSize(20),
                               color: const Color.fromARGB(255, 9, 5, 32),

@@ -148,10 +148,9 @@ class _IntroPageState extends State<IntroPage> {
                             },
                           ),
                           SignUpForm(
-                            context,
-                            _showLoginForm,
-                            _showSignUpForm,
-                            () {
+                           showLoginForm: _showLoginForm,
+                            showSignUpForm: _showSignUpForm,
+                            toggleToLoginForm: () {
                               setState(() {
                                 _showLoginForm = true;
                                 _showSignUpForm = false;

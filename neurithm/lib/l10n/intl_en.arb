@@ -1,1 +1,7 @@
-{}
+{
+  "chooseLanguage": "Choose Language",
+  "english": "English",
+  "arabic": "Arabic",
+  "languageUpdated": "Language updated successfully",
+  "next": "Next"
+}

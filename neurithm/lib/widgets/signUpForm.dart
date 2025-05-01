@@ -1,14 +1,28 @@
 import 'package:flutter/material.dart';
+import 'dart:io';
+
 import 'package:neurithm/screens/homepage.dart';
+import 'package:neurithm/screens/patient/setLanguage.dart';
 import 'package:neurithm/services/authService.dart';
 import 'package:neurithm/widgets/customTextField.dart';
 
-AnimatedOpacity SignUpForm(
-  BuildContext context,
-  bool _showLoginForm,
-  bool _showSignUpForm,
-  VoidCallback toggleToLoginForm,
-) {
+class SignUpForm extends StatefulWidget {
+  final bool showLoginForm;
+  final bool showSignUpForm;
+  final VoidCallback toggleToLoginForm;
+
+  const SignUpForm({
+    Key? key,
+    required this.showLoginForm,
+    required this.showSignUpForm,
+    required this.toggleToLoginForm,
+  }) : super(key: key);
+
+  @override
+  State<SignUpForm> createState() => _SignUpFormState();
+}
+
+class _SignUpFormState extends State<SignUpForm> {
   final _formKey = GlobalKey<FormState>();
   final _firstNameController = TextEditingController();
   final _lastNameController = TextEditingController();
@@ -21,18 +35,17 @@ AnimatedOpacity SignUpForm(
       return 'Please enter a name';
     } else if (value.length < 3) {
       return 'Name should be at least 3 characters';
-    } if (!RegExp(r"^[a-zA-Z]+$").hasMatch(value)) {
+    }
+    if (!RegExp(r"^[a-zA-Z]+$").hasMatch(value)) {
       return 'Name must contain only letters';
     }
     return null;
   }
 
   String? _validateEmail(String? value) {
-    final emailRegExp =
-        RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zAZ0-9.-]+\.[a-zA-Z]{2,}$');
     if (value == null || value.isEmpty) {
-      return 'Please enter an email';
-    } else if (!emailRegExp.hasMatch(value)) {
+      return 'Please enter your email';
+    } else if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
       return 'Enter a valid email';
     }
     return null;
@@ -56,10 +69,9 @@ AnimatedOpacity SignUpForm(
 
   final AuthService _authService = AuthService();
 
-  return AnimatedOpacity(
-    opacity: _showSignUpForm && !_showLoginForm ? 1.0 : 0.0,
-    duration: const Duration(milliseconds: 600),
-    child: _showSignUpForm
+  @override
+  Widget build(BuildContext context) {
+    return widget.showSignUpForm && !widget.showLoginForm
         ? Form(
             key: _formKey,
             child: Column(
@@ -90,19 +102,15 @@ AnimatedOpacity SignUpForm(
                   controller: _passwordController,
                   obscureText: true,
                   style: const TextStyle(fontSize: 18, color: Colors.black),
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     labelText: "Password",
-                    labelStyle: const TextStyle(
-                        color: Color.fromARGB(115, 255, 255, 255)),
-                    focusedBorder: const UnderlineInputBorder(
+                    labelStyle:
+                        TextStyle(color: Color.fromARGB(115, 255, 255, 255)),
+                    focusedBorder: UnderlineInputBorder(
                       borderSide: BorderSide(color: Colors.white, width: 2),
                     ),
-                    enabledBorder: const UnderlineInputBorder(
+                    enabledBorder: UnderlineInputBorder(
                       borderSide: BorderSide(color: Colors.grey, width: 1),
-                    ),
-                    suffixIcon: IconButton(
-                      icon: const Icon(Icons.visibility, color: Colors.grey),
-                      onPressed: () {},
                     ),
                   ),
                   validator: _validatePassword,
@@ -115,8 +123,8 @@ AnimatedOpacity SignUpForm(
                   style: const TextStyle(fontSize: 18, color: Colors.black),
                   decoration: const InputDecoration(
                     labelText: "Confirm Password",
-                    labelStyle: TextStyle(
-                        color: Color.fromARGB(115, 255, 255, 255)),
+                    labelStyle:
+                        TextStyle(color: Color.fromARGB(115, 255, 255, 255)),
                     focusedBorder: UnderlineInputBorder(
                       borderSide: BorderSide(color: Colors.white, width: 2),
                     ),
@@ -142,11 +150,15 @@ AnimatedOpacity SignUpForm(
                         );
 
                         if (result) {
-                          toggleToLoginForm();
+                          widget.toggleToLoginForm;
                         } else {
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
-                              content: Text('This is a repeated email, try another email', style:TextStyle(color: Color.fromARGB(255, 255, 255, 255))),
+                              content: Text(
+                                  'This is a repeated email, try another email',
+                                  style: TextStyle(
+                                      color:
+                                          Color.fromARGB(255, 255, 255, 255))),
                               backgroundColor: Colors.red,
                             ),
                           );
@@ -177,10 +189,8 @@ AnimatedOpacity SignUpForm(
                     onPressed: () async {
                       bool result = await _authService.signInWithGoogle();
                       if (result) {
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(builder: (context) => HomePage(showRatingPopup: false)),
-                        );
+                                                 widget.toggleToLoginForm;
+
                       }
                     },
                     icon: Image.asset(
@@ -214,9 +224,7 @@ AnimatedOpacity SignUpForm(
                             color: Color.fromARGB(115, 255, 255, 255),
                             fontSize: 17)),
                     TextButton(
-                      onPressed: () {
-                        toggleToLoginForm();
-                      },
+                      onPressed: widget.toggleToLoginForm,
                       child: const Text(
                         "Log In",
                         style: TextStyle(
@@ -231,6 +239,6 @@ AnimatedOpacity SignUpForm(
               ],
             ),
           )
-        : const SizedBox.shrink(),
-  );
+        : const SizedBox.shrink();
+  }
 }
