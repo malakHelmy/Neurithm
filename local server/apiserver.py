@@ -15,8 +15,6 @@ from functools import lru_cache
 from pyngrok import ngrok
 import requests
 from dotenv import load_dotenv
-from scipy import signal
-from sklearn.preprocessing import StandardScaler
 import os
 import re
 
@@ -32,15 +30,15 @@ load_dotenv()
 
 # Constants
 NOTEBOOK_PATH = "notebooks/Letters_notebook_file_by_file.ipynb"
-MODEL_PATH = "models/eegnet_model_letters 81.31.keras"
-LABEL_ENCODER_PATH = "models/label_encoder_eegnet_letters 81.31.pkl"
+MODEL_PATH = "models/eegnet_model_letters 79.63.keras"
+LABEL_ENCODER_PATH = "models/label_encoder_eegnet_letters 79.63.pkl"
 # Add path for the alternative model
-ALT_MODEL_PATH = "models/without_pos_encoding.keras"
-ALT_LABEL_ENCODER_PATH = "models/without_pos_encoding.pkl"
+ALT_MODEL_PATH = "models/wout.keras"
+ALT_LABEL_ENCODER_PATH = "models/wout.pkl"
 OUTPUT_DIR = Path("processed_results")
 
 # Access the API key from the environment
-OPENROUTER_API_KEY = OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
+OPENROUTER_API_KEY = "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"
 OPENROUTER_API_URL = "https://openrouter.ai/api/v1/chat/completions"
 MODEL_NAME = "deepseek/deepseek-chat-v3-0324"
 MAX_RETRIES = 3
@@ -52,27 +50,11 @@ import numpy as np
 import tensorflow as tf
 from tensorflow.keras.layers import Lambda
 from tensorflow.keras.utils import register_keras_serializable
-
-def inner_positional_encoding(seq_length, d_model):
-    """Generate fixed sinusoidal positional encodings"""
-    positions = np.arange(seq_length)[:, np.newaxis]
-    depths = np.arange(d_model)[np.newaxis, :] / d_model
-    angle_rates = 1 / (10000**depths)
-    angle_rads = positions * angle_rates
-    pos_encoding = np.zeros(angle_rads.shape)
-    pos_encoding[:, 0::2] = np.sin(angle_rads[:, 0::2])
-    pos_encoding[:, 1::2] = np.cos(angle_rads[:, 1::2])
-    return tf.cast(pos_encoding, dtype=tf.float32)
-
-@register_keras_serializable('add_positional_encoding')
-def add_positional_encoding(x):
-    w, h, c = x.shape
-    return x + inner_positional_encoding(w, h * c)
-
+import traceback
 
 # Load primary model once
 try:
-    model = tf.keras.models.load_model(MODEL_PATH, custom_objects={'add_positional_encoding': add_positional_encoding})
+    model = tf.keras.models.load_model(MODEL_PATH)
     logger.info("✅ Primary model loaded successfully.")
 except Exception as e:
     logger.error(f"❌ Error loading primary model: {e}")
@@ -88,25 +70,29 @@ except Exception as e:
     logger.error(f"❌ Error loading primary label encoder: {e}")
     raise e
 
-# Load alternative model once
-try:
-    alt_model = tf.keras.models.load_model(ALT_MODEL_PATH, custom_objects={'add_positional_encoding': add_positional_encoding})
-    logger.info("✅ Alternative model (EEGTransformer) loaded successfully.")
-except Exception as e:
-    logger.error(f"❌ Error loading alternative model: {e}")
-    logger.warning("Will attempt to load on demand when needed.")
-    alt_model = None
 
-# Load alternative label encoder once
+# Load alternative model (Transformer)
+try:
+    alt_model = tf.keras.models.load_model(ALT_MODEL_PATH)
+    logger.info("✅ Alternative EEGTransformer model loaded successfully.")
+except Exception as e:
+    logger.error(f"❌ Error loading EEGTransformer model: {e}")
+    raise e
+
+# Load alternative label encoder
 try:
     with open(ALT_LABEL_ENCODER_PATH, "rb") as f:
         alt_label_encoder = pickle.load(f)
     alt_num_classes = len(alt_label_encoder.classes_)
-    logger.info(f"✅ Alternative label encoder loaded successfully. Total classes: {alt_num_classes}")
+    logger.info(f"✅ Alternative label encoder loaded. Classes: {alt_num_classes}")
 except Exception as e:
     logger.error(f"❌ Error loading alternative label encoder: {e}")
-    logger.warning("Will attempt to load on demand when needed.")
-    alt_label_encoder = None
+    raise e
+
+for i, input_tensor in enumerate(alt_model.inputs):
+    print(f"Input {i}: name={input_tensor.name}, shape={input_tensor.shape}, dtype={input_tensor.dtype}")
+print(alt_model.inputs)
+
 
 # Ensure output folder exists
 def setup_folders():
@@ -188,248 +174,38 @@ def run_notebook(folder_path):
         logger.error(f"⚠ Notebook execution error: {e}")
         return None
 
+def run_predictions_in_memory(folder_path, model, label_encoder):
+    predictions = {}
 
-def run_predictions_in_memory(folder_path, model_path, label_encoder_path):
-    """Predict on preprocessed EEG segments directly in memory"""
-    try:
-        # Load model and label encoder again (optional, or reuse already loaded ones)
-        model = tf.keras.models.load_model(model_path)
-        with open(label_encoder_path, 'rb') as f:
-            label_encoder = pickle.load(f)
-        model.trainable = False
+    for csv_file in sorted(Path(folder_path).glob("letter_*.csv")):
+        df = pd.read_csv(csv_file)
 
-        all_predictions = {}
+        # Keep only numeric values
+        df = df.select_dtypes(include=[np.number]).fillna(0).astype(np.float32)
 
-        SEGMENT_LENGTH = 1200
-        NUM_CHANNELS = 12
+        if df.empty:
+            logger.warning(f"⚠ Skipping {csv_file.name} — empty or non-numeric.")
+            continue
 
-        for filename in sorted(os.listdir(folder_path)):
-            if filename.endswith('.csv'):
-                file_path = os.path.join(folder_path, filename)
-                df = pd.read_csv(file_path)
+        try:
+            # Reshape EEG input: (1, 12, 1200, 1)
+            eeg_data = df.values.reshape((1, 12, 1200, 1))
 
-                df = df.select_dtypes(include=[np.number])
+            # Generate dummy context data: (1, 12, 5)
+            # Adjust this if you have real context values to use
+            context_data = np.zeros((1, 12, 5), dtype=np.float32)
 
-                num_columns = df.shape[1]
-                expected_features = SEGMENT_LENGTH * NUM_CHANNELS
-                columns_to_trim = num_columns % expected_features
-                if columns_to_trim != 0:
-                    df = df.iloc[:, :-columns_to_trim]
+            # Run prediction
+            pred = model.predict([eeg_data, context_data])
+            class_idx = np.argmax(pred, axis=-1)
+            letter = label_encoder.inverse_transform(class_idx)[0]
+            predictions[csv_file.stem] = [letter]
 
-                total_elements = df.shape[0] * df.shape[1]
-                if total_elements % (SEGMENT_LENGTH * NUM_CHANNELS) != 0:
-                    logger.warning(f"⚠ Skipping {filename} due to size mismatch.")
-                    continue  # Skip bad files safely
+        except Exception as e:
+            logger.warning(f"⚠ Failed to process {csv_file.name}: {str(e)}")
 
-                # Reshape
-                X_temp = df.values.reshape(-1, SEGMENT_LENGTH, NUM_CHANNELS)
-                X_new = np.transpose(X_temp, (0, 2, 1))
-                X_new = X_new[..., np.newaxis]
+    return predictions
 
-                # Predict
-                y_pred_probs = model.predict(X_new)
-                y_pred_labels = np.argmax(y_pred_probs, axis=-1)
-                predicted_values = label_encoder.inverse_transform(y_pred_labels)
-
-                all_predictions[filename] = predicted_values.tolist()
-
-        return all_predictions
-
-    except Exception as e:
-        logger.error(f"⚠ Error in prediction: {e}")
-        raise e
-
-def generate_positional_encoding(seq_len, depth):
-    """Generate fixed sinusoidal positional encodings"""
-    positions = np.arange(seq_len)[:, np.newaxis]
-    depths = np.arange(depth)[np.newaxis, :] / depth
-    angle_rates = 1 / (10000**depths)
-    angle_rads = positions * angle_rates
-
-    pos_encoding = np.zeros(angle_rads.shape)
-    pos_encoding[:, 0::2] = np.sin(angle_rads[:, 0::2])
-    pos_encoding[:, 1::2] = np.cos(angle_rads[:, 1::2])
-
-    return tf.cast(pos_encoding, dtype=tf.float32)
-
-def add_noise(signal, noise_level=0.05):
-    noise = np.random.normal(0, noise_level, signal.shape)
-    return signal + noise
-
-def time_shift(signal, shift_max=50):
-    shift = np.random.randint(-shift_max, shift_max)
-    return np.roll(signal, shift, axis=0)
-
-def scale_amplitude(signal, scale_range=(0.8, 1.2)):
-    scale = np.random.uniform(scale_range[0], scale_range[1])
-    return signal * scale
-
-def frequency_mask(signal, mask_fraction=0.1):
-    signal_shape = signal.shape
-    signal_flat = signal.reshape(-1, signal_shape[-1])
-
-    for i in range(signal_flat.shape[0]):
-        sig = signal_flat[i]
-        sig_fft = np.fft.rfft(sig)
-        num_freqs = len(sig_fft)
-        num_masked = int(mask_fraction * num_freqs)
-        if num_masked > 0:
-            mask_idx = np.random.choice(num_freqs, num_masked, replace=False)
-            sig_fft[mask_idx] = 0
-        signal_flat[i] = np.fft.irfft(sig_fft, len(sig))
-
-    return signal_flat.reshape(signal_shape)
-
-def contrast_enhancement(signal, factor_range=(0.8, 1.5)):
-    factor = np.random.uniform(factor_range[0], factor_range[1])
-    mean = np.mean(signal)
-    return (signal - mean) * factor + mean
-
-def advanced_augmentation(segments, aug_intensity=0.8):
-    augmented = segments.copy()
-    batch_size = segments.shape[0]
-
-    noise_mask = np.random.random(batch_size) < aug_intensity
-    shift_mask = np.random.random(batch_size) < aug_intensity * 0.8
-    scale_mask = np.random.random(batch_size) < aug_intensity * 0.7
-    freq_mask = np.random.random(batch_size) < aug_intensity * 0.6
-    contrast_mask = np.random.random(batch_size) < aug_intensity * 0.5
-
-    if np.any(noise_mask):
-        noise_levels = np.random.uniform(0.01, 0.05, batch_size)
-        for i in np.where(noise_mask)[0]:
-            augmented[i] = add_noise(segments[i], noise_level=noise_levels[i])
-
-    if np.any(shift_mask):
-        shift_values = np.random.randint(-20, 20, batch_size)
-        for i in np.where(shift_mask)[0]:
-            augmented[i] = np.roll(segments[i], shift_values[i], axis=1)
-
-    if np.any(scale_mask):
-        scale_values = np.random.uniform(0.85, 1.15, batch_size)
-        for i in np.where(scale_mask)[0]:
-            augmented[i] = segments[i] * scale_values[i]
-
-    if np.any(freq_mask):
-        mask_fractions = np.random.uniform(0.05, 0.15, batch_size)
-        for i in np.where(freq_mask)[0]:
-            augmented[i] = frequency_mask(segments[i], mask_fraction=mask_fractions[i])
-
-    if np.any(contrast_mask):
-        factor_ranges = [(0.9, 1.3) for _ in range(batch_size)]
-        for i in np.where(contrast_mask)[0]:
-            augmented[i] = contrast_enhancement(segments[i], factor_range=factor_ranges[i])
-
-    return augmented
-
-def extract_frequency_features(X, fs=250):
-    bands = {
-        'delta': (0.5, 4), 'theta': (4, 8), 'alpha': (8, 13),
-        'beta': (13, 30), 'gamma': (30, 50)
-    }
-
-    batch_size, channels, samples, _ = X.shape
-    X_freq = np.zeros((batch_size, channels, len(bands)))
-
-    for i in range(batch_size):
-        for c in range(channels):
-            signal_data = X[i, c, :, 0]
-            freqs, psd = signal.welch(signal_data, fs=fs, nperseg=min(256, len(signal_data)))
-            for j, (band_name, (low, high)) in enumerate(bands.items()):
-                idx_band = np.logical_and(freqs >= low, freqs <= high)
-                if np.any(idx_band):
-                    X_freq[i, c, j] = np.mean(psd[idx_band])
-
-    X_freq_reshaped = X_freq.reshape(batch_size, -1)
-    scaler = StandardScaler()
-    X_freq_normalized = scaler.fit_transform(X_freq_reshaped)
-
-    return X_freq_normalized.reshape(batch_size, channels, len(bands))
-
-# Main prediction function
-def run_transformer_predictions(folder_path):
-    """Run predictions with the alternative EEGTransformer model"""
-    try:
-        global alt_model, alt_label_encoder
-
-        if alt_model is None:
-            alt_model = tf.keras.models.load_model(ALT_MODEL_PATH)
-            logger.info("✅ Alternative model loaded on demand.")
-
-        if alt_label_encoder is None:
-            with open(ALT_LABEL_ENCODER_PATH, "rb") as f:
-                alt_label_encoder = pickle.load(f)
-            logger.info("✅ Alternative label encoder loaded on demand.")
-
-        alt_model.trainable = False
-
-        all_predictions = {}
-
-        SEGMENT_LENGTH = 1200
-        NUM_CHANNELS = 12
-
-        for filename in sorted(os.listdir(folder_path)):
-            if filename.endswith('.csv'):
-                file_path = os.path.join(folder_path, filename)
-                df = pd.read_csv(file_path)
-
-                df = df.select_dtypes(include=[np.number])
-
-                num_columns = df.shape[1]
-                expected_features = SEGMENT_LENGTH * NUM_CHANNELS
-                columns_to_trim = num_columns % expected_features
-                if columns_to_trim != 0:
-                    df = df.iloc[:, :-columns_to_trim]
-
-                total_elements = df.shape[0] * df.shape[1]
-                if total_elements % (SEGMENT_LENGTH * NUM_CHANNELS) != 0:
-                    logger.warning(f"⚠ Skipping {filename} due to size mismatch.")
-                    continue  # Skip bad files safely
-
-                # Reshape EEG data
-                X_temp = df.values.reshape(-1, SEGMENT_LENGTH, NUM_CHANNELS)
-                X_new = np.transpose(X_temp, (0, 2, 1))  # Shape: (samples, channels, time_steps)
-                X_new = X_new[..., np.newaxis]  # Adding the last dimension (shape: (samples, channels, time_steps, 1))
-
-                # Debugging: Log the shape of reshaped data
-                logger.debug(f"X_new shape: {X_new.shape}")
-
-                # Apply augmentations (same as in training)
-                X_new_augmented = advanced_augmentation(X_new, aug_intensity=0.8)
-
-                # Debugging: Log augmented data shape
-                logger.debug(f"X_new_augmented shape: {X_new_augmented.shape}")
-
-                # Feature extraction
-                X_new_freq = extract_frequency_features(X_new_augmented)
-
-                # Debugging: Log frequency features shape
-                logger.debug(f"X_new_freq shape: {X_new_freq.shape}")
-
-                # Generate positional encoding for the second input
-                batch_size = X_new.shape[0]
-                seq_len = 12  # Expected sequence length (time steps)
-                embedding_dim = 5  # Expected dimensions for the second input (positional encoding)
-                X_input2 = generate_positional_encoding(seq_len, embedding_dim)  # Generate positional encoding for the second input
-
-                # Repeat the positional encoding for the batch size (to match X_new shape)
-                X_input2 = tf.repeat(X_input2[tf.newaxis, :, :], batch_size, axis=0)  # Shape: (batch_size, seq_len, embedding_dim)
-
-                # Debugging: Log positional encoding shape
-                logger.debug(f"X_input2 shape: {X_input2.shape}")
-
-                # Run prediction with both inputs
-                y_pred_probs = alt_model.predict([X_new_augmented, X_input2])
-                y_pred_labels = np.argmax(y_pred_probs, axis=-1)
-                predicted_values = alt_label_encoder.inverse_transform(y_pred_labels)
-
-                all_predictions[filename] = predicted_values.tolist()
-
-        return all_predictions
-
-    except Exception as e:
-        logger.error(f"⚠ Error in prediction: {e}")
-        raise e
 
 
 
@@ -534,12 +310,13 @@ def start_thinking():
         if processed_folder_path is None:
             return jsonify(error="Preprocessing failed"), 500
 
-        # Step 3: Predict directly without OpenAI correction
+        # Step 3: Predict directly without saving
         predictions = run_predictions_in_memory(
             folder_path=save_path,
-            model_path=MODEL_PATH,
-            label_encoder_path=LABEL_ENCODER_PATH
+            model_path=ALT_MODEL_PATH,
+            label_encoder_path=ALT_LABEL_ENCODER_PATH
         )
+
 
         # Debugging: Log the predictions response
         logger.debug(f"Predictions received: {json.dumps(predictions, ensure_ascii=False)}")
@@ -625,59 +402,64 @@ def restart():
         app.logger.error(f"Error during reset: {str(e)}")
         return jsonify(error="Failed to reset the server"), 500
 
-@app.route('/regenerate', methods=['POST'])
-def regenerate():
-    """Regenerate predictions for a specific preprocessed word folder using the EEGTransformer model"""
+@app.route('/predict-alt', methods=['POST'])
+def handle_alt_prediction():
+    if 'file' not in request.files:
+        return jsonify(error="No file provided"), 400
+
+    file = request.files['file']
+    if not file.filename.lower().endswith('.csv'):
+        return jsonify(error="Only CSV files accepted"), 400
+
     try:
-        data = request.json
-        word_folder = data.get('word_folder')
-        num_options = data.get('num_options', 5)
+        # Step 1: Save and segment
+        zip_data, save_path = handle_upload(file)
+        logger.info(f"✅ Alt model input saved to: {save_path}")
 
-        if not word_folder:
-            return jsonify(error="Missing 'word_folder' in request."), 400
+        # Step 2: Preprocess with notebook
+        processed_folder_path = run_notebook(save_path)
+        if processed_folder_path is None:
+            return jsonify(error="Preprocessing failed"), 500
 
-        # Updated base path
-        base_path = "processed_results"
-        full_path = os.path.join(base_path, word_folder)
+        # Step 3: Run predictions using the alt model
+        predictions = run_predictions_in_memory(
+            folder_path=save_path,
+            model=alt_model,
+            label_encoder=alt_label_encoder
+        )
 
-        if not os.path.exists(full_path):
-            return jsonify(error=f"Folder '{full_path}' not found."), 404
+        # Step 4: Assemble letters
+        letters = []
+        for key, value in sorted(predictions.items()):
+            if isinstance(value, list) and len(value) > 0:
+                letters.append(value[0])
 
-        logger.info(f"♻ Regenerating predictions from folder: {full_path}")
+        predictions_text = "".join(letters)
+        logger.debug(f"🧠 Alt model prediction: {predictions_text}")
 
-        # Run predictions using the alternate model
-        predictions = run_transformer_predictions(full_path)
+        # Step 5: Correct the prediction
+        num_options = request.args.get('num_options', default=5, type=int)
+        corrected_texts = get_multiple_corrections(predictions_text, num_options)
 
-        logger.debug(f"EEGTransformer predictions: {json.dumps(predictions, ensure_ascii=False)}")
-
-        # Extract predicted letters (1st prediction per file)
-        letters = [pred[0] for pred in predictions.values() if isinstance(pred, list) and pred]
-        predicted_sequence = "".join(letters)
-        logger.info(f"Predicted letter sequence: {predicted_sequence}")
-
-        # Get corrected full-text options
-        corrected_texts = get_multiple_corrections(predicted_sequence, num_options)
-
-        return jsonify({
-            "regenerated_text": predicted_sequence,
-            "corrected_texts": corrected_texts,
-            "folder_path": full_path
-        })
+        return Response(
+            json.dumps({
+                "original_text": predictions_text,
+                "corrected_texts": corrected_texts,
+                "folder_path": save_path
+            }, ensure_ascii=False),
+            mimetype='application/json'
+        )
 
     except Exception as e:
         logger.exception("Regeneration failed.")
         return jsonify(error="Regeneration failed", message=str(e)), 500
-
-
-
-
    
-# # Start ngrok tunnel for external access
-# try:
-#     ngrok_tunnel = ngrok.connect(5000)
-#     logger.info(f"🌍 Public URL: {ngrok_tunnel.public_url}")
-# except Exception as e:
-#     logger.error(f"❌ Failed to establish ngrok tunnel: {e}")
+# Start ngrok tunnel for external access
+try:
+    ngrok_tunnel = ngrok.connect(5000)
+    logger.info(f"🌍 Public URL: {ngrok_tunnel.public_url}")
+except Exception as e:
+    logger.error(f"❌ Failed to establish ngrok tunnel: {e}")
 
 if __name__ == '__main__':
     setup_folders()
