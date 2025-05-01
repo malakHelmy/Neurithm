@@ -1,17 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:neurithm/models/patient.dart';
 import 'package:neurithm/models/wordBankCategories.dart';
-import 'package:neurithm/screens/patient/confirmContextPage.dart';
 import 'package:neurithm/services/authService.dart';
+import 'package:neurithm/services/signalReadingService.dart'; 
 import 'package:neurithm/widgets/appBar.dart';
 import 'package:neurithm/widgets/wavesBackground.dart';
-import 'package:neurithm/widgets/wordBankPhrases.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
-import 'dart:io';
-import 'package:file_picker/file_picker.dart';
+import 'package:neurithm/widgets/wordBankPhrases.dart'; 
 
 class SignalReadingpage extends StatefulWidget {
   const SignalReadingpage({super.key});
@@ -22,10 +17,8 @@ class SignalReadingpage extends StatefulWidget {
 
 class _SignalReadingpageState extends State<SignalReadingpage> {
   final AuthService _authService = AuthService();
+  final SignalReadingService signalReadingService = SignalReadingService();
   Patient? _currentUser;
-
-  // Update this with your local Flask server's IP address and port
-  final String localServerUrl = 'http://192.168.1.14:5000/predict'; // Local server IP address
 
   @override
   void initState() {
@@ -39,60 +32,6 @@ class _SignalReadingpageState extends State<SignalReadingpage> {
       setState(() {
         _currentUser = user;
       });
-    }
-  }
-
-  // Function to handle the file upload and prediction request
- Future<void> _uploadFileAndPredict() async {
-    // Pick the file from the user's device
-    FilePickerResult? result = await FilePicker.platform.pickFiles(type: FileType.custom, allowedExtensions: ['csv']);
-    if (result == null) return; // No file selected
-
-    final file = File(result.files.single.path!); // Get the selected file
-
-    try {
-      // Create a POST request to the Flask server
-      var request = http.MultipartRequest(
-        'POST',
-        Uri.parse(localServerUrl) // Use the local Flask server URL
-      );
-
-      // Add the file to the request
-      request.files.add(await http.MultipartFile.fromPath('file', file.path));
-
-      // Send the request and wait for the response
-      var response = await request.send();
-
-      // Check if the response is successful
-      if (response.statusCode == 200) {
-        // If successful, decode the JSON response
-        var responseData = await response.stream.bytesToString();
-        var data = json.decode(responseData);
-
-        // Extract predicted text and corrected options from the server response
-        String predictedText = data['original_text'];
-        List<String> correctedTexts = List<String>.from(data['corrected_texts']);
-
-        // Navigate to the ConfirmContextPage with the predicted text and options
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => ConfirmContextPage(
-              correctedTexts: correctedTexts,  // Pass the corrected options
-            ),
-          ),
-        );
-      } else {
-        // Show an error message if the server responds with an error
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to get prediction. Please try again.')),
-        );
-      }
-    } catch (e) {
-      // Handle network errors or other exceptions
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error: $e')),
-      );
     }
   }
 
@@ -259,15 +198,16 @@ class _SignalReadingpageState extends State<SignalReadingpage> {
                   Row(
                     children: [
                       Expanded(
-                        child: _actionButton(Icons.play_arrow, 'Start Thinking',
-                            () {
-                          // Start Thinking logic
-                        }),
+                        child: _actionButton(Icons.play_arrow, 'Start Thinking',() {
+                            signalReadingService.uploadFileAndStartThinking(context);  
+                          }),
                       ),
                       const SizedBox(width: 10),
                       Expanded(
                         child: _actionButton(
-                            Icons.check_circle, 'Done Thinking', _uploadFileAndPredict),
+                            Icons.check_circle, 'Done Thinking', () {
+                              signalReadingService.doneThinking(context); 
+                            }),
                       ),
                     ],
                   ),
@@ -276,12 +216,16 @@ class _SignalReadingpageState extends State<SignalReadingpage> {
                     children: [
                       Expanded(
                         child: _actionButton(
-                            Icons.skip_next, 'Move to Next Word', () {}),
+                            Icons.skip_next, 'Move to Next Word',() {
+                            signalReadingService.uploadFileAndStartThinking(context);  
+                          }),
                       ),
                       const SizedBox(width: 10),
                       Expanded(
                         child:
-                            _actionButton(Icons.restart_alt, 'Restart', () {}),
+                            _actionButton(Icons.restart_alt, 'Restart' ,() {
+                            signalReadingService.restartServer(context);  
+                          }),
                       ),
                     ],
                   ),
