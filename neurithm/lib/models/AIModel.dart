@@ -1,26 +1,22 @@
 class AIModel {
   final String id;
-  final String modelType;
-  final String firebaseUrl;
+  final String modelName;
 
   AIModel({
     required this.id,
-    required this.modelType,
-    required this.firebaseUrl,
+    required this.modelName,
   });
 
   Map<String, dynamic> toMap() {
     return {
-      'modelType': modelType,
-      'firebaseUrl': firebaseUrl,
+      'modelType': modelName,
     };
   }
 
   factory AIModel.fromMap(Map<String, dynamic> map, String id) {
     return AIModel(
       id: id,
-      modelType: map['modelType'],
-      firebaseUrl: map['firebaseUrl'],
+      modelName: map['modelName'],
     );
   }
 }
