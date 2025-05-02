@@ -199,7 +199,7 @@ class _SignalReadingpageState extends State<SignalReadingpage> {
                     children: [
                       Expanded(
                         child: _actionButton(Icons.play_arrow, 'Start Thinking',() {
-                            signalReadingService.uploadFileAndStartThinking(context, isNewWord: false);
+                            signalReadingService.startThinkingWithSession(context, isNewWord: false);
                           }),
                       ),
                       const SizedBox(width: 10),
