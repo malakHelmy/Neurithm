@@ -2,8 +2,11 @@ import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:neurithm/models/patient.dart';
 import 'package:neurithm/models/userPreferences.dart';
 import 'package:neurithm/models/voiceSettings.dart';
+import 'package:neurithm/services/authService.dart';
+import 'package:neurithm/services/signalReadingService.dart';
 import 'package:neurithm/services/ttsService.dart';
 import 'package:neurithm/screens/patient/feedbackPage.dart';
 import 'package:neurithm/screens/patient/signalReadingPage.dart';
@@ -20,18 +23,31 @@ class ReciteContextPage extends StatefulWidget {
 
 class _ReciteContextPageState extends State<ReciteContextPage>
     with SingleTickerProviderStateMixin {
+  final AuthService _authService = AuthService();
+  final SignalReadingService signalReadingService = SignalReadingService();
   final TTSService _ttsService = TTSService();
   late AnimationController _animationController;
   late Timer _waveTimer;
-  List<double> waveHeights = List.filled(20, 0); // Initial wave heights
+  List<double> waveHeights = List.filled(20, 0); 
   final _audioPlayer = AudioPlayer();
   bool _isPlaying = false;
   bool _isGenerating = false;
   String? _audioFilePath;
+  Patient? _currentUser;
+
+  Future<void> _fetchUser() async {
+    Patient? user = await _authService.getCurrentUser();
+    if (mounted) {
+      setState(() {
+        _currentUser = user;
+      });
+    }
+  }
 
   @override
   void initState() {
     super.initState();
+    _fetchUser();
 
     // Initialize Animation Controller
     _animationController = AnimationController(
@@ -84,6 +100,7 @@ class _ReciteContextPageState extends State<ReciteContextPage>
       _isGenerating = false;
     });
   }
+
   Future<void> _reciteAgain() async {
     if (!mounted) return;
     VoiceSettings settings = await UserPreferences.loadVoiceSettings();
@@ -237,7 +254,12 @@ class _ReciteContextPageState extends State<ReciteContextPage>
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
-                      onPressed: () {
+                      onPressed: () async {
+                        if (_currentUser != null) {
+                          await signalReadingService
+                              .updateEndTimeByPatientId(_currentUser!.uid);
+                        }
+
                         Navigator.push(
                           context,
                           MaterialPageRoute(

@@ -1,15 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:neurithm/models/patient.dart';
 import 'package:neurithm/screens/patient/feedbackPage.dart';
 import 'package:neurithm/screens/patient/reciteContextPage.dart';
+import 'package:neurithm/services/authService.dart';
+import 'package:neurithm/services/confirmContextService.dart';
+import 'package:neurithm/services/signalReadingService.dart';
 import 'package:neurithm/widgets/appBar.dart';
 import 'package:neurithm/widgets/wavesBackground.dart';
 
 class ConfirmContextPage extends StatefulWidget {
-  final List<String> correctedTexts;  // Receiving corrected texts
+  final List<String> correctedTexts;
+   final String sessionId;
 
   const ConfirmContextPage({
     super.key,
-    required this.correctedTexts,  // Pass the corrected texts here
+    required this.correctedTexts,
+    required this.sessionId
   });
 
   @override
@@ -17,8 +23,90 @@ class ConfirmContextPage extends StatefulWidget {
 }
 
 class _ConfirmationPageState extends State<ConfirmContextPage> {
+  final AuthService _authService = AuthService();
+  final SignalReadingService signalReadingService = SignalReadingService();
+  final ConfirmContextService confirmContextService = ConfirmContextService();
   bool _isRegenerating = false;
-  String? _selectedText;  // To store the selected corrected text
+  String? _selectedText;
+  Patient? _currentUser;
+  bool _regenerationDone = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchUser();
+  }
+
+  Future<void> _fetchUser() async {
+    Patient? user = await _authService.getCurrentUser();
+    if (mounted) {
+      setState(() {
+        _currentUser = user;
+      });
+    }
+  }
+
+  // Action for "Regenerate"
+  Future<void> _handleRegenerate() async {
+    if (_selectedText != null) {
+      try {
+        String aiModelId = await confirmContextService.getAiModelId('EEG Transformer');
+
+        await confirmContextService.addPrediction(
+          sessionId: widget.sessionId,
+          aiModelId: aiModelId,  
+          predictedText: _selectedText!,
+          isAccepted: false,
+        );
+
+        setState(() {
+          _regenerationDone = true;
+          _isRegenerating = true;
+        });
+
+        await Future.delayed(const Duration(seconds: 3), () {
+          setState(() => _isRegenerating = false);
+        });
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error: $e')),
+        );
+      }
+    }
+  }
+
+  // Action for "Recite"
+  Future<void> _handleRecite() async {
+    if (_selectedText != null) {
+      try {
+        String aiModelId;
+
+        if (_regenerationDone) {
+          aiModelId = await confirmContextService.getAiModelId('EEG Transformer');
+        } else {
+          aiModelId = await confirmContextService.getAiModelId('EEGNet');
+        }
+
+        await confirmContextService.addPrediction(
+          sessionId: widget.sessionId,
+          aiModelId: aiModelId,  
+          predictedText: _selectedText!,
+          isAccepted: true,
+        );
+
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ReciteContextPage(sentence: _selectedText!),
+          ),
+        );
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error: $e')),
+        );
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -85,27 +173,32 @@ class _ConfirmationPageState extends State<ConfirmContextPage> {
                             itemCount: widget.correctedTexts.length,
                             itemBuilder: (context, index) {
                               return Padding(
-                                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 8.0),
                                 child: ElevatedButton(
                                   onPressed: () {
                                     setState(() {
-                                      _selectedText = widget.correctedTexts[index];
+                                      _selectedText =
+                                          widget.correctedTexts[index];
                                     });
                                   },
                                   style: ElevatedButton.styleFrom(
-                                    backgroundColor: _selectedText == widget.correctedTexts[index]
+                                    backgroundColor: _selectedText ==
+                                            widget.correctedTexts[index]
                                         ? Colors.blue
                                         : Colors.white,
                                     foregroundColor: Colors.black,
-                                    padding: EdgeInsets.symmetric(vertical: 16),
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 16),
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(12),
                                     ),
-                                    minimumSize: Size(double.infinity, 50),
+                                    minimumSize:
+                                        const Size(double.infinity, 50),
                                   ),
                                   child: Text(
                                     widget.correctedTexts[index],
-                                    style: TextStyle(fontSize: 18),
+                                    style: const TextStyle(fontSize: 18),
                                   ),
                                 ),
                               );
@@ -133,15 +226,8 @@ class _ConfirmationPageState extends State<ConfirmContextPage> {
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: ElevatedButton(
-                  onPressed: () {
-                    setState(() => _isRegenerating = true);
-
-                    // Simulate "regeneration" process
-                    Future.delayed(const Duration(seconds: 3), () {
-                      if (mounted) {
-                        setState(() => _isRegenerating = false);
-                      }
-                    });
+                  onPressed: ()  {
+                         _handleRegenerate();
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color.fromARGB(255, 240, 240, 240),
@@ -175,13 +261,8 @@ class _ConfirmationPageState extends State<ConfirmContextPage> {
                 child: ElevatedButton(
                   onPressed: _selectedText == null
                       ? null
-                      : () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => ReciteContextPage(sentence: _selectedText!),
-                            ),
-                          );
+                      : ()  {
+                         _handleRecite();
                         },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color.fromARGB(255, 240, 240, 240),
@@ -214,7 +295,12 @@ class _ConfirmationPageState extends State<ConfirmContextPage> {
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: ElevatedButton(
-            onPressed: () {
+            onPressed: () async {
+              if (_currentUser != null) {
+                await signalReadingService
+                    .updateEndTimeByPatientId(_currentUser!.uid);
+              }
+
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => const FeedbackPage()),
