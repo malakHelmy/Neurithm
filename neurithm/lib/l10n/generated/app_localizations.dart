@@ -166,6 +166,54 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'History'**
   String get history;
+
+  /// No description provided for @welcomeMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome'**
+  String get welcomeMessage;
+
+  /// No description provided for @voiceYourMind.
+  ///
+  /// In en, this message translates to:
+  /// **'Voice Your Mind Effortlessly'**
+  String get voiceYourMind;
+
+  /// No description provided for @startSpeakingNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Start Speaking Now'**
+  String get startSpeakingNow;
+
+  /// No description provided for @helpAndGuide.
+  ///
+  /// In en, this message translates to:
+  /// **'Help & Guide'**
+  String get helpAndGuide;
+
+  /// No description provided for @rateApp.
+  ///
+  /// In en, this message translates to:
+  /// **'Rate App'**
+  String get rateApp;
+
+  /// No description provided for @rateMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Please rate our app by selecting stars!'**
+  String get rateMessage;
+
+  /// No description provided for @submit.
+  ///
+  /// In en, this message translates to:
+  /// **'Submit'**
+  String get submit;
+
+  /// No description provided for @later.
+  ///
+  /// In en, this message translates to:
+  /// **'Later'**
+  String get later;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

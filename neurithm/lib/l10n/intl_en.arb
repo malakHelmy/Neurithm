@@ -1,4 +1,4 @@
-{
+  { 
   "chooseLanguage": "Choose Language",
   "english": "English",
   "arabic": "Arabic",
@@ -10,5 +10,13 @@
   "home": "Home",
   "wordBank": "Word Bank",
   "settings": "Settings",
-  "history": "History"
+  "history": "History",
+  "welcomeMessage": "Welcome",
+  "voiceYourMind": "Voice Your Mind Effortlessly",
+  "startSpeakingNow": "Start Speaking Now",
+  "helpAndGuide": "Help & Guide",
+  "rateApp": "Rate App",
+  "rateMessage": "Please rate our app by selecting stars!",
+  "submit": "Submit",
+  "later": "Later"
 }

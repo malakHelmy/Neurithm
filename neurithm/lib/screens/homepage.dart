@@ -10,6 +10,7 @@ import 'package:neurithm/widgets/appbar.dart';
 import 'package:neurithm/widgets/bottomBar.dart';
 import 'package:neurithm/widgets/wavesBackground.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:neurithm/l10n/generated/app_localizations.dart';
 
 class HomePage extends StatefulWidget {
   bool showRatingPopup;
@@ -27,55 +28,15 @@ class _HomePageState extends State<HomePage> {
   Patient? _currentUser;
   bool _isLoading = true;
   double _userRating = 0;
-
-  @override
-  void initState() {
-    super.initState();
-    _fetchUser();
-  }
-
-  Future<void> _fetchUser() async {
-    Patient? user = await _authService.getCurrentUser();
-    if (mounted) {
-      setState(() {
-        _currentUser = user;
-        _isLoading = false;
-      });
-
-      if (widget.showRatingPopup) {
-        _showRatingPopup();
-      }
-
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      int openCount = prefs.getInt('open_count') ?? 0;
-      openCount++;
-      await prefs.setInt('open_count', openCount);
-
-      if (openCount % 3 == 0) {
-        _showRatingPopup();
-
-        await prefs.setInt('open_count', 0);
-      }
-    }
-  }
-
-  Future<void> _saveRatingToDatabase() async {
-    if (_currentUser != null) {
-      await _ratingsService.saveRatingToDatabase(
-        patientId: _currentUser!.uid,
-        rating: _userRating.toInt(),
-      );
-    }
-  }
-
   void _showRatingPopup() {
+    var t = AppLocalizations.of(context)!;
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
           backgroundColor: Color(0xFF1A2A3A),
-          title: const Text(
-            'Rate Our App',
+          title: Text(
+            t.rateApp,
             style: TextStyle(
               fontSize: 24,
               fontWeight: FontWeight.bold,
@@ -85,14 +46,14 @@ class _HomePageState extends State<HomePage> {
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              const Text(
-                "Please rate our app by selecting stars!",
+              Text(
+                t.rateMessage,
                 style: TextStyle(
                   fontSize: 18,
                   color: Colors.white,
                 ),
               ),
-              const SizedBox(height: 20),
+              SizedBox(height: 20),
               RatingBar.builder(
                 initialRating: _userRating,
                 minRating: 1,
@@ -121,8 +82,8 @@ class _HomePageState extends State<HomePage> {
                     const EdgeInsets.symmetric(vertical: 15, horizontal: 30),
                 backgroundColor: Colors.blue,
               ),
-              child: const Text(
-                'Submit',
+              child: Text(
+                t.submit,
                 style: TextStyle(
                   fontSize: 20,
                   color: Colors.white,
@@ -141,8 +102,8 @@ class _HomePageState extends State<HomePage> {
                     const EdgeInsets.symmetric(vertical: 15, horizontal: 30),
                 backgroundColor: Colors.grey,
               ),
-              child: const Text(
-                'Later',
+              child: Text(
+                t.later,
                 style: TextStyle(
                   fontSize: 20,
                   color: Colors.white,
@@ -159,12 +120,52 @@ class _HomePageState extends State<HomePage> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    _fetchUser();
+  }
+
+  Future<void> _fetchUser() async {
+    Patient? user = await _authService.getCurrentUser();
+    if (mounted) {
+      setState(() {
+        _currentUser = user;
+        _isLoading = false;
+      });
+
+      if (widget.showRatingPopup) {
+        _showRatingPopup();
+      }
+
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      int openCount = prefs.getInt('open_count') ?? 0;
+      openCount++;
+      await prefs.setInt('open_count', openCount);
+
+      if (openCount % 3 == 0) {
+        _showRatingPopup();
+        await prefs.setInt('open_count', 0);
+      }
+    }
+  }
+
+  Future<void> _saveRatingToDatabase() async {
+    if (_currentUser != null) {
+      await _ratingsService.saveRatingToDatabase(
+        patientId: _currentUser!.uid,
+        rating: _userRating.toInt(),
+      );
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
 
     double fontSize(double size) => size * screenWidth / 400;
     double spacing(double size) => size * screenHeight / 800;
+    var t = AppLocalizations.of(context)!;
 
     return Scaffold(
       key: _scaffoldKey,
@@ -227,7 +228,7 @@ class _HomePageState extends State<HomePage> {
                             _isLoading
                                 ? const CircularProgressIndicator()
                                 : Text(
-                                    "Welcome, ${_currentUser?.firstName ?? ''} ${_currentUser?.lastName ?? ''}",
+                                    "${t.welcomeMessage} ${_currentUser?.firstName ?? ''} ${_currentUser?.lastName ?? ''}",
                                     style: TextStyle(
                                       fontSize: fontSize(28),
                                       color: Colors.white,
@@ -236,7 +237,7 @@ class _HomePageState extends State<HomePage> {
                                   ),
 
                             Text(
-                              "Voice Your Mind Effortlessly",
+                              t.voiceYourMind,
                               style: TextStyle(
                                 fontSize: fontSize(22),
                                 fontFamily: 'Lato',
@@ -266,8 +267,8 @@ class _HomePageState extends State<HomePage> {
                                   padding: EdgeInsets.symmetric(
                                       vertical: spacing(13)),
                                 ),
-                                child: const Text(
-                                  "Start Speaking Now",
+                                child: Text(
+                                  t.startSpeakingNow,
                                   style: TextStyle(
                                     fontSize: 25,
                                     fontWeight: FontWeight.normal,
@@ -299,8 +300,8 @@ class _HomePageState extends State<HomePage> {
                                   padding:
                                       const EdgeInsets.symmetric(vertical: 12),
                                 ),
-                                child: const Text(
-                                  "Help & Guide",
+                                child: Text(
+                                  t.helpAndGuide,
                                   style: TextStyle(
                                     fontSize: 25,
                                     fontWeight: FontWeight.normal,
@@ -318,7 +319,7 @@ class _HomePageState extends State<HomePage> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          "History",
+                          t.history,
                           style: TextStyle(
                             fontFamily: 'Lato',
                             fontSize: fontSize(30),

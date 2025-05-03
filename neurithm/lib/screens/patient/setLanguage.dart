@@ -58,8 +58,16 @@ class SetLanguageScreen extends StatelessWidget {
                       child: Consumer<LocaleModel>(
                         builder: (context, localeModel, child) => ElevatedButton(
                           onPressed: () {
-                            // Update the language when "English" is selected
+                            // Update the language to English
                             localeModel.set(Locale('en'));
+
+                            // Rebuild the context and show Snackbar with updated message
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(t.languageUpdated), // Use localized message
+                                duration: Duration(seconds: 2), // Duration for Snackbar
+                              ),
+                            );
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor:
@@ -85,8 +93,16 @@ class SetLanguageScreen extends StatelessWidget {
                       child: Consumer<LocaleModel>(
                         builder: (context, localeModel, child) => ElevatedButton(
                           onPressed: () {
-                            // Update the language when "Arabic" is selected
+                            // Update the language to Arabic
                             localeModel.set(Locale('ar'));
+
+                            // Rebuild the context and show Snackbar with updated message
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(t.languageUpdated), // Use localized message
+                                duration: Duration(seconds: 2), // Duration for Snackbar
+                              ),
+                            );
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor:
@@ -103,18 +119,6 @@ class SetLanguageScreen extends StatelessWidget {
                               fontSize: 25,
                             ),
                           ),
-                        ),
-                      ),
-                    ),
-                    // Confirmation message after language selection
-                    Padding(
-                      padding: const EdgeInsets.only(top: 20),
-                      child: Text(
-                        t.languageUpdated, // Localized confirmation message
-                        style: const TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
                         ),
                       ),
                     ),

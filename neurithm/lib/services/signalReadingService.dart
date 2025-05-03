@@ -13,7 +13,7 @@ class SignalReadingService {
   Future<void> startThinkingWithSession(BuildContext context,
       {bool isNewWord = false}) async {
     var currentUser = await _authService.getCurrentUser();
-
+    print("user: "+currentUser.firstName);
     if (currentUser == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('User not found. Please log in again.')),
@@ -24,7 +24,7 @@ class SignalReadingService {
     DateTime startTime = DateTime.now();
 
     Map<String, dynamic> sessionData = {
-      'patientId': currentUser.id,
+      'patientId': currentUser.uid,
       'startTime': startTime.toIso8601String(),
       'endTime': null,
     };
@@ -71,7 +71,7 @@ class SignalReadingService {
   // Function to handle the file upload and prediction request for start thinking
   Future<void> uploadFileAndStartThinking(BuildContext context,
       {bool isNewWord = false}) async {
-    const String localServerUrl = 'http://192.168.1.4:5000/start_thinking';
+    const String localServerUrl = 'http://192.168.1.9:5000/start_thinking';
 
     // Pick the file from the user's device
     FilePickerResult? result =
@@ -128,7 +128,7 @@ class SignalReadingService {
     try {
       var response = await http.post(
         Uri.parse(
-            'http://192.168.1.4:5000/done_thinking'), 
+            'http://192.168.1.9:5000/done_thinking'), 
       );
 
       if (response.statusCode == 200) {
@@ -202,7 +202,7 @@ class SignalReadingService {
   Future<void> restartServer(BuildContext context) async {
     try {
       var response = await http.post(
-        Uri.parse('http://192.168.1.4:5000/restart'), // Restart endpoint
+        Uri.parse('http://192.168.1.9:5000/restart'), // Restart endpoint
       );
 
       if (response.statusCode == 200) {

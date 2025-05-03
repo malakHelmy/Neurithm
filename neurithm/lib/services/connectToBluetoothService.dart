@@ -18,6 +18,7 @@ class ConnectToBluetoothService {
         if (result.device.name.isNotEmpty) {
           // Add unique devices only
           if (!foundDevices.any((d) => d.id == result.device.id)) {
+            print("Device: "+ result.device.toString());
             foundDevices.add(result.device);
           }
         }
@@ -30,7 +31,10 @@ class ConnectToBluetoothService {
     // Stop scanning after the timeout
     await FlutterBluePlus.stopScan();
     scanSubscription.cancel();
-
+    //  final fakeDevice = BluetoothDevice(
+    //   remoteId: DeviceIdentifier("EPOC X")
+    // );
+    // foundDevices.add(fakeDevice);
     return foundDevices;
   }
 

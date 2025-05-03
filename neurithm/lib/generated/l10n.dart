@@ -139,6 +139,66 @@ class S {
   String get history {
     return Intl.message('History', name: 'history', desc: '', args: []);
   }
+
+  /// `Welcome`
+  String get welcomeMessage {
+    return Intl.message('Welcome', name: 'welcomeMessage', desc: '', args: []);
+  }
+
+  /// `Voice Your Mind Effortlessly`
+  String get voiceYourMind {
+    return Intl.message(
+      'Voice Your Mind Effortlessly',
+      name: 'voiceYourMind',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Start Speaking Now`
+  String get startSpeakingNow {
+    return Intl.message(
+      'Start Speaking Now',
+      name: 'startSpeakingNow',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Help & Guide`
+  String get helpAndGuide {
+    return Intl.message(
+      'Help & Guide',
+      name: 'helpAndGuide',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Rate App`
+  String get rateApp {
+    return Intl.message('Rate App', name: 'rateApp', desc: '', args: []);
+  }
+
+  /// `Please rate our app by selecting stars!`
+  String get rateMessage {
+    return Intl.message(
+      'Please rate our app by selecting stars!',
+      name: 'rateMessage',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Submit`
+  String get submit {
+    return Intl.message('Submit', name: 'submit', desc: '', args: []);
+  }
+
+  /// `Later`
+  String get later {
+    return Intl.message('Later', name: 'later', desc: '', args: []);
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

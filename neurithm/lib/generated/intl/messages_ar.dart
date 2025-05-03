@@ -26,15 +26,29 @@ class MessageLookup extends MessageLookupByLibrary {
     "arabic": MessageLookupByLibrary.simpleMessage("العربية"),
     "chooseLanguage": MessageLookupByLibrary.simpleMessage("اختر اللغة"),
     "english": MessageLookupByLibrary.simpleMessage("الإنجليزية"),
+    "helpAndGuide": MessageLookupByLibrary.simpleMessage("المساعدة والدليل"),
     "history": MessageLookupByLibrary.simpleMessage("التاريخ"),
     "home": MessageLookupByLibrary.simpleMessage("الرئيسية"),
     "languageSettings": MessageLookupByLibrary.simpleMessage("إعدادات اللغة"),
     "languageUpdated": MessageLookupByLibrary.simpleMessage(
       "تم تحديث اللغة بنجاح",
     ),
+    "later": MessageLookupByLibrary.simpleMessage("لاحقًا"),
     "next": MessageLookupByLibrary.simpleMessage("التالي"),
+    "rateApp": MessageLookupByLibrary.simpleMessage("قيم التطبيق"),
+    "rateMessage": MessageLookupByLibrary.simpleMessage(
+      "يرجى تقييم تطبيقنا عن طريق اختيار النجوم!",
+    ),
     "settings": MessageLookupByLibrary.simpleMessage("الإعدادات"),
+    "startSpeakingNow": MessageLookupByLibrary.simpleMessage(
+      "ابدأ التحدث الآن",
+    ),
+    "submit": MessageLookupByLibrary.simpleMessage("إرسال"),
     "voiceSettings": MessageLookupByLibrary.simpleMessage("إعدادات الصوت"),
+    "voiceYourMind": MessageLookupByLibrary.simpleMessage(
+      "عبّر عن أفكارك بسهولة",
+    ),
+    "welcomeMessage": MessageLookupByLibrary.simpleMessage("مرحباً"),
     "wordBank": MessageLookupByLibrary.simpleMessage("قاعدة الكلمات"),
   };
 }

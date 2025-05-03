@@ -26,6 +26,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "arabic": MessageLookupByLibrary.simpleMessage("Arabic"),
     "chooseLanguage": MessageLookupByLibrary.simpleMessage("Choose Language"),
     "english": MessageLookupByLibrary.simpleMessage("English"),
+    "helpAndGuide": MessageLookupByLibrary.simpleMessage("Help & Guide"),
     "history": MessageLookupByLibrary.simpleMessage("History"),
     "home": MessageLookupByLibrary.simpleMessage("Home"),
     "languageSettings": MessageLookupByLibrary.simpleMessage(
@@ -34,9 +35,22 @@ class MessageLookup extends MessageLookupByLibrary {
     "languageUpdated": MessageLookupByLibrary.simpleMessage(
       "Language updated successfully",
     ),
+    "later": MessageLookupByLibrary.simpleMessage("Later"),
     "next": MessageLookupByLibrary.simpleMessage("Next"),
+    "rateApp": MessageLookupByLibrary.simpleMessage("Rate App"),
+    "rateMessage": MessageLookupByLibrary.simpleMessage(
+      "Please rate our app by selecting stars!",
+    ),
     "settings": MessageLookupByLibrary.simpleMessage("Settings"),
+    "startSpeakingNow": MessageLookupByLibrary.simpleMessage(
+      "Start Speaking Now",
+    ),
+    "submit": MessageLookupByLibrary.simpleMessage("Submit"),
     "voiceSettings": MessageLookupByLibrary.simpleMessage("Voice Settings"),
+    "voiceYourMind": MessageLookupByLibrary.simpleMessage(
+      "Voice Your Mind Effortlessly",
+    ),
+    "welcomeMessage": MessageLookupByLibrary.simpleMessage("Welcome"),
     "wordBank": MessageLookupByLibrary.simpleMessage("Word Bank"),
   };
 }

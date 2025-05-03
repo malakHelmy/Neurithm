@@ -10,5 +10,13 @@
   "home": "الرئيسية",
   "wordBank": "قاعدة الكلمات",
   "settings": "الإعدادات",
-  "history": "التاريخ"
+  "history": "التاريخ",
+  "welcomeMessage": "مرحباً",
+  "voiceYourMind": "عبّر عن أفكارك بسهولة",
+  "startSpeakingNow": "ابدأ التحدث الآن",
+  "helpAndGuide": "المساعدة والدليل",
+  "rateApp": "قيم التطبيق",
+  "rateMessage": "يرجى تقييم تطبيقنا عن طريق اختيار النجوم!",
+  "submit": "إرسال",
+  "later": "لاحقًا"
 }

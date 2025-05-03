@@ -41,4 +41,28 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get history => 'التاريخ';
+
+  @override
+  String get welcomeMessage => 'مرحباً';
+
+  @override
+  String get voiceYourMind => 'عبّر عن أفكارك بسهولة';
+
+  @override
+  String get startSpeakingNow => 'ابدأ التحدث الآن';
+
+  @override
+  String get helpAndGuide => 'المساعدة والدليل';
+
+  @override
+  String get rateApp => 'قيم التطبيق';
+
+  @override
+  String get rateMessage => 'يرجى تقييم تطبيقنا عن طريق اختيار النجوم!';
+
+  @override
+  String get submit => 'إرسال';
+
+  @override
+  String get later => 'لاحقًا';
 }
