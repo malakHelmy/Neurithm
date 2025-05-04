@@ -10,13 +10,10 @@ import 'package:neurithm/widgets/wavesBackground.dart';
 
 class ConfirmContextPage extends StatefulWidget {
   final List<String> correctedTexts;
-   final String sessionId;
+  final String sessionId;
 
-  const ConfirmContextPage({
-    super.key,
-    required this.correctedTexts,
-    required this.sessionId
-  });
+  const ConfirmContextPage(
+      {super.key, required this.correctedTexts, required this.sessionId});
 
   @override
   State<ConfirmContextPage> createState() => _ConfirmationPageState();
@@ -50,11 +47,12 @@ class _ConfirmationPageState extends State<ConfirmContextPage> {
   Future<void> _handleRegenerate() async {
     if (_selectedText != null) {
       try {
-        String aiModelId = await confirmContextService.getAiModelId('EEG Transformer');
+        String aiModelId =
+            await confirmContextService.getAiModelId('EEG Transformer');
 
         await confirmContextService.addPrediction(
           sessionId: widget.sessionId,
-          aiModelId: aiModelId,  
+          aiModelId: aiModelId,
           predictedText: _selectedText!,
           isAccepted: false,
         );
@@ -82,14 +80,15 @@ class _ConfirmationPageState extends State<ConfirmContextPage> {
         String aiModelId;
 
         if (_regenerationDone) {
-          aiModelId = await confirmContextService.getAiModelId('EEG Transformer');
+          aiModelId =
+              await confirmContextService.getAiModelId('EEG Transformer');
         } else {
           aiModelId = await confirmContextService.getAiModelId('EEGNet');
         }
 
         await confirmContextService.addPrediction(
           sessionId: widget.sessionId,
-          aiModelId: aiModelId,  
+          aiModelId: aiModelId,
           predictedText: _selectedText!,
           isAccepted: true,
         );
@@ -114,8 +113,17 @@ class _ConfirmationPageState extends State<ConfirmContextPage> {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
+        title: Text(
+          'Choose Your Preferred Correction',
+          style: TextStyle(
+            fontSize: 22,
+            fontWeight: FontWeight.w900,
+            fontFamily: 'Lato',
+            color: Colors.white,
+          ),
+        ),
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
           onPressed: () => Navigator.pop(context),
         ),
       ),
@@ -153,20 +161,7 @@ class _ConfirmationPageState extends State<ConfirmContextPage> {
                   : Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Padding(
-                          padding: EdgeInsets.only(
-                            bottom: spacing(20, getScreenHeight(context)),
-                          ),
-                          child: const Text(
-                            'Choose Your Preferred Correction:',
-                            style: TextStyle(
-                              fontSize: 22,
-                              fontWeight: FontWeight.w900,
-                              fontFamily: 'Lato',
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
+                        SizedBox(height: spacing(50, getScreenHeight(context))),
                         // Display all corrected text options
                         Expanded(
                           child: ListView.builder(
@@ -205,8 +200,10 @@ class _ConfirmationPageState extends State<ConfirmContextPage> {
                             },
                           ),
                         ),
-                        SizedBox(height: spacing(40, getScreenHeight(context))),
+                        SizedBox(height: spacing(10, getScreenHeight(context))),
                         _actionButtons(),
+                                                SizedBox(height: spacing(40, getScreenHeight(context))),
+
                       ],
                     ),
             ),
@@ -226,8 +223,8 @@ class _ConfirmationPageState extends State<ConfirmContextPage> {
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: ElevatedButton(
-                  onPressed: ()  {
-                         _handleRegenerate();
+                  onPressed: () {
+                    _handleRegenerate();
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color.fromARGB(255, 240, 240, 240),
@@ -261,8 +258,8 @@ class _ConfirmationPageState extends State<ConfirmContextPage> {
                 child: ElevatedButton(
                   onPressed: _selectedText == null
                       ? null
-                      : ()  {
-                         _handleRecite();
+                      : () {
+                          _handleRecite();
                         },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color.fromARGB(255, 240, 240, 240),

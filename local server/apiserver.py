@@ -38,7 +38,7 @@ ALT_LABEL_ENCODER_PATH = "models/without_pos_encoding.pkl"
 OUTPUT_DIR = Path("processed_results")
 
 # Access the API key from the environment
-OPENROUTER_API_KEY = "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"
+OPENROUTER_API_KEY = "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"
 OPENROUTER_API_URL = "https://openrouter.ai/api/v1/chat/completions"
 MODEL_NAME = "deepseek/deepseek-chat-v3-0324"
 MAX_RETRIES = 3
@@ -174,39 +174,55 @@ def run_notebook(folder_path):
         logger.error(f"⚠ Notebook execution error: {e}")
         return None
 
-def run_predictions_in_memory(folder_path, model, label_encoder):
-    predictions = {}
-
-    for csv_file in sorted(Path(folder_path).glob("letter_*.csv")):
-        df = pd.read_csv(csv_file)
-
-        # Keep only numeric values
-        df = df.select_dtypes(include=[np.number]).fillna(0).astype(np.float32)
-
-        if df.empty:
-            logger.warning(f"⚠ Skipping {csv_file.name} — empty or non-numeric.")
-            continue
-
-        try:
-            # Reshape EEG input: (1, 12, 1200, 1)
-            eeg_data = df.values.reshape((1, 12, 1200, 1))
-
-            # Generate dummy context data: (1, 12, 5)
-            # Adjust this if you have real context values to use
-            context_data = np.zeros((1, 12, 5), dtype=np.float32)
-
-            # Run prediction
-            pred = model.predict([eeg_data, context_data])
-            class_idx = np.argmax(pred, axis=-1)
-            letter = label_encoder.inverse_transform(class_idx)[0]
-            predictions[csv_file.stem] = [letter]
-
-        except Exception as e:
-            logger.warning(f"⚠ Failed to process {csv_file.name}: {str(e)}")
-
-    return predictions
-
-
+def run_predictions_in_memory(folder_path, model_path, label_encoder_path):
+     """Predict on preprocessed EEG segments directly in memory"""
+     try:
+         # Load model and label encoder again (optional, or reuse already loaded ones)
+         model = tf.keras.models.load_model(model_path)
+         with open(label_encoder_path, 'rb') as f:
+             label_encoder = pickle.load(f)
+         model.trainable = False
+ 
+         all_predictions = {}
+ 
+         SEGMENT_LENGTH = 1200
+         NUM_CHANNELS = 12
+ 
+         for filename in sorted(os.listdir(folder_path)):
+             if filename.endswith('.csv'):
+                 file_path = os.path.join(folder_path, filename)
+                 df = pd.read_csv(file_path)
+ 
+                 df = df.select_dtypes(include=[np.number])
+ 
+                 num_columns = df.shape[1]
+                 expected_features = SEGMENT_LENGTH * NUM_CHANNELS
+                 columns_to_trim = num_columns % expected_features
+                 if columns_to_trim != 0:
+                     df = df.iloc[:, :-columns_to_trim]
+ 
+                 total_elements = df.shape[0] * df.shape[1]
+                 if total_elements % (SEGMENT_LENGTH * NUM_CHANNELS) != 0:
+                     logger.warning(f"⚠ Skipping {filename} due to size mismatch.")
+                     continue  # Skip bad files safely
+ 
+                 # Reshape
+                 X_temp = df.values.reshape(-1, SEGMENT_LENGTH, NUM_CHANNELS)
+                 X_new = np.transpose(X_temp, (0, 2, 1))
+                 X_new = X_new[..., np.newaxis]
+ 
+                 # Predict
+                 y_pred_probs = model.predict(X_new)
+                 y_pred_labels = np.argmax(y_pred_probs, axis=-1)
+                 predicted_values = label_encoder.inverse_transform(y_pred_labels)
+ 
+                 all_predictions[filename] = predicted_values.tolist()
+ 
+         return all_predictions
+ 
+     except Exception as e:
+         logger.error(f"⚠ Error in prediction: {e}")
+         raise e
 
 
 @lru_cache(maxsize=100)
@@ -313,8 +329,8 @@ def start_thinking():
         # Step 3: Predict directly without saving
         predictions = run_predictions_in_memory(
             folder_path=save_path,
-            model_path=ALT_MODEL_PATH,
-            label_encoder_path=ALT_LABEL_ENCODER_PATH
+            model_path=MODEL_PATH,
+            label_encoder_path=LABEL_ENCODER_PATH
         )
 
 

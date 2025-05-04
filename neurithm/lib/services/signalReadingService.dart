@@ -71,7 +71,7 @@ class SignalReadingService {
   // Function to handle the file upload and prediction request for start thinking
   Future<void> uploadFileAndStartThinking(BuildContext context,
       {bool isNewWord = false}) async {
-    const String localServerUrl = 'http://192.168.1.9:5000/start_thinking';
+    const String localServerUrl = 'https://0418-45-244-62-5.ngrok-free.app/start_thinking';
 
     // Pick the file from the user's device
     FilePickerResult? result =
@@ -128,7 +128,7 @@ class SignalReadingService {
     try {
       var response = await http.post(
         Uri.parse(
-            'http://192.168.1.9:5000/done_thinking'), 
+            'https://0418-45-244-62-5.ngrok-free.app/done_thinking'), 
       );
 
       if (response.statusCode == 200) {
@@ -136,6 +136,8 @@ class SignalReadingService {
 
         // Extract corrected text from the response
         String originalText = data['original_text'];
+                print("original text: " + data['original_text']);
+
         List<String> correctedTexts =
             List<String>.from(data['corrected_texts']);
 
@@ -152,7 +154,7 @@ class SignalReadingService {
         // Query the Firestore database to get the sessionId
         var sessionSnapshot = await FirebaseFirestore.instance
             .collection('sessions')
-            .where('patientId', isEqualTo: currentUser.id)
+            .where('patientId', isEqualTo: currentUser.uid)
             .where('endTime', isEqualTo: null) // Look for active sessions
             .limit(1)
             .get();
@@ -202,7 +204,7 @@ class SignalReadingService {
   Future<void> restartServer(BuildContext context) async {
     try {
       var response = await http.post(
-        Uri.parse('http://192.168.1.9:5000/restart'), // Restart endpoint
+        Uri.parse('https://0418-45-244-62-5.ngrok-free.app/restart'), // Restart endpoint
       );
 
       if (response.statusCode == 200) {
