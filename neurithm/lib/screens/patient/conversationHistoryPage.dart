@@ -5,7 +5,7 @@ import 'package:neurithm/widgets/wavesBackground.dart';
 import 'package:neurithm/services/conversationHistoryService.dart';
 import 'package:neurithm/services/authService.dart';
 import 'package:neurithm/models/patient.dart';
-import 'package:intl/intl.dart'; // To format date/time
+import 'package:intl/intl.dart';
 
 class ConversationHistoryPage extends StatefulWidget {
   const ConversationHistoryPage({super.key});
@@ -44,14 +44,28 @@ class _ConversationHistoryPageState extends State<ConversationHistoryPage> {
     }
   }
 
-  // Function to format DateTime
   String formatDate(DateTime date) {
     return DateFormat('dd/MM/yyyy').format(date);
   }
 
-  // Function to format time (HH:mm)
   String formatTime(DateTime time) {
     return DateFormat('HH:mm').format(time);
+  }
+
+  // Delete individual prediction
+  void _deletePrediction(String predictionId) async {
+    await _conversationHistoryService.deletePrediction(predictionId);
+    setState(() {
+      _fetchUserAndHistory();
+    });
+  }
+
+  // Delete entire session
+  void _deleteSession(String sessionId) async {
+    await _conversationHistoryService.deleteSession(sessionId);
+    setState(() {
+      _fetchUserAndHistory();
+    });
   }
 
   @override
@@ -103,6 +117,8 @@ class _ConversationHistoryPageState extends State<ConversationHistoryPage> {
                             final history = _conversationHistory[index];
                             final date = history['date'] ?? '';
                             final content = history['content'] ?? '';
+                            final sessionId = history['sessionId'] ?? '';
+                            final predictionId = history['predictionId'] ?? '';
 
                             // Split the date into start and end time
                             List<String> dateRange = date.split(" - ");
@@ -113,7 +129,8 @@ class _ConversationHistoryPageState extends State<ConversationHistoryPage> {
 
                             return Card(
                               color: Colors.transparent,
-                              margin: EdgeInsets.symmetric(vertical: spacing(8)),
+                              margin:
+                                  EdgeInsets.symmetric(vertical: spacing(8)),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10),
                               ),
@@ -122,9 +139,9 @@ class _ConversationHistoryPageState extends State<ConversationHistoryPage> {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    // Session Details: No box around it, just clean text
                                     Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
                                         Text(
                                           'Session Date: ${formatDate(startTime)}',
@@ -153,13 +170,12 @@ class _ConversationHistoryPageState extends State<ConversationHistoryPage> {
                                       ],
                                     ),
                                     SizedBox(height: spacing(15)),
-                                    // Prediction Text Box Styling
                                     Container(
                                       padding: EdgeInsets.all(spacing(12)),
                                       decoration: BoxDecoration(
                                         color: Colors.blue.withOpacity(0.1),
                                         borderRadius: BorderRadius.circular(12),
-                                        boxShadow: [
+                                        boxShadow: const [
                                           BoxShadow(
                                             color: Colors.black26,
                                             blurRadius: 8,
@@ -167,13 +183,51 @@ class _ConversationHistoryPageState extends State<ConversationHistoryPage> {
                                           ),
                                         ],
                                       ),
-                                      child: Text(
-                                        content,
-                                        style: TextStyle(
-                                          fontSize: fontSize(18),
-                                          color: Colors.white,
-                                        ),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            content,
+                                            style: TextStyle(
+                                              fontSize: fontSize(18),
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                          SizedBox(height: spacing(10)),
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.end,
+                                            children: [
+                                              IconButton(
+                                                icon: const Icon(
+                                                  Icons.delete,
+                                                  color: Colors.white,
+                                                ),
+                                                onPressed: () {
+                                                  _deletePrediction(
+                                                      predictionId); 
+                                                },
+                                              ),
+                                            ],
+                                          ),
+                                        ],
                                       ),
+                                    ),
+                                    SizedBox(height: spacing(10)),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      children: [
+                                        IconButton(
+                                          icon: const Icon(
+                                            Icons.delete_forever,
+                                            color: Colors.red,
+                                          ),
+                                          onPressed: () {
+                                            _deleteSession(sessionId);
+                                          },
+                                        ),
+                                      ],
                                     ),
                                   ],
                                 ),
