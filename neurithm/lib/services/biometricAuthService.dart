@@ -1,44 +1,26 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:local_auth/local_auth.dart  ';
 import 'package:flutter/material.dart';
-import 'package:local_auth/local_auth.dart';
+import 'package:neurithm/models/userPreferences.dart';
 
-class BiometricAuthService {
-  static final LocalAuthentication _localAuth = LocalAuthentication();
+class Biometricauth {
+  final auth = LocalAuthentication();
+  final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  static Future<bool> authenticateWithFaceID(BuildContext context) async {
-    try {
-      List<BiometricType> availableBiometrics =
-          await _localAuth.getAvailableBiometrics();
+  Future<void> checkBiometric(String email, String password) async {
 
-      if (!availableBiometrics.contains(BiometricType.face)) {
-        _showErrorMessage(context, "Face ID is not available on this device.");
-        return false;
+    bool canCheckBiometric = await auth.canCheckBiometrics;
+
+    if (canCheckBiometric) {
+      List<BiometricType> availableBiometric =
+          await auth.getAvailableBiometrics();
+
+      if (availableBiometric.isNotEmpty) {
+        bool authenticated = await auth.authenticate(
+          localizedReason: "Scan your finger to authenticate",
+        );
+        UserPreferences.saveBiometricAuth(email, password);
       }
-
-      bool isAuthenticated = await _localAuth.authenticate(
-        localizedReason: 'Authenticate using Face ID',
-        options: const AuthenticationOptions(
-          biometricOnly: true,
-          stickyAuth: true,
-        ),
-      );
-
-      if (!isAuthenticated) {
-        _showErrorMessage(context, "Face ID authentication failed.");
-      }
-
-      return isAuthenticated;
-    } catch (e) {
-      _showErrorMessage(context, "Error: Face ID authentication failed.");
-      return false;
     }
-  }
-
-  static void _showErrorMessage(BuildContext context, String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: Colors.red,
-      ),
-    );
   }
 }

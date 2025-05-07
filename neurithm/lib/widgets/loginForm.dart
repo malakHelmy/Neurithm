@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:local_auth/local_auth.dart';
 import 'dart:io';
 import 'package:neurithm/screens/admin/adminDashboardPage.dart';
 import 'package:neurithm/screens/homepage.dart';
 import 'package:neurithm/screens/patient/forgetPasswordPage.dart';
 import 'package:neurithm/services/authService.dart';
-import 'package:neurithm/services/biometricAuthService.dart';
+import 'package:neurithm/models/userPreferences.dart';
 import 'package:neurithm/services/emailService.dart';
 import 'package:neurithm/widgets/customTextField.dart';
 
@@ -31,6 +32,7 @@ class _LoginFormState extends State<LoginForm> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   bool _isLoading = false;
+  final LocalAuthentication local = LocalAuthentication();
 
   @override
   void dispose() {
@@ -42,24 +44,41 @@ class _LoginFormState extends State<LoginForm> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-
     if (widget.showLoginForm && (Platform.isIOS || Platform.isAndroid)) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        _authenticateUser();
+        _authenticateWithBiometrics();
       });
     }
   }
 
-  Future<void> _authenticateUser() async {
-    bool isAuthenticated =
-        await BiometricAuthService.authenticateWithFaceID(context);
-    if (isAuthenticated && mounted) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => HomePage(showRatingPopup: false),
-        ),
-      );
+  // Method to authenticate using biometrics (fingerprint or Face ID)
+  Future<void> _authenticateWithBiometrics() async {
+    try {
+      bool isAuthenticated = await local.authenticate(
+          localizedReason: "Please authenticate with your fingerprint");
+
+      if (isAuthenticated && mounted) {
+        Map<String, String?> credentials =
+            await UserPreferences.BiometricLogIn();
+          print(credentials);
+        // Call the sign-in method with the saved credentials
+        if (credentials['email'] != null && credentials['password'] != null) {
+          var result = await _authService.signInWithEmailPassword(
+            credentials['email']!,
+            credentials['password']!,
+          );
+          if (result['success']) {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => HomePage(showRatingPopup: false),
+              ),
+            );
+          }
+        }
+      }
+    } catch (e) {
+      print("Biometric authentication failed: $e");
     }
   }
 
@@ -111,7 +130,7 @@ class _LoginFormState extends State<LoginForm> {
                     ),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                         return 'Please enter your password';
+                        return 'Please enter your password';
                       } else if (value.length < 6) {
                         return 'Password must be at least 6 characters';
                       }
@@ -122,10 +141,11 @@ class _LoginFormState extends State<LoginForm> {
                   Align(
                     alignment: Alignment.centerRight,
                     child: TextButton(
-                      onPressed: () {Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => ForgetPasswordForm()));
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => ForgetPasswordForm()));
                       },
                       child: const Text(
                         "Forgot password?",
@@ -157,6 +177,29 @@ class _LoginFormState extends State<LoginForm> {
                     ),
                   ),
                   const SizedBox(height: 20),
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton.icon(
+                      onPressed: _handleGoogleSignIn,
+                      icon: Image.asset(
+                        'assets/images/google_logo.png',
+                        height: 24,
+                        width: 24,
+                      ),
+                      label: const Text(
+                        "Continue with Google",
+                        style: TextStyle(fontSize: 20, color: Colors.white),
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.transparent,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 20),
 
                   // ---OR--- divider
                   Row(
@@ -180,33 +223,21 @@ class _LoginFormState extends State<LoginForm> {
                       ),
                     ],
                   ),
+
                   const SizedBox(height: 20),
 
-                  // Google Sign-In Button
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton.icon(
-                      onPressed: _handleGoogleSignIn,
-                      icon: Image.asset(
-                        'assets/images/google_logo.png',
-                        height: 24,
-                        width: 24,
-                      ),
-                      label: const Text(
-                        "Continue with Google",
-                        style: TextStyle(fontSize: 20, color: Colors.white),
-                      ),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.transparent,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30),
-                        ),
-                        padding: const EdgeInsets.symmetric(vertical: 12),
+                  // Login using biometrics
+                  TextButton(
+                    onPressed: _authenticateWithBiometrics,
+                    child: const Text(
+                      'Login using biometrics',
+                      style: TextStyle(
+                        fontSize: 17,
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
                   ),
-
-                  const SizedBox(height: 20),
 
                   // Register Navigation
                   Row(
@@ -236,6 +267,7 @@ class _LoginFormState extends State<LoginForm> {
     );
   }
 
+  // Sign in method for email/password login
   Future<void> _handleSignIn() async {
     if (_formKey.currentState!.validate()) {
       setState(() {
@@ -282,6 +314,7 @@ class _LoginFormState extends State<LoginForm> {
     }
   }
 
+  // Sign in using Google
   Future<void> _handleGoogleSignIn() async {
     bool result = await _authService.signInWithGoogle();
     if (result && mounted) {
