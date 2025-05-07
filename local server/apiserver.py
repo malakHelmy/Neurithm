@@ -174,55 +174,119 @@ def run_notebook(folder_path):
         logger.error(f"⚠ Notebook execution error: {e}")
         return None
 
-def run_predictions_in_memory(folder_path, model_path, label_encoder_path):
-     """Predict on preprocessed EEG segments directly in memory"""
-     try:
-         # Load model and label encoder again (optional, or reuse already loaded ones)
-         model = tf.keras.models.load_model(model_path)
-         with open(label_encoder_path, 'rb') as f:
-             label_encoder = pickle.load(f)
-         model.trainable = False
- 
-         all_predictions = {}
- 
-         SEGMENT_LENGTH = 1200
-         NUM_CHANNELS = 12
- 
-         for filename in sorted(os.listdir(folder_path)):
-             if filename.endswith('.csv'):
-                 file_path = os.path.join(folder_path, filename)
-                 df = pd.read_csv(file_path)
- 
-                 df = df.select_dtypes(include=[np.number])
- 
-                 num_columns = df.shape[1]
-                 expected_features = SEGMENT_LENGTH * NUM_CHANNELS
-                 columns_to_trim = num_columns % expected_features
-                 if columns_to_trim != 0:
-                     df = df.iloc[:, :-columns_to_trim]
- 
-                 total_elements = df.shape[0] * df.shape[1]
-                 if total_elements % (SEGMENT_LENGTH * NUM_CHANNELS) != 0:
-                     logger.warning(f"⚠ Skipping {filename} due to size mismatch.")
-                     continue  # Skip bad files safely
- 
-                 # Reshape
-                 X_temp = df.values.reshape(-1, SEGMENT_LENGTH, NUM_CHANNELS)
-                 X_new = np.transpose(X_temp, (0, 2, 1))
-                 X_new = X_new[..., np.newaxis]
- 
-                 # Predict
-                 y_pred_probs = model.predict(X_new)
-                 y_pred_labels = np.argmax(y_pred_probs, axis=-1)
-                 predicted_values = label_encoder.inverse_transform(y_pred_labels)
- 
-                 all_predictions[filename] = predicted_values.tolist()
- 
-         return all_predictions
- 
-     except Exception as e:
-         logger.error(f"⚠ Error in prediction: {e}")
-         raise e
+
+
+from scipy import signal
+from sklearn.preprocessing import StandardScaler
+import numpy as np   
+def extract_frequency_features(X, fs=128):
+    """Extract frequency domain features for EEG signals"""
+    bands = {
+        'delta': (0.5, 4),   # Associated with attention
+        'theta': (4, 8),     # Memory and language processing
+        'alpha': (8, 13),    # Visual processing and recognition
+        'beta': (13, 30),    # Active thinking and focus
+        'gamma': (30, 50)    # Higher cognitive processing and feature binding
+    }
+
+    batch_size, channels, samples, _ = X.shape
+    X_freq = np.zeros((batch_size, channels, len(bands)))
+
+    for i in range(batch_size):
+        for c in range(channels):
+            signal_data = X[i, c, :, 0]
+
+            # Log the raw EEG data range before frequency extraction
+            logger.debug(f"Raw EEG data range for channel {c}, sample {i}: min={np.min(signal_data)}, max={np.max(signal_data)}")
+            logger.debug(f"Raw EEG data sample values (first 5) before frequency extraction: {signal_data[:5]}")
+
+            # Calculate power spectrum using Welch method
+            nperseg = min(256, len(signal_data))  # Align with training notebook logic
+            freqs, psd = signal.welch(signal_data, fs=fs, nperseg=nperseg)
+
+            # Log the PSD for debugging purposes
+            logger.debug(f"Power spectral density (psd) for channel {c}, sample {i}: {psd[:5]}")  # Log first 5 PSD values
+
+            # Extract band powers
+            for j, (band_name, (low, high)) in enumerate(bands.items()):
+                idx_band = np.logical_and(freqs >= low, freqs <= high)
+                if np.any(idx_band):
+                    X_freq[i, c, j] = np.mean(psd[idx_band])
+
+    # Normalize features (same as training notebook)
+    X_freq_reshaped = X_freq.reshape(batch_size, -1)
+    scaler = StandardScaler()
+    X_freq_normalized = scaler.fit_transform(X_freq_reshaped)
+
+    # Log the normalized frequency features (for debugging)
+    logger.debug(f"Normalized frequency features: {X_freq_normalized[:5]}")
+    
+    return X_freq_normalized.reshape(batch_size, channels, len(bands))
+
+
+
+def run_predictions_in_memory(folder_path, model_path, label_encoder_path, alt_model=False):
+    try:
+        # Load the appropriate model (either primary or alternative)
+        model = tf.keras.models.load_model(model_path)
+        with open(label_encoder_path, 'rb') as f:
+            label_encoder = pickle.load(f)
+        model.trainable = False
+
+        all_predictions = {}
+        SEGMENT_LENGTH = 1200
+        NUM_CHANNELS = 12
+
+        for filename in sorted(os.listdir(folder_path)):
+            if filename.endswith('.csv'):
+                file_path = os.path.join(folder_path, filename)
+                df = pd.read_csv(file_path)
+
+                df = df.select_dtypes(include=[np.number])
+
+                num_columns = df.shape[1]
+                expected_features = SEGMENT_LENGTH * NUM_CHANNELS
+                columns_to_trim = num_columns % expected_features
+                if columns_to_trim != 0:
+                    df = df.iloc[:, :-columns_to_trim]
+
+                total_elements = df.shape[0] * df.shape[1]
+                if total_elements % (SEGMENT_LENGTH * NUM_CHANNELS) != 0:
+                    logger.warning(f"⚠ Skipping {filename} due to size mismatch.")
+                    continue  # Skip bad files safely
+
+                # Reshape EEG data
+                X_temp = df.values.reshape(-1, SEGMENT_LENGTH, NUM_CHANNELS)
+                X_new = np.transpose(X_temp, (0, 2, 1))
+                X_new = X_new[..., np.newaxis]
+                
+                
+
+                # Extract frequency-domain features
+                X_new_freq = extract_frequency_features(X_new)
+                
+                
+                # Log the shape of frequency features in inference
+                logger.debug(f"Extracted frequency features shape (Inference): {X_new_freq.shape}")
+                logger.debug(f"Extracted frequency features sample values (Inference - first 5): {X_new_freq[0, :5]}")
+
+                # Run prediction for both EEG data and frequency-domain features
+                if alt_model:  # Alternative model (eegtransformer)
+                    y_pred_probs = model.predict([X_new, X_new_freq])  # Pass both inputs to the alt model
+                else:  # Main model (eegnet)
+                    y_pred_probs = model.predict(X_new)  # Main model uses only EEG data
+
+                # Decode predictions
+                y_pred_labels = np.argmax(y_pred_probs, axis=-1)
+                predicted_values = label_encoder.inverse_transform(y_pred_labels)
+
+                all_predictions[filename] = predicted_values.tolist()
+
+        return all_predictions
+
+    except Exception as e:
+        logger.error(f"⚠ Error in prediction: {e}")
+        raise e
 
 
 @lru_cache(maxsize=100)
@@ -417,9 +481,12 @@ def restart():
     except Exception as e:
         app.logger.error(f"Error during reset: {str(e)}")
         return jsonify(error="Failed to reset the server"), 500
+    
+    
+    
 
-@app.route('/predict-alt', methods=['POST'])
-def handle_alt_prediction():
+@app.route('/predict', methods=['POST'])
+def handle_request():
     if 'file' not in request.files:
         return jsonify(error="No file provided"), 400
 
@@ -428,43 +495,106 @@ def handle_alt_prediction():
         return jsonify(error="Only CSV files accepted"), 400
 
     try:
-        # Step 1: Save and segment
+        # Step 1: Save and split the upload
         zip_data, save_path = handle_upload(file)
-        logger.info(f"✅ Alt model input saved to: {save_path}")
+        app.logger.info(f"✅ Data saved to: {save_path}")
 
-        # Step 2: Preprocess with notebook
+        # Store the folder path in the session or a global variable
+        # so we can reuse it for regeneration
+        app.config['LAST_PROCESSED_PATH'] = save_path
+
+        # Step 2: Run preprocessing notebook
         processed_folder_path = run_notebook(save_path)
         if processed_folder_path is None:
             return jsonify(error="Preprocessing failed"), 500
 
-        # Step 3: Run predictions using the alt model
+        # Step 3: Predict directly without saving
+        # ✅ Correct: Pass the paths
         predictions = run_predictions_in_memory(
             folder_path=save_path,
-            model=alt_model,
-            label_encoder=alt_label_encoder
+            model_path=MODEL_PATH,
+            label_encoder_path=LABEL_ENCODER_PATH
         )
 
-        # Step 4: Assemble letters
+
+        # Debugging: Log the predictions response
+        logger.debug(f"Predictions received: {json.dumps(predictions, ensure_ascii=False)}")
+
+        # Step 4: Extract letters from predictions
         letters = []
-        for key, value in sorted(predictions.items()):
+        for key, value in predictions.items():
             if isinstance(value, list) and len(value) > 0:
-                letters.append(value[0])
+                letters.append(value[0])  # Append the first letter in the list (if present)
 
+        # Concatenate all letters into a single text string
         predictions_text = "".join(letters)
-        logger.debug(f"🧠 Alt model prediction: {predictions_text}")
 
-        # Step 5: Correct the prediction
+        # Log the predictions text before correction
+        logger.debug(f"Predictions before correction: {predictions_text}")
+
+        # Step 5: Get multiple possible corrections via the API (default is 5)
         num_options = request.args.get('num_options', default=5, type=int)
         corrected_texts = get_multiple_corrections(predictions_text, num_options)
 
+        # Log the corrected texts
+        logger.debug(f"Multiple predictions after correction: {corrected_texts}")
+
+        # Step 6: Return the corrected texts in HTTP response
         return Response(
             json.dumps({
                 "original_text": predictions_text,
                 "corrected_texts": corrected_texts,
-                "folder_path": save_path
+                "folder_path": save_path  # Include the folder path for later regeneration
             }, ensure_ascii=False),
             mimetype='application/json'
         )
+
+    except Exception as e:
+        app.logger.error(f"Processing error: {str(e)}")
+        return jsonify(error="Processing failed"), 500
+
+
+
+
+# Now ensure the regenerate endpoint can access this function
+@app.route('/regenerate', methods=['POST'])
+def regenerate():
+    """Regenerate predictions for a specific preprocessed word folder using the EEGTransformer model"""
+    try:
+        data = request.json
+        word_folder = data.get('word_folder')  # e.g., "word1"
+        num_options = data.get('num_options', 5)
+
+        if not word_folder:
+            return jsonify(error="Missing 'word_folder' in request."), 400
+
+        # Updated base path
+        base_path = "processed_results"
+        full_path = os.path.join(base_path, word_folder)
+
+        if not os.path.exists(full_path):
+            return jsonify(error=f"Folder '{full_path}' not found."), 404
+
+        logger.info(f"♻ Regenerating predictions from folder: {full_path}")
+
+        # Use the updated transformer prediction function with proper frequency features
+        predictions = run_predictions_in_memory(full_path, ALT_MODEL_PATH, ALT_LABEL_ENCODER_PATH, alt_model=True)
+
+        logger.debug(f"EEGTransformer predictions: {json.dumps(predictions, ensure_ascii=False)}")
+
+        # Extract predicted letters (1st prediction per file)
+        letters = [pred[0] for pred in predictions.values() if isinstance(pred, list) and pred]
+        predicted_sequence = "".join(letters)
+        logger.info(f"Predicted letter sequence: {predicted_sequence}")
+
+        # Get corrected full-text options
+        corrected_texts = get_multiple_corrections(predicted_sequence, num_options)
+
+        return jsonify({
+            "regenerated_text": predicted_sequence,
+            "corrected_texts": corrected_texts,
+            "folder_path": full_path
+        })
 
     except Exception as e:
         logger.exception("Regeneration failed.")
