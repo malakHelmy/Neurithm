@@ -7,6 +7,9 @@ class AppLocalizationsAr extends AppLocalizations {
   AppLocalizationsAr([String locale = 'ar']) : super(locale);
 
   @override
+  String get chosenLanguage => 'ar';
+
+  @override
   String get chooseLanguage => 'اختر اللغة';
 
   @override
@@ -65,4 +68,10 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get later => 'لاحقًا';
+
+  @override
+  String get categories => 'فئات';
+
+  @override
+  String get searchForCategories => 'البحث عن الفئات...';
 }

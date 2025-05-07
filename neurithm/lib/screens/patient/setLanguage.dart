@@ -12,7 +12,6 @@ class SetLanguageScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var t = AppLocalizations.of(context)!;
-    var selectedLocale = Localizations.localeOf(context).toString();
 
     return Scaffold(
       body: Container(

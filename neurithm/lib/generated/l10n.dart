@@ -55,6 +55,11 @@ class S {
     return Localizations.of<S>(context, S);
   }
 
+  /// `en`
+  String get chosenLanguage {
+    return Intl.message('en', name: 'chosenLanguage', desc: '', args: []);
+  }
+
   /// `Choose Language`
   String get chooseLanguage {
     return Intl.message(
@@ -198,6 +203,21 @@ class S {
   /// `Later`
   String get later {
     return Intl.message('Later', name: 'later', desc: '', args: []);
+  }
+
+  /// `Categories`
+  String get categories {
+    return Intl.message('Categories', name: 'categories', desc: '', args: []);
+  }
+
+  /// `Search categories...`
+  String get searchForCategories {
+    return Intl.message(
+      'Search categories...',
+      name: 'searchForCategories',
+      desc: '',
+      args: [],
+    );
   }
 }
 

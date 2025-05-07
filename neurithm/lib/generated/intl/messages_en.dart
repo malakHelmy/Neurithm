@@ -24,7 +24,9 @@ class MessageLookup extends MessageLookupByLibrary {
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
     "accountSettings": MessageLookupByLibrary.simpleMessage("Account Settings"),
     "arabic": MessageLookupByLibrary.simpleMessage("Arabic"),
+    "categories": MessageLookupByLibrary.simpleMessage("Categories"),
     "chooseLanguage": MessageLookupByLibrary.simpleMessage("Choose Language"),
+    "chosenLanguage": MessageLookupByLibrary.simpleMessage("en"),
     "english": MessageLookupByLibrary.simpleMessage("English"),
     "helpAndGuide": MessageLookupByLibrary.simpleMessage("Help & Guide"),
     "history": MessageLookupByLibrary.simpleMessage("History"),
@@ -40,6 +42,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "rateApp": MessageLookupByLibrary.simpleMessage("Rate App"),
     "rateMessage": MessageLookupByLibrary.simpleMessage(
       "Please rate our app by selecting stars!",
+    ),
+    "searchForCategories": MessageLookupByLibrary.simpleMessage(
+      "Search categories...",
     ),
     "settings": MessageLookupByLibrary.simpleMessage("Settings"),
     "startSpeakingNow": MessageLookupByLibrary.simpleMessage(

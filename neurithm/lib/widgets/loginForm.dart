@@ -7,6 +7,7 @@ import 'package:neurithm/screens/patient/forgetPasswordPage.dart';
 import 'package:neurithm/services/authService.dart';
 import 'package:neurithm/models/userPreferences.dart';
 import 'package:neurithm/services/emailService.dart';
+import 'package:neurithm/services/wordBankService.dart';
 import 'package:neurithm/widgets/customTextField.dart';
 
 class LoginForm extends StatefulWidget {
@@ -50,6 +51,7 @@ class _LoginFormState extends State<LoginForm> {
       });
     }
   }
+  WordBankService wordbank = new WordBankService();
 
   // Method to authenticate using biometrics (fingerprint or Face ID)
   Future<void> _authenticateWithBiometrics() async {

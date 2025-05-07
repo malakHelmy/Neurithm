@@ -1,4 +1,5 @@
   { 
+  "chosenLanguage":"en",
   "chooseLanguage": "Choose Language",
   "english": "English",
   "arabic": "Arabic",
@@ -18,5 +19,7 @@
   "rateApp": "Rate App",
   "rateMessage": "Please rate our app by selecting stars!",
   "submit": "Submit",
-  "later": "Later"
+  "later": "Later",
+  "categories": "Categories",
+  "searchForCategories": "Search categories..."
 }

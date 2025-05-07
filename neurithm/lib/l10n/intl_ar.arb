@@ -1,4 +1,5 @@
 {
+  "chosenLanguage":"ar",
   "chooseLanguage": "اختر اللغة",
   "english": "الإنجليزية",
   "arabic": "العربية",
@@ -18,5 +19,8 @@
   "rateApp": "قيم التطبيق",
   "rateMessage": "يرجى تقييم تطبيقنا عن طريق اختيار النجوم!",
   "submit": "إرسال",
-  "later": "لاحقًا"
+  "later": "لاحقًا",
+  "categories": "فئات",
+  "searchForCategories": "البحث عن الفئات..."
+
 }

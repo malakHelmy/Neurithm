@@ -24,7 +24,9 @@ class MessageLookup extends MessageLookupByLibrary {
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
     "accountSettings": MessageLookupByLibrary.simpleMessage("إعدادات الحساب"),
     "arabic": MessageLookupByLibrary.simpleMessage("العربية"),
+    "categories": MessageLookupByLibrary.simpleMessage("فئات"),
     "chooseLanguage": MessageLookupByLibrary.simpleMessage("اختر اللغة"),
+    "chosenLanguage": MessageLookupByLibrary.simpleMessage("ar"),
     "english": MessageLookupByLibrary.simpleMessage("الإنجليزية"),
     "helpAndGuide": MessageLookupByLibrary.simpleMessage("المساعدة والدليل"),
     "history": MessageLookupByLibrary.simpleMessage("التاريخ"),
@@ -38,6 +40,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "rateApp": MessageLookupByLibrary.simpleMessage("قيم التطبيق"),
     "rateMessage": MessageLookupByLibrary.simpleMessage(
       "يرجى تقييم تطبيقنا عن طريق اختيار النجوم!",
+    ),
+    "searchForCategories": MessageLookupByLibrary.simpleMessage(
+      "البحث عن الفئات...",
     ),
     "settings": MessageLookupByLibrary.simpleMessage("الإعدادات"),
     "startSpeakingNow": MessageLookupByLibrary.simpleMessage(

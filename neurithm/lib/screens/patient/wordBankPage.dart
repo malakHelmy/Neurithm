@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:neurithm/l10n/generated/app_localizations.dart';
 import 'package:neurithm/models/patient.dart';
 import 'package:neurithm/services/authService.dart';
 import 'package:neurithm/services/wordBankService.dart';
@@ -28,7 +29,7 @@ class _WordBankPageState extends State<WordBankPage> {
   void initState() {
     super.initState();
     _fetchUser();
-    _fetchCategories();
+    _fetchCategories(context);
   }
 
   Future<void> _fetchUser() async {
@@ -40,9 +41,9 @@ class _WordBankPageState extends State<WordBankPage> {
     }
   }
 
-  Future<void> _fetchCategories() async {
+  Future<void> _fetchCategories(BuildContext context) async {
     try {
-      final fetchedCategories = await _wordBankService.fetchCategories();
+      final fetchedCategories = await _wordBankService.fetchCategories(context);
       setState(() {
         categories = fetchedCategories;
         isLoading = false;
@@ -59,21 +60,21 @@ class _WordBankPageState extends State<WordBankPage> {
     switch (name.toLowerCase()) {
       case 'emergency':
         return Icons.warning;
-      case 'frequent used phrases':
+      case 'frequent used phrases' || "العبارات المستخدمة بشكل مترر":
         return Icons.chat;
-      case 'food':
-        return Icons.fastfood;
-      case 'work':
+      case 'food' || 'طعام':
+        return Icons.fastfood ;
+      case 'work' || 'عمل':
         return Icons.work;
-      case 'greetings':
+      case 'greetings'|| 'تحيات':
         return Icons.waving_hand;
-      case 'daily needs':
+      case 'daily needs'|| 'احتياجات يومية':
         return Icons.shopping_cart;
-      case 'health':
+      case 'health'|| 'صحة':
         return Icons.health_and_safety;
-      case 'travel':
+      case 'travel'|| 'سفر':
         return Icons.airplanemode_active;
-      case 'family':
+      case 'family'|| 'عائلة':
         return Icons.family_restroom;
       default:
         return Icons.category;
@@ -81,7 +82,8 @@ class _WordBankPageState extends State<WordBankPage> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) {    
+    var t = AppLocalizations.of(context)!;
     String searchText = searchController.text.toLowerCase();
     List<WordBankCategory> filteredCategories = categories
         .where((category) => category.name.toLowerCase().contains(searchText))
@@ -116,7 +118,7 @@ class _WordBankPageState extends State<WordBankPage> {
                     TextField(
                       controller: searchController,
                       decoration: InputDecoration(
-                        hintText: "Search categories...",
+                        hintText: t.searchForCategories,
                         hintStyle: const TextStyle(color: Color(0xFF1A2A3A)),
                         prefixIcon:
                             const Icon(Icons.search, color: Color(0xFF1A2A3A)),
@@ -130,9 +132,9 @@ class _WordBankPageState extends State<WordBankPage> {
                       onChanged: (_) => setState(() {}),
                     ),
                     SizedBox(height: spacing(30, getScreenHeight(context))),
-                    const Text(
-                      "Categories",
-                      style: TextStyle(
+                    Text(
+                      t.categories,
+                      style: const TextStyle(
                         fontFamily: 'Lato',
                         fontSize: 25,
                         fontWeight: FontWeight.bold,

@@ -7,6 +7,9 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
+  String get chosenLanguage => 'en';
+
+  @override
   String get chooseLanguage => 'Choose Language';
 
   @override
@@ -65,4 +68,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get later => 'Later';
+
+  @override
+  String get categories => 'Categories';
+
+  @override
+  String get searchForCategories => 'Search categories...';
 }

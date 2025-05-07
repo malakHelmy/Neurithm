@@ -37,10 +37,10 @@ class _PhrasesPageState extends State<WordBankPhrases> {
   @override
   void initState() {
     super.initState();
-    _fetchPhrases();
+    _fetchPhrases(context);
   }
 
-  Future<void> _fetchPhrases() async {
+  Future<void> _fetchPhrases(BuildContext context) async {
     try {
       if (widget.category.name == "Frequent Used Phrases") {
         final fetchedPhrases = await _phraseTrackerDbHelper
@@ -51,7 +51,7 @@ class _PhrasesPageState extends State<WordBankPhrases> {
         });
       } else {
         final fetchedPhrases =
-            await _wordBankService.fetchPhrases(widget.category.id);
+            await _wordBankService.fetchPhrases(widget.category.id, context);
         setState(() {
           phrases = fetchedPhrases;
           isLoading = false;

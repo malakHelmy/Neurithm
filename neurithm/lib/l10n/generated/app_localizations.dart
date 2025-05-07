@@ -95,6 +95,12 @@ abstract class AppLocalizations {
     Locale('en')
   ];
 
+  /// No description provided for @chosenLanguage.
+  ///
+  /// In en, this message translates to:
+  /// **'en'**
+  String get chosenLanguage;
+
   /// No description provided for @chooseLanguage.
   ///
   /// In en, this message translates to:
@@ -214,6 +220,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Later'**
   String get later;
+
+  /// No description provided for @categories.
+  ///
+  /// In en, this message translates to:
+  /// **'Categories'**
+  String get categories;
+
+  /// No description provided for @searchForCategories.
+  ///
+  /// In en, this message translates to:
+  /// **'Search categories...'**
+  String get searchForCategories;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

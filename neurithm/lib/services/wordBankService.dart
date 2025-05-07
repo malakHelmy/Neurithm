@@ -1,11 +1,161 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 import 'package:neurithm/models/wordBank.dart';
 import 'package:neurithm/models/wordBankCategories.dart';
+import 'package:neurithm/models/locale.dart';
+import 'package:provider/provider.dart';
 
 class WordBankService {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
 
   // Upload categories first, then phrases related to each category
+  Future<void> uploadArabicCategoriesAndPhrases() async {
+    final categories = {
+      "food": "طعام",
+      "work": "عمل",
+      "family": "عائلة",
+      "emergency": "طوارئ",
+      "greetings": "تحيات",
+      "travel": "سفر",
+      "health": "صحة",
+      "daily_needs": "احتياجات يومية",
+    };
+
+    final phrases = {
+      "food": [
+        "أنا جائع.",
+        "أنا عطشان.",
+        "أحتاج إلى شراب.",
+        "أود بعض الماء.",
+        "أنا شبعان، شكراً.",
+        "هل يمكنني الحصول على المزيد من الملح/الفلفل؟",
+        "هذا الطعام حار جداً.",
+        "أريد شيئاً حلوًا.",
+        "هل يمكنني الحصول على شيء طري لأكله؟",
+        "من فضلك، قطع طعامي.",
+        "هذا طعمه جيد.",
+        "هل يمكنني تناول وجبة خفيفة؟",
+        "أحتاج إلى منديل.",
+        "هل يمكنك مساعدتي في طعامي؟",
+        "هل يمكنك إعطائي مصاصة؟"
+      ],
+      "work": [
+        "أحتاج إلى أخذ استراحة.",
+        "هل يمكنك مساعدتي في الرد على الرسائل الإلكترونية؟",
+        "لنحدد موعداً للاجتماع.",
+        "أواجه صعوبة في الكتابة.",
+        "من فضلك، كرر ذلك لي.",
+        "هل يمكن لشخص ما أن يعرض عملي؟",
+        "من فضلك، كن صبوراً معي.",
+        "هل يمكنك مساعدتي في جهاز الكمبيوتر؟",
+        "هل يمكنك توضيح هذه النقطة؟",
+        "أحتاج إلى المساعدة في هذه المهمة.",
+        "لقد أكملت المهمة.",
+        "دعونا نناقش حالة المشروع.",
+        "من فضلك، أرسل لي التقرير.",
+        "من فضلك، أرسل لي البريد الإلكتروني."
+      ],
+      "family": [
+        "أنا أحبك.",
+        "هل يمكننا التحدث؟",
+        "أقدر دعمك.",
+        "شكراً لتفهمك.",
+        "دعونا نمضي وقتاً معاً.",
+        "أحتاج إلى بعض الوقت الهادئ.",
+        "هل يمكنك مساعدتي في هذا؟",
+        "هل يمكننا الخروج للحصول على بعض الهواء النقي؟",
+        "لنلتقط صورة معاً.",
+        "من فضلك، ابقَ معي لبعض الوقت.",
+        "دعونا نستمع إلى الموسيقى معاً.",
+        "شكراً لكل شيء."
+      ],
+      "emergency": [
+        "لا أستطيع التنفس جيداً.",
+        "اتصل بالرقم 911 الآن!",
+        "أشعر بالدوار.",
+        "أشعر بالألم.",
+        "اتصل بمقدم الرعاية الخاص بي.",
+        "أحتاج إلى دوائي الآن.",
+        "أشعر أنني قد أغشي.",
+        "خذني إلى المستشفى.",
+        "هناك حريق.",
+        "لقد سقطت.",
+        "اتصل بطبيبي."
+      ],
+      "greetings": [
+        "مرحباً!",
+        "أهلاً وسهلاً!",
+        "صباح الخير.",
+        "مساء الخير.",
+        "مساء النور.",
+        "كيف حالك؟",
+        "سعيد بلقائك.",
+        "اعتنِ بنفسك.",
+        "أراك لاحقاً.",
+        "أتمنى لك يوماً سعيداً.",
+        "وداعاً."
+      ],
+      "travel": [
+        "أحتاج إلى مساعدة بالكراسي المتحركة.",
+        "أين هو أقرب حمام؟",
+        "أحتاج إلى تمديد ساقي.",
+        "هل يمكنك مساعدتي في إيجاد مقعدي؟",
+        "هذا المقعد غير مريح.",
+        "من فضلك، ساعدني في حمل حقيبتي.",
+        "هل يمكننا استخدام المصعد؟",
+        "أين هو أقرب مخرج؟",
+        "أحتاج إلى مساعدة في الصعود إلى الطائرة.",
+        "لدي حجز."
+      ],
+      "health": [
+        "لدي موعد اليوم.",
+        "أحتاج إلى أخذ دوائي.",
+        "هل يمكنك مساعدتي في تماريني؟",
+        "أحتاج إلى فحص ضغط دمي.",
+        "لدي موعد مع الطبيب.",
+        "أحتاج إلى الراحة الآن.",
+        "من فضلك، ساعدني في الجلوس.",
+        "هل يمكنك مساعدتي في تحريك ساقي؟",
+        "هل يمكنك دعم عنقي؟",
+        "أحتاج إلى تعديل كرسيي المتحرك."
+      ],
+      "daily_needs": [
+        "أحتاج إلى استخدام الحمام.",
+        "هل يمكنك مساعدتي في ارتداء ملابسي؟",
+        "أحتاج إلى تنظيف أسناني.",
+        "من فضلك، ساعدني في الاستحمام.",
+        "أحتاج إلى شحن جهازي.",
+        "هل يمكنك مساعدتي في كرسيي المتحرك؟",
+        "أحتاج إلى تعديل وضعي.",
+        "من فضلك، ساعدني في نظارتي.",
+        "أحتاج إلى أخذ قيلولة.",
+        "هل يمكنك أن تقرأ لي؟",
+        "من فضلك، اضبط منبهي.",
+        "من فضلك، ساعدني في استخدام هاتفي.",
+        "من فضلك، ضبط الوسائد.",
+        "هل يمكنك مساعدتي في غسل يدي؟",
+        "من فضلك، أحضر لي نعالي.",
+        "أحتاج إلى أخذ فيتاميني.",
+        "هل يمكنك فتح النافذة؟"
+      ],
+    };
+    for (var entry in categories.entries) {
+      var categoryRef = _db
+          .collection('ar_word_bank_categories')
+          .doc(); // Create new doc for each category
+      await categoryRef.set({'name': entry.value});
+
+      // Upload phrases linked to this category using the document ID of the category
+      for (String phrase in phrases[entry.key]!) {
+        var phraseRef = _db.collection('ar_word_bank').doc();
+        await phraseRef.set({
+          'category_id': categoryRef.id, // Link to the category ID
+          'phrase': phrase
+        });
+      }
+    }
+  }
+
   Future<void> uploadCategoriesAndPhrases() async {
     final categories = {
       "food": "Food",
@@ -156,7 +306,19 @@ class WordBankService {
   }
 
   // Fetch all categories
-  Future<List<WordBankCategory>> fetchCategories() async {
+  Future<List<WordBankCategory>> fetchCategories(BuildContext context) async {
+    // Get the current locale using Provider
+    LocaleModel localeModel = Provider.of<LocaleModel>(context, listen: false);
+    String languageCode = localeModel.locale.languageCode;
+
+    // Print the current language (for debugging)
+    print("Current language code: $languageCode");
+    if (languageCode == 'ar') {
+      var querySnapshot = await _db.collection('ar_word_bank_categories').get();
+      return querySnapshot.docs
+          .map((doc) => WordBankCategory.fromMap(doc.data(), doc.id))
+          .toList();
+    }
     var querySnapshot = await _db.collection('word_bank_categories').get();
     return querySnapshot.docs
         .map((doc) => WordBankCategory.fromMap(doc.data(), doc.id))
@@ -164,7 +326,20 @@ class WordBankService {
   }
 
   // Fetch phrases based on category ID
-  Future<List<WordBankPhrase>> fetchPhrases(String categoryId) async {
+  Future<List<WordBankPhrase>> fetchPhrases(
+      String categoryId, BuildContext context) async {
+    LocaleModel localeModel = Provider.of<LocaleModel>(context, listen: false);
+    String languageCode = localeModel.locale.languageCode;
+    if (languageCode == 'ar') {
+      var querySnapshot = await _db
+          .collection('ar_word_bank')
+          .where('category_id', isEqualTo: categoryId)
+          .get();
+
+      return querySnapshot.docs
+          .map((doc) => WordBankPhrase.fromMap(doc.data(), doc.id))
+          .toList();
+    }
     var querySnapshot = await _db
         .collection('word_bank')
         .where('category_id', isEqualTo: categoryId)
@@ -201,17 +376,17 @@ class WordBankService {
   }
 
   Future<WordBankPhrase?> getPhraseById(String phraseID) async {
-     try {
-       DocumentSnapshot doc =
-           await _db.collection('word_bank').doc(phraseID).get();
- 
-       if (doc.exists && doc.data() != null) {
-         return WordBankPhrase.fromMap(
-             doc.data() as Map<String, dynamic>, doc.id);
-       }
-     } catch (e) {
-       print("Error fetching phrase by ID: $e");
-     }
-     return null;
-   }
+    try {
+      DocumentSnapshot doc =
+          await _db.collection('word_bank').doc(phraseID).get();
+
+      if (doc.exists && doc.data() != null) {
+        return WordBankPhrase.fromMap(
+            doc.data() as Map<String, dynamic>, doc.id);
+      }
+    } catch (e) {
+      print("Error fetching phrase by ID: $e");
+    }
+    return null;
+  }
 }
