@@ -219,6 +219,116 @@ class S {
       args: [],
     );
   }
+
+  /// `Processing`
+  String get processing {
+    return Intl.message('Processing', name: 'processing', desc: '', args: []);
+  }
+
+  /// `Reading and analyzing your signal data`
+  String get processingSubtitle {
+    return Intl.message(
+      'Reading and analyzing your signal data',
+      name: 'processingSubtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Start Thinking`
+  String get startThinking {
+    return Intl.message(
+      'Start Thinking',
+      name: 'startThinking',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Done Thinking`
+  String get doneThinking {
+    return Intl.message(
+      'Done Thinking',
+      name: 'doneThinking',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Move to Next Word`
+  String get moveToNextWord {
+    return Intl.message(
+      'Move to Next Word',
+      name: 'moveToNextWord',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Restart`
+  String get restart {
+    return Intl.message('Restart', name: 'restart', desc: '', args: []);
+  }
+
+  /// `No categories found`
+  String get noCategoriesFound {
+    return Intl.message(
+      'No categories found',
+      name: 'noCategoriesFound',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Connect to a Headset`
+  String get connectToHeadset {
+    return Intl.message(
+      'Connect to a Headset',
+      name: 'connectToHeadset',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Sync your mobile app to your headset to start voicing your thoughts`
+  String get syncInstructions {
+    return Intl.message(
+      'Sync your mobile app to your headset to start voicing your thoughts',
+      name: 'syncInstructions',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Scanning...`
+  String get scanning {
+    return Intl.message('Scanning...', name: 'scanning', desc: '', args: []);
+  }
+
+  /// `No headsets found`
+  String get noHeadsetsFound {
+    return Intl.message(
+      'No headsets found',
+      name: 'noHeadsetsFound',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `{count} headset(s) found`
+  String headsetsFound(Object count) {
+    return Intl.message(
+      '$count headset(s) found',
+      name: 'headsetsFound',
+      desc: '',
+      args: [count],
+    );
+  }
+
+  /// `Connect`
+  String get connect {
+    return Intl.message('Connect', name: 'connect', desc: '', args: []);
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

@@ -20,6 +20,8 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'ar';
 
+  static String m0(count) => "تم العثور على ${count} سماعة/سماعات";
+
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
     "accountSettings": MessageLookupByLibrary.simpleMessage("إعدادات الحساب"),
@@ -27,7 +29,13 @@ class MessageLookup extends MessageLookupByLibrary {
     "categories": MessageLookupByLibrary.simpleMessage("فئات"),
     "chooseLanguage": MessageLookupByLibrary.simpleMessage("اختر اللغة"),
     "chosenLanguage": MessageLookupByLibrary.simpleMessage("ar"),
+    "connect": MessageLookupByLibrary.simpleMessage("اتصال"),
+    "connectToHeadset": MessageLookupByLibrary.simpleMessage(
+      "اتصل بسماعة الرأس",
+    ),
+    "doneThinking": MessageLookupByLibrary.simpleMessage("انتهيت من التفكير"),
     "english": MessageLookupByLibrary.simpleMessage("الإنجليزية"),
+    "headsetsFound": m0,
     "helpAndGuide": MessageLookupByLibrary.simpleMessage("المساعدة والدليل"),
     "history": MessageLookupByLibrary.simpleMessage("التاريخ"),
     "home": MessageLookupByLibrary.simpleMessage("الرئيسية"),
@@ -36,11 +44,26 @@ class MessageLookup extends MessageLookupByLibrary {
       "تم تحديث اللغة بنجاح",
     ),
     "later": MessageLookupByLibrary.simpleMessage("لاحقًا"),
+    "moveToNextWord": MessageLookupByLibrary.simpleMessage(
+      "انتقل إلى الكلمة التالية",
+    ),
     "next": MessageLookupByLibrary.simpleMessage("التالي"),
+    "noCategoriesFound": MessageLookupByLibrary.simpleMessage(
+      "لم يتم العثور على فئات",
+    ),
+    "noHeadsetsFound": MessageLookupByLibrary.simpleMessage(
+      "لم يتم العثور على سماعات رأس",
+    ),
+    "processing": MessageLookupByLibrary.simpleMessage("جارٍ المعالجة"),
+    "processingSubtitle": MessageLookupByLibrary.simpleMessage(
+      "جارٍ قراءة وتحليل بيانات الإشارة الخاصة بك",
+    ),
     "rateApp": MessageLookupByLibrary.simpleMessage("قيم التطبيق"),
     "rateMessage": MessageLookupByLibrary.simpleMessage(
       "يرجى تقييم تطبيقنا عن طريق اختيار النجوم!",
     ),
+    "restart": MessageLookupByLibrary.simpleMessage("إعادة البدء"),
+    "scanning": MessageLookupByLibrary.simpleMessage("جارٍ البحث..."),
     "searchForCategories": MessageLookupByLibrary.simpleMessage(
       "البحث عن الفئات...",
     ),
@@ -48,7 +71,11 @@ class MessageLookup extends MessageLookupByLibrary {
     "startSpeakingNow": MessageLookupByLibrary.simpleMessage(
       "ابدأ التحدث الآن",
     ),
+    "startThinking": MessageLookupByLibrary.simpleMessage("ابدأ التفكير"),
     "submit": MessageLookupByLibrary.simpleMessage("إرسال"),
+    "syncInstructions": MessageLookupByLibrary.simpleMessage(
+      "قم بتوصيل التطبيق مع سماعة الرأس لبدء التعبير عن أفكارك",
+    ),
     "voiceSettings": MessageLookupByLibrary.simpleMessage("إعدادات الصوت"),
     "voiceYourMind": MessageLookupByLibrary.simpleMessage(
       "عبّر عن أفكارك بسهولة",

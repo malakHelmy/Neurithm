@@ -74,4 +74,45 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get searchForCategories => 'البحث عن الفئات...';
+
+  @override
+  String get processing => 'جارٍ المعالجة';
+
+  @override
+  String get processingSubtitle => 'جارٍ قراءة وتحليل بيانات الإشارة الخاصة بك';
+
+  @override
+  String get startThinking => 'ابدأ التفكير';
+
+  @override
+  String get doneThinking => 'انتهيت من التفكير';
+
+  @override
+  String get moveToNextWord => 'انتقل إلى الكلمة التالية';
+
+  @override
+  String get restart => 'إعادة البدء';
+
+  @override
+  String get noCategoriesFound => 'لم يتم العثور على فئات';
+
+  @override
+  String get connectToHeadset => 'اتصل بسماعة الرأس';
+
+  @override
+  String get syncInstructions => 'قم بتوصيل التطبيق مع سماعة الرأس لبدء التعبير عن أفكارك';
+
+  @override
+  String get scanning => 'جارٍ البحث...';
+
+  @override
+  String get noHeadsetsFound => 'لم يتم العثور على سماعات رأس';
+
+  @override
+  String headsetsFound(Object count) {
+    return 'تم العثور على $count سماعة/سماعات';
+  }
+
+  @override
+  String get connect => 'اتصال';
 }

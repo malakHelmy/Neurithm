@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:neurithm/l10n/generated/app_localizations.dart';
 import 'package:neurithm/models/patient.dart';
 import 'package:neurithm/models/wordBankCategories.dart';
 import 'package:neurithm/services/authService.dart';
-import 'package:neurithm/services/signalReadingService.dart'; 
+import 'package:neurithm/services/wordBankService.dart';
+import 'package:neurithm/services/signalReadingService.dart';
 import 'package:neurithm/widgets/appBar.dart';
 import 'package:neurithm/widgets/wavesBackground.dart';
-import 'package:neurithm/widgets/wordBankPhrases.dart'; 
+import 'package:neurithm/widgets/wordBankPhrases.dart';
 
 class SignalReadingpage extends StatefulWidget {
   const SignalReadingpage({super.key});
@@ -18,6 +20,7 @@ class SignalReadingpage extends StatefulWidget {
 class _SignalReadingpageState extends State<SignalReadingpage> {
   final AuthService _authService = AuthService();
   final SignalReadingService signalReadingService = SignalReadingService();
+  final WordBankService wordBankService = WordBankService();
   Patient? _currentUser;
 
   @override
@@ -38,6 +41,7 @@ class _SignalReadingpageState extends State<SignalReadingpage> {
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
+    final t = AppLocalizations.of(context)!;
 
     return Scaffold(
       appBar: AppBar(
@@ -65,21 +69,25 @@ class _SignalReadingpageState extends State<SignalReadingpage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    const Text(
-                      'Processing',
+                    const SizedBox(
+                      height: 150,
+                    ),
+
+                    Text(
+                      t.processing,
                       textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 24,
+                      style: const TextStyle(
+                        fontSize: 30,
                         fontWeight: FontWeight.w900,
                         fontFamily: 'Lato',
                         letterSpacing: 0.5,
                       ),
                     ),
-                    const Text(
-                      'Reading and analyzing your signal data',
+                    Text(
+                      t.processingSubtitle,
                       textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 16,
+                      style: const TextStyle(
+                        fontSize: 20,
                         color: Colors.grey,
                         fontWeight: FontWeight.w500,
                         fontFamily: 'Lato',
@@ -112,22 +120,21 @@ class _SignalReadingpageState extends State<SignalReadingpage> {
                       ),
                     ),
 
-                    SizedBox(height: 20),
+                    const SizedBox(height: 20),
 
                     // Word Bank Categories
-                    StreamBuilder<QuerySnapshot>(
-                      stream: FirebaseFirestore.instance
-                          .collection('word_bank_categories')
-                          .snapshots(),
+                    FutureBuilder<List<WordBankCategory>>(
+                      future: wordBankService.fetchCategories(context),
                       builder: (context, snapshot) {
                         if (!snapshot.hasData) {
-                          return const SizedBox();
+                          return const CircularProgressIndicator(); // Or a shimmer loader
                         }
 
-                        final docs = snapshot.data!.docs;
+                        final categories = snapshot.data!;
 
-                        if (docs.isEmpty) {
-                          return const Text('No categories found');
+                        if (categories.isEmpty) {
+                          return Text(
+                              t.noCategoriesFound);
                         }
 
                         return Container(
@@ -135,14 +142,14 @@ class _SignalReadingpageState extends State<SignalReadingpage> {
                           margin: const EdgeInsets.only(top: 10, bottom: 5),
                           child: ListView.separated(
                             scrollDirection: Axis.horizontal,
-                            itemCount: docs.length,
+                            itemCount: categories.length,
                             separatorBuilder: (_, __) =>
                                 const SizedBox(width: 8),
                             itemBuilder: (context, index) {
-                              final doc = docs[index];
+                              final doc = categories[index];
                               final category = WordBankCategory(
                                 id: doc.id,
-                                name: doc['name'] ?? 'Unnamed',
+                                name: doc.name,
                               );
 
                               return ElevatedButton(
@@ -172,7 +179,7 @@ class _SignalReadingpageState extends State<SignalReadingpage> {
                                 child: Text(
                                   category.name,
                                   style: const TextStyle(
-                                    fontSize: 13,
+                                    fontSize: 16,
                                     color: Color(0xFF1A2A3A),
                                     fontWeight: FontWeight.normal,
                                   ),
@@ -183,53 +190,35 @@ class _SignalReadingpageState extends State<SignalReadingpage> {
                         );
                       },
                     ),
+                    const SizedBox(
+                      height: 50,
+                    ),
+                    // Bottom action buttons
+
+                    Column(
+                      children: [
+                        _actionButton(Icons.play_arrow, t.startThinking, () {
+                          signalReadingService.startThinkingWithSession(context,
+                              isNewWord: false);
+                        }),
+                        const SizedBox(height: 10),
+                        _actionButton(Icons.check_circle, t.doneThinking, () {
+                          signalReadingService.doneThinking(context);
+                        }),
+                        const SizedBox(height: 10),
+                        _actionButton(Icons.skip_next, t.moveToNextWord, () {
+                          signalReadingService.uploadFileAndStartThinking(
+                              context,
+                              isNewWord: true);
+                        }),
+                        const SizedBox(height: 10),
+                        _actionButton(Icons.restart_alt, t.restart, () {
+                          signalReadingService.restartServer(context);
+                        }),
+                      ],
+                    ),
                   ],
                 ),
-              ),
-            ),
-
-            // Bottom action buttons
-            Positioned(
-              bottom: 30,
-              left: 20,
-              right: 20,
-              child: Column(
-                children: [
-                  Row(
-                    children: [
-                      Expanded(
-                        child: _actionButton(Icons.play_arrow, 'Start Thinking',() {
-                            signalReadingService.startThinkingWithSession(context, isNewWord: false);
-                          }),
-                      ),
-                      const SizedBox(width: 10),
-                      Expanded(
-                        child: _actionButton(
-                            Icons.check_circle, 'Done Thinking', () {
-                              signalReadingService.doneThinking(context); 
-                            }),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 10),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: _actionButton(
-                            Icons.skip_next, 'Move to Next Word',() {
-                            signalReadingService.uploadFileAndStartThinking(context, isNewWord: true);
-                          }),
-                      ),
-                      const SizedBox(width: 10),
-                      Expanded(
-                        child:
-                            _actionButton(Icons.restart_alt, 'Restart' ,() {
-                            signalReadingService.restartServer(context);  
-                          }),
-                      ),
-                    ],
-                  ),
-                ],
               ),
             ),
           ],
@@ -253,11 +242,11 @@ class _SignalReadingpageState extends State<SignalReadingpage> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Icon(icon, size: 20),
-          const SizedBox(width: 8),
+          const SizedBox(width: 12),
           Text(
             label,
             style: const TextStyle(
-              fontSize: 15,
+              fontSize: 20,
               color: Color(0xFF1A2A3A),
               fontWeight: FontWeight.normal,
             ),

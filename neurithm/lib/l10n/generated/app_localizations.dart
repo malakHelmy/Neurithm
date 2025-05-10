@@ -232,6 +232,84 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Search categories...'**
   String get searchForCategories;
+
+  /// No description provided for @processing.
+  ///
+  /// In en, this message translates to:
+  /// **'Processing'**
+  String get processing;
+
+  /// No description provided for @processingSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Reading and analyzing your signal data'**
+  String get processingSubtitle;
+
+  /// No description provided for @startThinking.
+  ///
+  /// In en, this message translates to:
+  /// **'Start Thinking'**
+  String get startThinking;
+
+  /// No description provided for @doneThinking.
+  ///
+  /// In en, this message translates to:
+  /// **'Done Thinking'**
+  String get doneThinking;
+
+  /// No description provided for @moveToNextWord.
+  ///
+  /// In en, this message translates to:
+  /// **'Move to Next Word'**
+  String get moveToNextWord;
+
+  /// No description provided for @restart.
+  ///
+  /// In en, this message translates to:
+  /// **'Restart'**
+  String get restart;
+
+  /// No description provided for @noCategoriesFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No categories found'**
+  String get noCategoriesFound;
+
+  /// No description provided for @connectToHeadset.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect to a Headset'**
+  String get connectToHeadset;
+
+  /// No description provided for @syncInstructions.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync your mobile app to your headset to start voicing your thoughts'**
+  String get syncInstructions;
+
+  /// No description provided for @scanning.
+  ///
+  /// In en, this message translates to:
+  /// **'Scanning...'**
+  String get scanning;
+
+  /// No description provided for @noHeadsetsFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No headsets found'**
+  String get noHeadsetsFound;
+
+  /// No description provided for @headsetsFound.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} headset(s) found'**
+  String headsetsFound(Object count);
+
+  /// No description provided for @connect.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect'**
+  String get connect;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

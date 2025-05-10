@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
+import 'package:neurithm/l10n/generated/app_localizations.dart';
 import 'package:neurithm/screens/homepage.dart';
 import 'package:neurithm/screens/patient/signalReadingPage.dart';
 import 'package:neurithm/widgets/appBar.dart';
@@ -78,6 +79,7 @@ class _SetUpConnectionPageState extends State<SetUpConnectionPage>
 
   @override
   Widget build(BuildContext context) {
+    final t = AppLocalizations.of(context)!;
     return Scaffold(
         body: Container(
             decoration: gradientBackground,
@@ -114,19 +116,19 @@ class _SetUpConnectionPageState extends State<SetUpConnectionPage>
                       Padding(
                         padding: EdgeInsets.only(
                             top: getScreenHeight(context) * 0.1),
-                        child: const Text(
-                          'Connect to a Headset',
-                          style: TextStyle(
+                        child: Text(
+                          t.connectToHeadset,
+                          style: const TextStyle(
                               fontSize: 27,
                               fontWeight: FontWeight.w900,
                               fontFamily: 'Lato'),
                         ),
                       ),
                       SizedBox(height: spacing(20, getScreenHeight(context))),
-                      const Center(
+                      Center(
                         child: Text(
-                          "Sync your mobile app to your headset to start voicing your thoughts",
-                          style: TextStyle(
+                          t.syncInstructions,
+                          style: const TextStyle(
                               fontSize: 15,
                               color: Color.fromARGB(255, 206, 206, 206),
                               fontWeight: FontWeight.bold),
@@ -191,11 +193,11 @@ class _SetUpConnectionPageState extends State<SetUpConnectionPage>
                         padding: const EdgeInsets.only(top: 10),
                         child: Text(
                           _isScanning
-                              ? "Scanning..." // Show "Scanning..." during scanning
+                              ? t.scanning// Show "Scanning..." during scanning
                               : _isScanComplete
                                   ? (bciHeadsets.isNotEmpty
-                                      ? "${bciHeadsets.length} headset(s) found"
-                                      : "No headsets found") // Show "Headset was found" after scanning completes
+                                      ? t.headsetsFound(bciHeadsets.length)
+                                      : t.noHeadsetsFound) // Show "Headset was found" after scanning completes
                                   : "",
                           style: const TextStyle(
                             color: Color.fromARGB(255, 254, 255, 255),
@@ -227,9 +229,11 @@ class _SetUpConnectionPageState extends State<SetUpConnectionPage>
                                     ),
                                     onPressed: () =>
                                         _connectToDevice(bciHeadsets[index]),
-                                    child: const Text(
-                                      "Connect",
-                                      style: TextStyle(
+                                    child: Text(
+                                      t.connect,
+                                      
+                                      style: const TextStyle(
+                                        fontSize: 18,
                                         color: Color(
                                           0xFF1A2A3A,
                                         ),

@@ -21,5 +21,18 @@
   "submit": "Submit",
   "later": "Later",
   "categories": "Categories",
-  "searchForCategories": "Search categories..."
+  "searchForCategories": "Search categories...",
+  "processing": "Processing",
+  "processingSubtitle": "Reading and analyzing your signal data",
+  "startThinking": "Start Thinking",
+  "doneThinking": "Done Thinking",
+  "moveToNextWord": "Move to Next Word",
+  "restart": "Restart",
+  "noCategoriesFound": "No categories found",
+  "connectToHeadset": "Connect to a Headset",
+  "syncInstructions": "Sync your mobile app to your headset to start voicing your thoughts",
+  "scanning": "Scanning...",
+  "noHeadsetsFound": "No headsets found",
+  "headsetsFound": "{count} headset(s) found",
+  "connect": "Connect"
 }

@@ -74,4 +74,45 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get searchForCategories => 'Search categories...';
+
+  @override
+  String get processing => 'Processing';
+
+  @override
+  String get processingSubtitle => 'Reading and analyzing your signal data';
+
+  @override
+  String get startThinking => 'Start Thinking';
+
+  @override
+  String get doneThinking => 'Done Thinking';
+
+  @override
+  String get moveToNextWord => 'Move to Next Word';
+
+  @override
+  String get restart => 'Restart';
+
+  @override
+  String get noCategoriesFound => 'No categories found';
+
+  @override
+  String get connectToHeadset => 'Connect to a Headset';
+
+  @override
+  String get syncInstructions => 'Sync your mobile app to your headset to start voicing your thoughts';
+
+  @override
+  String get scanning => 'Scanning...';
+
+  @override
+  String get noHeadsetsFound => 'No headsets found';
+
+  @override
+  String headsetsFound(Object count) {
+    return '$count headset(s) found';
+  }
+
+  @override
+  String get connect => 'Connect';
 }

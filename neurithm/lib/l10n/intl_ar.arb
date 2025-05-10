@@ -21,6 +21,18 @@
   "submit": "إرسال",
   "later": "لاحقًا",
   "categories": "فئات",
-  "searchForCategories": "البحث عن الفئات..."
-
+  "searchForCategories": "البحث عن الفئات...",
+  "processing": "جارٍ المعالجة",
+  "processingSubtitle": "جارٍ قراءة وتحليل بيانات الإشارة الخاصة بك",
+  "startThinking": "ابدأ التفكير",
+  "doneThinking": "انتهيت من التفكير",
+  "moveToNextWord": "انتقل إلى الكلمة التالية",
+  "restart": "إعادة البدء",
+  "noCategoriesFound": "لم يتم العثور على فئات",
+  "connectToHeadset": "اتصل بسماعة الرأس",
+  "syncInstructions": "قم بتوصيل التطبيق مع سماعة الرأس لبدء التعبير عن أفكارك",
+  "scanning": "جارٍ البحث...",
+  "noHeadsetsFound": "لم يتم العثور على سماعات رأس",
+  "headsetsFound": "تم العثور على {count} سماعة/سماعات",
+  "connect": "اتصال"
 }

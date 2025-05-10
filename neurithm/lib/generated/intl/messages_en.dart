@@ -20,6 +20,8 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'en';
 
+  static String m0(count) => "${count} headset(s) found";
+
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
     "accountSettings": MessageLookupByLibrary.simpleMessage("Account Settings"),
@@ -27,7 +29,13 @@ class MessageLookup extends MessageLookupByLibrary {
     "categories": MessageLookupByLibrary.simpleMessage("Categories"),
     "chooseLanguage": MessageLookupByLibrary.simpleMessage("Choose Language"),
     "chosenLanguage": MessageLookupByLibrary.simpleMessage("en"),
+    "connect": MessageLookupByLibrary.simpleMessage("Connect"),
+    "connectToHeadset": MessageLookupByLibrary.simpleMessage(
+      "Connect to a Headset",
+    ),
+    "doneThinking": MessageLookupByLibrary.simpleMessage("Done Thinking"),
     "english": MessageLookupByLibrary.simpleMessage("English"),
+    "headsetsFound": m0,
     "helpAndGuide": MessageLookupByLibrary.simpleMessage("Help & Guide"),
     "history": MessageLookupByLibrary.simpleMessage("History"),
     "home": MessageLookupByLibrary.simpleMessage("Home"),
@@ -38,11 +46,24 @@ class MessageLookup extends MessageLookupByLibrary {
       "Language updated successfully",
     ),
     "later": MessageLookupByLibrary.simpleMessage("Later"),
+    "moveToNextWord": MessageLookupByLibrary.simpleMessage("Move to Next Word"),
     "next": MessageLookupByLibrary.simpleMessage("Next"),
+    "noCategoriesFound": MessageLookupByLibrary.simpleMessage(
+      "No categories found",
+    ),
+    "noHeadsetsFound": MessageLookupByLibrary.simpleMessage(
+      "No headsets found",
+    ),
+    "processing": MessageLookupByLibrary.simpleMessage("Processing"),
+    "processingSubtitle": MessageLookupByLibrary.simpleMessage(
+      "Reading and analyzing your signal data",
+    ),
     "rateApp": MessageLookupByLibrary.simpleMessage("Rate App"),
     "rateMessage": MessageLookupByLibrary.simpleMessage(
       "Please rate our app by selecting stars!",
     ),
+    "restart": MessageLookupByLibrary.simpleMessage("Restart"),
+    "scanning": MessageLookupByLibrary.simpleMessage("Scanning..."),
     "searchForCategories": MessageLookupByLibrary.simpleMessage(
       "Search categories...",
     ),
@@ -50,7 +71,11 @@ class MessageLookup extends MessageLookupByLibrary {
     "startSpeakingNow": MessageLookupByLibrary.simpleMessage(
       "Start Speaking Now",
     ),
+    "startThinking": MessageLookupByLibrary.simpleMessage("Start Thinking"),
     "submit": MessageLookupByLibrary.simpleMessage("Submit"),
+    "syncInstructions": MessageLookupByLibrary.simpleMessage(
+      "Sync your mobile app to your headset to start voicing your thoughts",
+    ),
     "voiceSettings": MessageLookupByLibrary.simpleMessage("Voice Settings"),
     "voiceYourMind": MessageLookupByLibrary.simpleMessage(
       "Voice Your Mind Effortlessly",
