@@ -350,15 +350,26 @@ class WordBankService {
         .toList();
   }
 
-  Future<String> getCategoryId(String name) async {
-    final snapshot = await FirebaseFirestore.instance
-        .collection('word_bank_categories')
-        .where('name', isEqualTo: name)
-        .limit(1)
-        .get();
+  Future<String> getCategoryId(String name, context) async {
+    LocaleModel localeModel = Provider.of<LocaleModel>(context, listen: false);
+    String languageCode = localeModel.locale.languageCode;
+    var snapshot;
+    if (languageCode == 'ar') {
+      snapshot = await FirebaseFirestore.instance
+          .collection('ar_word_bank_categories')
+          .where('name', isEqualTo: name)
+          .limit(1)
+          .get();
+    } else {
+      snapshot = await FirebaseFirestore.instance
+          .collection('word_bank_categories')
+          .where('name', isEqualTo: name)
+          .limit(1)
+          .get();
+    }
 
     if (snapshot.docs.isNotEmpty) {
-      print("category id: " + snapshot.docs.first.id);
+      // print("category id: " + snapshot.docs.first.id);
       final categoryId = snapshot.docs.first.id;
 
       return categoryId;

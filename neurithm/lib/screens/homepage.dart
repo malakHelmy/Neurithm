@@ -174,7 +174,7 @@ class _HomePageState extends State<HomePage> {
         padding: EdgeInsets.all(spacing(5)),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(15.0),
-          child: BottomBar(context),
+          child: BottomBar(context, 0),
         ),
       ),
       body: SingleChildScrollView(

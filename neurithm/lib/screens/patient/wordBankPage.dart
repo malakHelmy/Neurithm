@@ -96,7 +96,7 @@ class _WordBankPageState extends State<WordBankPage> {
         padding: EdgeInsets.all(spacing(5, getScreenHeight(context))),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(15.0),
-          child: BottomBar(context),
+          child: BottomBar(context, 1),
         ),
       ),
       body: SingleChildScrollView(
@@ -105,7 +105,7 @@ class _WordBankPageState extends State<WordBankPage> {
           decoration: gradientBackground,
           child: Stack(
             children: [
-              Positioned.fill(child: waveBackground),
+               waveBackground,
               Padding(
                 padding: EdgeInsets.symmetric(
                   horizontal: spacing(15, getScreenHeight(context)),

@@ -148,7 +148,7 @@ class _VoiceSettingsState extends State<VoiceSettingsPage> {
         padding: EdgeInsets.all(spacing(5)),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(15.0),
-          child: BottomBar(context),
+          child: BottomBar(context, 2),
         ),
       ),
       body: SingleChildScrollView(
