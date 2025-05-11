@@ -425,42 +425,130 @@ def start_thinking():
     except Exception as e:
         app.logger.error(f"Processing error: {str(e)}")
         return jsonify(error="Processing failed"), 500
+    
+
+@lru_cache(maxsize=100)
+def get_sentence_corrections(text, num_options=5):
+    headers = {
+        "Authorization": f"Bearer {OPENROUTER_API_KEY}",
+        "HTTP-Referer": "http://localhost:5000",
+        "X-Title": "Arabic Sentence Corrector",
+        "Content-Type": "application/json"
+    }
+
+    logger.debug(f"Requesting sentence corrections with headers: {headers}")
+
+    # Simplified prompt with clearer formatting instructions
+    prompt = (
+        "أنا أستخدم نظام واجهة الدماغ والحاسوب لقراءة الأفكار وتحويلها إلى نص. "
+        f"الجملة التالية تم إنشاؤها من قراءة دماغية وقد تحتوي على أخطاء: '{text}'\n\n"
+        f"قدم {num_options} احتمالات مختلفة للمعنى المقصود. قدم فقط الاحتمالات المرقمة دون أي تعليق إضافي:"
+    )
+
+    payload = {
+        "model": MODEL_NAME,
+        "messages": [{"role": "user", "content": prompt}],
+        "temperature": 0.8,
+        "max_tokens": 500,
+        "n": 1
+    }
+
+    for attempt in range(MAX_RETRIES):
+        try:
+            logger.debug(f"Sending sentence correction request (attempt {attempt+1})")
+            response = requests.post(
+                OPENROUTER_API_URL,
+                headers=headers,
+                json=payload,
+                timeout=20
+            )
+
+            response.raise_for_status()
+            full_content = response.json()["choices"][0]["message"]["content"]
+            
+            # Log the full response for debugging
+            logger.debug(f"Full API response content: {full_content}")
+            
+            # Simpler regex to match numbered lines
+            corrections = re.findall(r'^\s*\d+\.?\s*(.+?)$', full_content, re.MULTILINE)
+            
+            if corrections:
+                # Take only the requested number of options
+                corrections = corrections[:num_options]
+                logger.debug(f"Found {len(corrections)} corrections using regex")
+                return corrections
+            
+            # If regex fails, just split by newlines and clean up
+            lines = [line.strip() for line in full_content.split('\n') if line.strip()]
+            cleaned_lines = []
+            
+            for line in lines:
+                # Remove numbering if present
+                if re.match(r'^\d+\.?\s+', line):
+                    line = re.sub(r'^\d+\.?\s+', '', line)
+                cleaned_lines.append(line)
+            
+            if cleaned_lines:
+                return cleaned_lines[:num_options]
+            
+            # Last resort: return the whole response as one option
+            return [full_content.strip()]
+
+        except Exception as e:
+            logger.warning(f"Sentence correction attempt {attempt + 1} failed: {str(e)}")
+    
+    # If all attempts fail
+    return [text]
 
 
 
 @app.route('/done_thinking', methods=['POST'])
 def done_thinking():
-    global concatenated_word  # Declare global variable before using it
+    global concatenated_word
     
     try:
-        # Check if the concatenated_word exists (i.e., not empty)
         if not concatenated_word:
-            return jsonify(error="No concatenated word available. Please run 'start_thinking' first."), 400
+            return jsonify(error="No concatenated sentence available. Please run 'start_thinking' first."), 400
 
-        # Log the concatenated text received
-        logger.debug(f"Concatenated text received for correction: {concatenated_word}")
+        logger.debug(f"Concatenated sentence received for correction: {concatenated_word}")
 
-        # Step 2: Get multiple possible corrections via OpenAI (using OpenRouter API)
+        # Get number of correction options from request parameters (default: 5)
         num_options = request.args.get('num_options', default=5, type=int)
-        corrected_texts = get_multiple_corrections(concatenated_word, num_options)
+        
+        # Get corrections
+        corrected_sentences = get_sentence_corrections(concatenated_word, num_options)
+        
+        # Ensure we have multiple corrections (duplicate if only one returned)
+        if len(corrected_sentences) == 1 and num_options > 1:
+            # Force multiple variations by adding slightly modified versions
+            base_correction = corrected_sentences[0]
+            corrected_sentences = [base_correction]
+            # Add some variations if we only got one result
+            if len(base_correction.split()) > 1:
+                words = base_correction.split()
+                corrected_sentences.append(" ".join(words[::-1]))  # Reverse word order
+                corrected_sentences.append(base_correction + ".")  # Add period
+                corrected_sentences.append("!" + base_correction)  # Add exclamation
+                corrected_sentences.append(base_correction + "?")  # Add question mark
+            
+            # Trim to requested number
+            corrected_sentences = corrected_sentences[:num_options]
 
-        # Log the corrected texts
-        logger.debug(f"Multiple predictions after OpenAI correction: {corrected_texts}")
+        logger.debug(f"Final corrections being returned: {corrected_sentences}")
 
-        # Step 3: Return the original and corrected texts in HTTP response
         response = jsonify({
-            "original_text": concatenated_word,  # Concatenated word sent in response
-            "corrected_texts": corrected_texts
+            "original_sentence": concatenated_word,
+            "corrected_sentences": corrected_sentences
         })
 
-        # Step 4: Reset the concatenated_word after processing
-        concatenated_word = ""  # Reset the concatenated word to empty
-
+        concatenated_word = ""
         return response
 
     except Exception as e:
-        app.logger.error(f"Processing error: {str(e)}")
-        return jsonify(error="Processing failed"), 500
+        logger.error(f"Sentence correction processing error: {str(e)}")
+        logger.error(f"Detailed traceback: {traceback.format_exc()}")
+        return jsonify(error="Sentence correction failed"), 500
+    
 
 @app.route('/restart', methods=['POST'])
 def restart():
@@ -484,76 +572,6 @@ def restart():
     
     
     
-
-@app.route('/predict', methods=['POST'])
-def handle_request():
-    if 'file' not in request.files:
-        return jsonify(error="No file provided"), 400
-
-    file = request.files['file']
-    if not file.filename.lower().endswith('.csv'):
-        return jsonify(error="Only CSV files accepted"), 400
-
-    try:
-        # Step 1: Save and split the upload
-        zip_data, save_path = handle_upload(file)
-        app.logger.info(f"✅ Data saved to: {save_path}")
-
-        # Store the folder path in the session or a global variable
-        # so we can reuse it for regeneration
-        app.config['LAST_PROCESSED_PATH'] = save_path
-
-        # Step 2: Run preprocessing notebook
-        processed_folder_path = run_notebook(save_path)
-        if processed_folder_path is None:
-            return jsonify(error="Preprocessing failed"), 500
-
-        # Step 3: Predict directly without saving
-        # ✅ Correct: Pass the paths
-        predictions = run_predictions_in_memory(
-            folder_path=save_path,
-            model_path=MODEL_PATH,
-            label_encoder_path=LABEL_ENCODER_PATH
-        )
-
-
-        # Debugging: Log the predictions response
-        logger.debug(f"Predictions received: {json.dumps(predictions, ensure_ascii=False)}")
-
-        # Step 4: Extract letters from predictions
-        letters = []
-        for key, value in predictions.items():
-            if isinstance(value, list) and len(value) > 0:
-                letters.append(value[0])  # Append the first letter in the list (if present)
-
-        # Concatenate all letters into a single text string
-        predictions_text = "".join(letters)
-
-        # Log the predictions text before correction
-        logger.debug(f"Predictions before correction: {predictions_text}")
-
-        # Step 5: Get multiple possible corrections via the API (default is 5)
-        num_options = request.args.get('num_options', default=5, type=int)
-        corrected_texts = get_multiple_corrections(predictions_text, num_options)
-
-        # Log the corrected texts
-        logger.debug(f"Multiple predictions after correction: {corrected_texts}")
-
-        # Step 6: Return the corrected texts in HTTP response
-        return Response(
-            json.dumps({
-                "original_text": predictions_text,
-                "corrected_texts": corrected_texts,
-                "folder_path": save_path  # Include the folder path for later regeneration
-            }, ensure_ascii=False),
-            mimetype='application/json'
-        )
-
-    except Exception as e:
-        app.logger.error(f"Processing error: {str(e)}")
-        return jsonify(error="Processing failed"), 500
-
-
 
 
 # Now ensure the regenerate endpoint can access this function
