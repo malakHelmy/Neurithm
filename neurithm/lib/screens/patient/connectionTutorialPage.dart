@@ -91,7 +91,7 @@ class _TutorialPageState extends State<TutorialPage> {
         padding: EdgeInsets.all(spacing(5, getScreenHeight(context))),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(15.0),
-          child: BottomBar(context, -1),
+          child: BottomBar(context, 0),
         ),
       ),
       body: Stack(

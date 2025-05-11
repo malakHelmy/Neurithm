@@ -37,7 +37,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get home => 'الرئيسية';
 
   @override
-  String get wordBank => 'قاعدة الكلمات';
+  String get wordBank => 'بنك الكلمات';
 
   @override
   String get settings => 'الإعدادات';
@@ -115,4 +115,61 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get connect => 'اتصال';
+
+  @override
+  String get about => 'نبذة عنا';
+
+  @override
+  String get helpAndSupport => 'المساعدة والدعم';
+
+  @override
+  String get accountInfo => 'معلومات عن الحساب';
+
+  @override
+  String get logOut => 'تسجيل الخروج';
+
+  @override
+  String get aboutUs => 'من نحن';
+
+  @override
+  String get tagline => 'إعادة تعريف وسائل التواصل';
+
+  @override
+  String get mission => 'في نيوريثم، نلتزم بكسر الحواجز في التواصل للأفراد ذوي الإعاقات الشديدة في النطق والحركة. يستخدم نظامنا قوة واجهات الدماغ والحاسوب (BCI)، والذكاء الاصطناعي، وتوليف الصوت لتحويل النشاط العصبي إلى لغة منطوقة، مما يمنح المستخدمين صوتًا جديدًا.';
+
+  @override
+  String get visionTitle => 'رؤيتنا';
+
+  @override
+  String get vision => 'خلق عالم يكون فيه التواصل بلا حدود، بغض النظر عن القدرة الجسدية. من خلال دمج علوم الأعصاب المتقدمة مع التكنولوجيا، نهدف إلى توفير أدوات تعيد الاستقلالية وتعزز الاتصال البشري.';
+
+  @override
+  String get technologyTitle => 'تقنيتنا';
+
+  @override
+  String get technology => '• واجهات الدماغ غير الجراحية: باستخدام أجهزة EEG، يلتقط نظامنا النشاط الدماغي ويفسره دون الحاجة إلى إجراءات جراحية.\n• نماذج التعلم العميق: تم استخدام نماذج تعلم عميق متعددة لفك تشفير الإشارات العصبية إلى كلام متماسك في الوقت الفعلي.\n• تصميم يركز على المستخدم: صُمم نظامنا مع مراعاة سهولة الاستخدام، وهو متاح للأفراد ومقدمي الرعاية على حد سواء.';
+
+  @override
+  String get whyItMattersTitle => 'لماذا هذا مهم';
+
+  @override
+  String get whyItMatters => 'يعيش ملايين الأفراد حول العالم مع حالات مثل التصلب الجانبي الضموري، ومتلازمة الانحباس، أو الشلل الشديد. يوفر حلنا لهم وسيلة للتعبير، والاستقلالية، والتواصل—كلمة واحدة في كل مرة.';
+
+  @override
+  String get teamTitle => 'تعرف على الفريق';
+
+  @override
+  String get team => 'نحن مجموعة مكرسة من مهندسي البرمجيات، وعلماء الأعصاب، والمبتكرين الشغوفين باستخدام التكنولوجيا لتحسين الحياة. تغذي خبرتنا متعددة التخصصات مهمتنا لجعل الحلول المتقدمة متاحة لأولئك الذين يحتاجونها بشدة.';
+
+  @override
+  String get acknowledgmentsTitle => 'الشكر والتقدير';
+
+  @override
+  String get acknowledgments => 'نود أن نعرب عن امتناننا لجامعتنا على دعمها المستمر ومواردها، مما مكننا من تحقيق هذا المشروع.';
+
+  @override
+  String get getInvolvedTitle => 'شارك معنا';
+
+  @override
+  String get getInvolved => 'نحن نبحث باستمرار عن المتعاونين، والباحثين، والمستخدمين للمساهمة في تشكيل مستقبل هذه التكنولوجيا. تواصل معنا للانضمام إلى الرحلة!';
 }

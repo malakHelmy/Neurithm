@@ -15,6 +15,7 @@ class SetLanguageScreen extends StatelessWidget {
 
     return Scaffold(
       body: Container(
+        decoration: gradientBackground,
         child: Stack(
           children: [
             wavesBackground(getScreenWidth(context), getScreenHeight(context)),
@@ -55,7 +56,8 @@ class SetLanguageScreen extends StatelessWidget {
                     SizedBox(
                       width: double.infinity,
                       child: Consumer<LocaleModel>(
-                        builder: (context, localeModel, child) => ElevatedButton(
+                        builder: (context, localeModel, child) =>
+                            ElevatedButton(
                           onPressed: () {
                             // Update the language to English
                             localeModel.set(Locale('en'));
@@ -63,8 +65,10 @@ class SetLanguageScreen extends StatelessWidget {
                             // Rebuild the context and show Snackbar with updated message
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
-                                content: Text(t.languageUpdated), // Use localized message
-                                duration: Duration(seconds: 2), // Duration for Snackbar
+                                content: Text(
+                                    t.languageUpdated), // Use localized message
+                                duration: Duration(
+                                    seconds: 2), // Duration for Snackbar
                               ),
                             );
                           },
@@ -90,7 +94,8 @@ class SetLanguageScreen extends StatelessWidget {
                     SizedBox(
                       width: double.infinity,
                       child: Consumer<LocaleModel>(
-                        builder: (context, localeModel, child) => ElevatedButton(
+                        builder: (context, localeModel, child) =>
+                            ElevatedButton(
                           onPressed: () {
                             // Update the language to Arabic
                             localeModel.set(Locale('ar'));
@@ -98,8 +103,10 @@ class SetLanguageScreen extends StatelessWidget {
                             // Rebuild the context and show Snackbar with updated message
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
-                                content: Text(t.languageUpdated), // Use localized message
-                                duration: Duration(seconds: 2), // Duration for Snackbar
+                                content: Text(
+                                    t.languageUpdated), // Use localized message
+                                duration: Duration(
+                                    seconds: 2), // Duration for Snackbar
                               ),
                             );
                           },

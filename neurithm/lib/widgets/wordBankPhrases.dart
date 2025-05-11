@@ -87,71 +87,76 @@ class _PhrasesPageState extends State<WordBankPhrases> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
-        children: [
-          waveBackground,
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: AppBar(
-              title: Text(widget.category.name),
-              centerTitle: true,
-              backgroundColor: Colors.transparent,
-              leading: IconButton(
-                icon: const Icon(Icons.arrow_back_ios,
-                    color: Color.fromARGB(255, 206, 206, 206)),
-                onPressed: () {
-                  Navigator.pop(context);
-                },
+      
+      body: Container(
+                  decoration: gradientBackground,
+
+        child: Stack(
+          children: [
+            waveBackground,
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: AppBar(
+                title: Text(widget.category.name),
+                centerTitle: true,
+                backgroundColor: Colors.transparent,
+                leading: IconButton(
+                  icon: const Icon(Icons.arrow_back_ios,
+                      color: Color.fromARGB(255, 206, 206, 206)),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                ),
               ),
             ),
-          ),
-          Padding(
-            padding:
-                EdgeInsets.only(top: spacing(80, getScreenHeight(context))),
-            child: isLoading
-                ? const Center(child: CircularProgressIndicator())
-                : phrases.isEmpty
-                    ? const Center(
-                        child: Text("No frequently used phrases found."))
-                    : ListView.builder(
-                        itemCount: phrases.length,
-                        itemBuilder: (context, index) {
-                          return Column(
-                            children: [
-                              ListTile(
-                                leading: const Icon(Icons.chat),
-                                title: Row(
-                                  children: [
-                                    const SizedBox(width: 12),
-                                    Expanded(
-                                      child: Text(
-                                        phrases[index].phrase,
-                                        style: const TextStyle(fontSize: 18),
+            Padding(
+              padding:
+                  EdgeInsets.only(top: spacing(80, getScreenHeight(context))),
+              child: isLoading
+                  ? const Center(child: CircularProgressIndicator())
+                  : phrases.isEmpty
+                      ? const Center(
+                          child: Text("No frequently used phrases found."))
+                      : ListView.builder(
+                          itemCount: phrases.length,
+                          itemBuilder: (context, index) {
+                            return Column(
+                              children: [
+                                ListTile(
+                                  leading: const Icon(Icons.chat),
+                                  title: Row(
+                                    children: [
+                                      const SizedBox(width: 12),
+                                      Expanded(
+                                        child: Text(
+                                          phrases[index].phrase,
+                                          style: const TextStyle(fontSize: 18),
+                                        ),
                                       ),
-                                    ),
-                                  ],
+                                    ],
+                                  ),
+                                  onTap: () async {
+                                    await _trackPhraseClick(phrases[index].id);
+                                    await _playPhraseAudio(phrases[index].phrase);
+                                    // ignore: use_build_context_synchronously
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                        const SnackBar(
+                                            content:
+                                                Text('Tracked phrase usage')));
+                                  },
                                 ),
-                                onTap: () async {
-                                  await _trackPhraseClick(phrases[index].id);
-                                  await _playPhraseAudio(phrases[index].phrase);
-                                  // ignore: use_build_context_synchronously
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(
-                                          content:
-                                              Text('Tracked phrase usage')));
-                                },
-                              ),
-                              const Divider(
-                                thickness: 0.5,
-                                color: Color.fromARGB(255, 148, 148, 148),
-                                
-                              ),
-                            ],
-                          );
-                        },
-                      ),
-          ),
-        ],
+                                const Divider(
+                                  thickness: 0.5,
+                                  color: Color.fromARGB(255, 148, 148, 148),
+                                  
+                                ),
+                              ],
+                            );
+                          },
+                        ),
+            ),
+          ],
+        ),
       ),
     );
   }

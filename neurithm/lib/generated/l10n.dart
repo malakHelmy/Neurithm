@@ -329,6 +329,171 @@ class S {
   String get connect {
     return Intl.message('Connect', name: 'connect', desc: '', args: []);
   }
+
+  /// `About us`
+  String get about {
+    return Intl.message('About us', name: 'about', desc: '', args: []);
+  }
+
+  /// `Help and Support`
+  String get helpAndSupport {
+    return Intl.message(
+      'Help and Support',
+      name: 'helpAndSupport',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Account Info`
+  String get accountInfo {
+    return Intl.message(
+      'Account Info',
+      name: 'accountInfo',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Log out`
+  String get logOut {
+    return Intl.message('Log out', name: 'logOut', desc: '', args: []);
+  }
+
+  /// `About us`
+  String get aboutUs {
+    return Intl.message('About us', name: 'aboutUs', desc: '', args: []);
+  }
+
+  /// `Redefining Means of Communication`
+  String get tagline {
+    return Intl.message(
+      'Redefining Means of Communication',
+      name: 'tagline',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `At Neurithm, we are committed to breaking barriers in communication for individuals with severe speech and movement disabilities. Our system harnesses the power of Brain-Computer Interface (BCI) technology, artificial intelligence, and speech synthesis to transform neural activity into spoken language, empowering users with a new voice.`
+  String get mission {
+    return Intl.message(
+      'At Neurithm, we are committed to breaking barriers in communication for individuals with severe speech and movement disabilities. Our system harnesses the power of Brain-Computer Interface (BCI) technology, artificial intelligence, and speech synthesis to transform neural activity into spoken language, empowering users with a new voice.',
+      name: 'mission',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Our Vision`
+  String get visionTitle {
+    return Intl.message('Our Vision', name: 'visionTitle', desc: '', args: []);
+  }
+
+  /// `To create a world where communication is limitless, regardless of physical ability. By merging cutting-edge neuroscience with technology, we aim to provide tools that restore independence and enhance human connection.`
+  String get vision {
+    return Intl.message(
+      'To create a world where communication is limitless, regardless of physical ability. By merging cutting-edge neuroscience with technology, we aim to provide tools that restore independence and enhance human connection.',
+      name: 'vision',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Our Technology`
+  String get technologyTitle {
+    return Intl.message(
+      'Our Technology',
+      name: 'technologyTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `• Non-Invasive BCI: Utilizing EEG headsets, our system captures and interprets brain activity without the need for invasive procedures.\n• Deep Learning Models: Multiple deep learning models were employed to decode neural signals into coherent speech in real time.\n• User-Centered Design: Designed with ease of use in mind, our system is accessible to individuals and caregivers alike.`
+  String get technology {
+    return Intl.message(
+      '• Non-Invasive BCI: Utilizing EEG headsets, our system captures and interprets brain activity without the need for invasive procedures.\n• Deep Learning Models: Multiple deep learning models were employed to decode neural signals into coherent speech in real time.\n• User-Centered Design: Designed with ease of use in mind, our system is accessible to individuals and caregivers alike.',
+      name: 'technology',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Why It Matters`
+  String get whyItMattersTitle {
+    return Intl.message(
+      'Why It Matters',
+      name: 'whyItMattersTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Millions of individuals worldwide live with conditions like ALS, locked-in syndrome, or severe paralysis. Our solution provides them with an avenue for expression, autonomy, and connection—one word at a time.`
+  String get whyItMatters {
+    return Intl.message(
+      'Millions of individuals worldwide live with conditions like ALS, locked-in syndrome, or severe paralysis. Our solution provides them with an avenue for expression, autonomy, and connection—one word at a time.',
+      name: 'whyItMatters',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Meet the Team`
+  String get teamTitle {
+    return Intl.message('Meet the Team', name: 'teamTitle', desc: '', args: []);
+  }
+
+  /// `We are a dedicated group of software engineers, neuroscientists, and innovators passionate about leveraging technology to improve lives. Our multidisciplinary expertise fuels our mission to make cutting-edge solutions accessible to those who need them most.`
+  String get team {
+    return Intl.message(
+      'We are a dedicated group of software engineers, neuroscientists, and innovators passionate about leveraging technology to improve lives. Our multidisciplinary expertise fuels our mission to make cutting-edge solutions accessible to those who need them most.',
+      name: 'team',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Acknowledgments`
+  String get acknowledgmentsTitle {
+    return Intl.message(
+      'Acknowledgments',
+      name: 'acknowledgmentsTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `We extend our gratitude to our university for their unwavering support and resources, enabling us to bring this project to life.`
+  String get acknowledgments {
+    return Intl.message(
+      'We extend our gratitude to our university for their unwavering support and resources, enabling us to bring this project to life.',
+      name: 'acknowledgments',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Get Involved`
+  String get getInvolvedTitle {
+    return Intl.message(
+      'Get Involved',
+      name: 'getInvolvedTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `We are continuously looking for collaborators, researchers, and users to shape the future of this technology. Contact us to join the journey!`
+  String get getInvolved {
+    return Intl.message(
+      'We are continuously looking for collaborators, researchers, and users to shape the future of this technology. Contact us to join the journey!',
+      name: 'getInvolved',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

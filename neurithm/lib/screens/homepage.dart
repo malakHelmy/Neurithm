@@ -314,33 +314,33 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ),
                     ),
-                    SizedBox(height: spacing(30)),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          t.history,
-                          style: TextStyle(
-                            fontFamily: 'Lato',
-                            fontSize: fontSize(30),
-                            fontWeight: FontWeight.bold,
-                            color: const Color.fromARGB(255, 206, 206, 206),
-                          ),
-                        ),
-                        IconButton(
-                          icon: const Icon(Icons.arrow_forward_ios,
-                              color: Color.fromARGB(255, 206, 206, 206)),
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => ConversationHistoryPage(),
-                              ),
-                            );
-                          },
-                        )
-                      ],
-                    ),
+                    // SizedBox(height: spacing(30)),
+                    // Row(
+                    //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    //   children: [
+                    //     Text(
+                    //       t.history,
+                    //       style: TextStyle(
+                    //         fontFamily: 'Lato',
+                    //         fontSize: fontSize(30),
+                    //         fontWeight: FontWeight.bold,
+                    //         color: const Color.fromARGB(255, 206, 206, 206),
+                    //       ),
+                    //     ),
+                    //     IconButton(
+                    //       icon: const Icon(Icons.arrow_forward_ios,
+                    //           color: Color.fromARGB(255, 206, 206, 206)),
+                    //       onPressed: () {
+                    //         Navigator.push(
+                    //           context,
+                    //           MaterialPageRoute(
+                    //             builder: (context) => ConversationHistoryPage(),
+                    //           ),
+                    //         );
+                    //       },
+                    //     )
+                    //   ],
+                    // ),
                   ],
                 ),
               ),

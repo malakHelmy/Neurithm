@@ -310,6 +310,120 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Connect'**
   String get connect;
+
+  /// No description provided for @about.
+  ///
+  /// In en, this message translates to:
+  /// **'About us'**
+  String get about;
+
+  /// No description provided for @helpAndSupport.
+  ///
+  /// In en, this message translates to:
+  /// **'Help and Support'**
+  String get helpAndSupport;
+
+  /// No description provided for @accountInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Account Info'**
+  String get accountInfo;
+
+  /// No description provided for @logOut.
+  ///
+  /// In en, this message translates to:
+  /// **'Log out'**
+  String get logOut;
+
+  /// No description provided for @aboutUs.
+  ///
+  /// In en, this message translates to:
+  /// **'About us'**
+  String get aboutUs;
+
+  /// No description provided for @tagline.
+  ///
+  /// In en, this message translates to:
+  /// **'Redefining Means of Communication'**
+  String get tagline;
+
+  /// No description provided for @mission.
+  ///
+  /// In en, this message translates to:
+  /// **'At Neurithm, we are committed to breaking barriers in communication for individuals with severe speech and movement disabilities. Our system harnesses the power of Brain-Computer Interface (BCI) technology, artificial intelligence, and speech synthesis to transform neural activity into spoken language, empowering users with a new voice.'**
+  String get mission;
+
+  /// No description provided for @visionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Our Vision'**
+  String get visionTitle;
+
+  /// No description provided for @vision.
+  ///
+  /// In en, this message translates to:
+  /// **'To create a world where communication is limitless, regardless of physical ability. By merging cutting-edge neuroscience with technology, we aim to provide tools that restore independence and enhance human connection.'**
+  String get vision;
+
+  /// No description provided for @technologyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Our Technology'**
+  String get technologyTitle;
+
+  /// No description provided for @technology.
+  ///
+  /// In en, this message translates to:
+  /// **'• Non-Invasive BCI: Utilizing EEG headsets, our system captures and interprets brain activity without the need for invasive procedures.\n• Deep Learning Models: Multiple deep learning models were employed to decode neural signals into coherent speech in real time.\n• User-Centered Design: Designed with ease of use in mind, our system is accessible to individuals and caregivers alike.'**
+  String get technology;
+
+  /// No description provided for @whyItMattersTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Why It Matters'**
+  String get whyItMattersTitle;
+
+  /// No description provided for @whyItMatters.
+  ///
+  /// In en, this message translates to:
+  /// **'Millions of individuals worldwide live with conditions like ALS, locked-in syndrome, or severe paralysis. Our solution provides them with an avenue for expression, autonomy, and connection—one word at a time.'**
+  String get whyItMatters;
+
+  /// No description provided for @teamTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Meet the Team'**
+  String get teamTitle;
+
+  /// No description provided for @team.
+  ///
+  /// In en, this message translates to:
+  /// **'We are a dedicated group of software engineers, neuroscientists, and innovators passionate about leveraging technology to improve lives. Our multidisciplinary expertise fuels our mission to make cutting-edge solutions accessible to those who need them most.'**
+  String get team;
+
+  /// No description provided for @acknowledgmentsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Acknowledgments'**
+  String get acknowledgmentsTitle;
+
+  /// No description provided for @acknowledgments.
+  ///
+  /// In en, this message translates to:
+  /// **'We extend our gratitude to our university for their unwavering support and resources, enabling us to bring this project to life.'**
+  String get acknowledgments;
+
+  /// No description provided for @getInvolvedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Get Involved'**
+  String get getInvolvedTitle;
+
+  /// No description provided for @getInvolved.
+  ///
+  /// In en, this message translates to:
+  /// **'We are continuously looking for collaborators, researchers, and users to shape the future of this technology. Contact us to join the journey!'**
+  String get getInvolved;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

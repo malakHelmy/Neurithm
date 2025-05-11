@@ -10,7 +10,7 @@ class FAQSection extends StatelessWidget {
     {
       'question': 'How can I contact support?',
       'answer':
-          'You can contact support through the "Contact Us" section in the app or email us at support@example.com.'
+          'You can contact support through the "Contact Us" section in the app or email us at neurithm1@gmail.com.'
     },
     {
       'question': 'Where can I find my history?',

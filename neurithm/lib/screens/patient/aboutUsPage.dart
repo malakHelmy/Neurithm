@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:neurithm/l10n/generated/app_localizations.dart';
 import 'package:neurithm/widgets/appbar.dart';
 import 'package:neurithm/widgets/bottomBar.dart';
 import 'package:neurithm/widgets/wavesBackground.dart';
@@ -8,6 +9,7 @@ class AboutUsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final t = AppLocalizations.of(context)!;
     return Scaffold(
         key: _scaffoldKey,
         drawer: sideAppBar(context),
@@ -30,114 +32,155 @@ class AboutUsPage extends StatelessWidget {
                         horizontal: spacing(15, getScreenHeight(context)),
                       ),
                       child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            appBar(_scaffoldKey),
-                            SizedBox(
-                                height: spacing(15, getScreenHeight(context))),
-                            const Text(
-                              'About us',
-                              style: TextStyle(
-                                fontSize: 30,
-                                fontFamily: 'Lato',
-                                fontWeight: FontWeight.bold,
-                                color: const Color.fromARGB(255, 255, 255, 255),
-                              ),
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          appBar(_scaffoldKey),
+                          SizedBox(
+                              height: spacing(15, getScreenHeight(context))),
+                          Text(
+                            t.aboutUs,
+                            style: const TextStyle(
+                              fontSize: 30,
+                              fontFamily: 'Lato',
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
                             ),
-                            const SizedBox(height: 20),
-                            const Text(
-                              'Redefining Means of Communication',
-                              style: TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.w600,
-                              ),
+                          ),
+                          const SizedBox(height: 10),
+                          Text(
+                            t.tagline,
+                            style: const TextStyle(
+                              fontSize: 22,
+                              fontFamily: 'Lato',
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
                             ),
-                            const SizedBox(height: 10),
-                            const Text(
-                              'At Neurithm, we are committed to breaking barriers in communication for individuals with severe speech and movement disabilities. Our system harnesses the power of Brain-Computer Interface (BCI) technology, artificial intelligence, and speech synthesis to transform neural activity into spoken language, empowering users with a new voice.',
-                              style: TextStyle(fontSize: 16, height: 1.5),
+                          ),
+                          const SizedBox(height: 10),
+                          Text(
+                            t.mission,
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontFamily: 'Lato',
+                              color: Colors.white,
                             ),
-                            const SizedBox(height: 20),
-                            const Text(
-                              'Our Vision',
-                              style: TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.w600,
-                              ),
+                          ),
+                          const SizedBox(height: 30),
+                          Text(
+                            t.visionTitle,
+                            style: const TextStyle(
+                              fontSize: 22,
+                              fontFamily: 'Lato',
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
                             ),
-                            const SizedBox(height: 10),
-                            const Text(
-                              'To create a world where communication is limitless, regardless of physical ability. By merging cutting-edge neuroscience with technology, we aim to provide tools that restore independence and enhance human connection.',
-                              style: TextStyle(fontSize: 16, height: 1.5),
+                          ),
+                          const SizedBox(height: 10),
+                          Text(
+                            t.vision,
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontFamily: 'Lato',
+                              color: Colors.white,
                             ),
-                            const SizedBox(height: 20),
-                            const Text(
-                              'Our Technology',
-                              style: TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.w600,
-                              ),
+                          ),
+                          const SizedBox(height: 30),
+                          Text(
+                            t.technologyTitle,
+                            style: const TextStyle(
+                              fontSize: 22,
+                              fontFamily: 'Lato',
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
                             ),
-                            const SizedBox(height: 10),
-                            const Text(
-                              '• Non-Invasive BCI: Utilizing EEG headsets, our system captures and interprets brain activity without the need for invasive procedures.\n'
-                              '• Deep Learning Models: A multi-layered Long Short-Term Memory (LSTM) network decodes neural signals into coherent speech in real time.\n'
-                              '• User-Centered Design: Designed with ease of use in mind, our system is accessible to individuals and caregivers alike.',
-                              style: TextStyle(fontSize: 16, height: 1.5),
+                          ),
+                          const SizedBox(height: 10),
+                          Text(
+                            t.technology,
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontFamily: 'Lato',
+                              color: Colors.white,
                             ),
-                            const SizedBox(height: 20),
-                            const Text(
-                              'Why It Matters',
-                              style: TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.w600,
-                              ),
+                          ),
+                          const SizedBox(height: 30),
+                          Text(
+                            t.whyItMattersTitle,
+                            style: const TextStyle(
+                              fontSize: 22,
+                              fontFamily: 'Lato',
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
                             ),
-                            const SizedBox(height: 10),
-                            const Text(
-                              'Millions of individuals worldwide live with conditions like ALS, locked-in syndrome, or severe paralysis. Our solution provides them with an avenue for expression, autonomy, and connection—one word at a time.',
-                              style: TextStyle(fontSize: 16, height: 1.5),
+                          ),
+                          const SizedBox(height: 10),
+                          Text(
+                            t.whyItMatters,
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontFamily: 'Lato',
+                              color: Colors.white,
                             ),
-                            const SizedBox(height: 20),
-                            const Text(
-                              'Meet the Team',
-                              style: TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.w600,
-                              ),
+                          ),
+                          const SizedBox(height: 30),
+                          Text(
+                            t.teamTitle,
+                            style: const TextStyle(
+                              fontSize: 22,
+                              fontFamily: 'Lato',
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
                             ),
-                            const SizedBox(height: 10),
-                            const Text(
-                              'We are a dedicated group of software engineers, neuroscientists, and innovators passionate about leveraging technology to improve lives. Our multidisciplinary expertise fuels our mission to make cutting-edge solutions accessible to those who need them most.',
-                              style: TextStyle(fontSize: 16, height: 1.5),
+                          ),
+                          const SizedBox(height: 10),
+                          Text(
+                            t.team,
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontFamily: 'Lato',
+                              color: Colors.white,
                             ),
-                            const SizedBox(height: 20),
-                            const Text(
-                              'Acknowledgments',
-                              style: TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.w600,
-                              ),
+                          ),
+                          const SizedBox(height: 30),
+                          Text(
+                            t.acknowledgmentsTitle,
+                            style: const TextStyle(
+                              fontSize: 22,
+                              fontFamily: 'Lato',
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
                             ),
-                            const SizedBox(height: 10),
-                            const Text(
-                              'We extend our gratitude to our university and partners for their unwavering support and resources, enabling us to bring this project to life.',
-                              style: TextStyle(fontSize: 16, height: 1.5),
+                          ),
+                          const SizedBox(height: 10),
+                          Text(
+                            t.acknowledgments,
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontFamily: 'Lato',
+                              color: Colors.white,
                             ),
-                            const SizedBox(height: 20),
-                            const Text(
-                              'Get Involved',
-                              style: TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.w600,
-                              ),
+                          ),
+                          const SizedBox(height: 30),
+                          Text(
+                            t.getInvolvedTitle,
+                            style: const TextStyle(
+                              fontSize: 22,
+                              fontFamily: 'Lato',
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
                             ),
-                            const SizedBox(height: 10),
-                            const Text(
-                              'We are continuously looking for collaborators, researchers, and users to shape the future of this technology. Contact us to join the journey!',
-                              style: TextStyle(fontSize: 16, height: 1.5),
+                          ),
+                          const SizedBox(height: 10),
+                          Text(
+                            t.getInvolved,
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontFamily: 'Lato',
+                              color: Colors.white,
                             ),
-                          ]),
+                          ),
+                        ],
+                      ),
                     ),
                   ],
                 ))));

@@ -71,7 +71,7 @@ class SignalReadingService {
   // Function to handle the file upload and prediction request for start thinking
   Future<void> uploadFileAndStartThinking(BuildContext context,
       {bool isNewWord = false}) async {
-    const String localServerUrl = 'https://0418-45-244-62-5.ngrok-free.app/start_thinking';
+    const String localServerUrl = 'https://e80b-45-244-62-5.ngrok-free.app/start_thinking';
 
     // Pick the file from the user's device
     FilePickerResult? result =
@@ -128,7 +128,7 @@ class SignalReadingService {
     try {
       var response = await http.post(
         Uri.parse(
-            'https://0418-45-244-62-5.ngrok-free.app/done_thinking'), 
+            'https://e80b-45-244-62-5.ngrok-free.app/done_thinking'), 
       );
 
       if (response.statusCode == 200) {
@@ -204,7 +204,7 @@ class SignalReadingService {
   Future<void> restartServer(BuildContext context) async {
     try {
       var response = await http.post(
-        Uri.parse('https://0418-45-244-62-5.ngrok-free.app/restart'), // Restart endpoint
+        Uri.parse('https://e80b-45-244-62-5.ngrok-free.app/restart'), // Restart endpoint
       );
 
       if (response.statusCode == 200) {

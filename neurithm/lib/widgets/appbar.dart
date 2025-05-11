@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:neurithm/l10n/generated/app_localizations.dart';
 import 'package:neurithm/screens/patient/aboutUsPage.dart';
 import 'package:neurithm/screens/patient/accountSettingsPage.dart';
 import 'package:neurithm/screens/patient/helpPage.dart';
@@ -10,16 +11,16 @@ import 'package:neurithm/services/authService.dart';
 
 bool isConnected = false;
 
-Drawer sideAppBar(context) {
+Drawer sideAppBar(BuildContext context) {
   final AuthService _authService = AuthService();
-
+  final t = AppLocalizations.of(context)!;
   return Drawer(
     child: ListView(
       padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 60.0),
       children: <Widget>[
         ListTile(
-          title: const Text('Home',
-              style: TextStyle(
+          title: Text(t.home,
+              style: const TextStyle(
                 color: Color.fromARGB(255, 206, 206, 206),
                 fontSize: 25,
                 fontFamily: 'Lato',
@@ -27,15 +28,16 @@ Drawer sideAppBar(context) {
               )),
           onTap: () {
             Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => HomePage(showRatingPopup: false),
-                ));
+              context,
+              MaterialPageRoute(
+                builder: (context) => HomePage(showRatingPopup: false),
+              ),
+            );
           },
         ),
         ListTile(
-          title: const Text('About',
-              style: TextStyle(
+          title: Text(t.about,
+              style: const TextStyle(
                 color: Color.fromARGB(255, 206, 206, 206),
                 fontSize: 25,
                 fontFamily: 'Lato',
@@ -43,30 +45,16 @@ Drawer sideAppBar(context) {
               )),
           onTap: () {
             Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => AboutUsPage(),
-                ));
+              context,
+              MaterialPageRoute(
+                builder: (context) => AboutUsPage(),
+              ),
+            );
           },
         ),
         ListTile(
-            title: const Text('Contact Us',
-                style: TextStyle(
-                  color: Color.fromARGB(255, 206, 206, 206),
-                  fontSize: 25,
-                  fontFamily: 'Lato',
-                  fontWeight: FontWeight.bold,
-                )),
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => ContactUsPage(),
-                ));
-            }),
-        ListTile(
-          title: const Text('Help and Support',
-              style: TextStyle(
+          title: Text(t.helpAndSupport,
+              style: const TextStyle(
                 color: Color.fromARGB(255, 206, 206, 206),
                 fontSize: 25,
                 fontFamily: 'Lato',
@@ -74,15 +62,16 @@ Drawer sideAppBar(context) {
               )),
           onTap: () {
             Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => HelpPage(),
-                ));
+              context,
+              MaterialPageRoute(
+                builder: (context) => HelpPage(),
+              ),
+            );
           },
         ),
         ListTile(
-          title: const Text('Account Info',
-              style: TextStyle(
+          title: Text(t.accountInfo,
+              style: const TextStyle(
                 color: Color.fromARGB(255, 206, 206, 206),
                 fontSize: 25,
                 fontFamily: 'Lato',
@@ -90,15 +79,16 @@ Drawer sideAppBar(context) {
               )),
           onTap: () {
             Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => AccountSettingsPage(),
-                ));
+              context,
+              MaterialPageRoute(
+                builder: (context) => AccountSettingsPage(),
+              ),
+            );
           },
         ),
         ListTile(
-          title: const Text('Word Bank',
-              style: TextStyle(
+          title: Text(t.wordBank,
+              style: const TextStyle(
                 color: Color.fromARGB(255, 206, 206, 206),
                 fontSize: 25,
                 fontFamily: 'Lato',
@@ -106,15 +96,16 @@ Drawer sideAppBar(context) {
               )),
           onTap: () {
             Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => WordBankPage(),
-                ));
+              context,
+              MaterialPageRoute(
+                builder: (context) => WordBankPage(),
+              ),
+            );
           },
         ),
         ListTile(
-          title: const Text('Log out',
-              style: TextStyle(
+          title: Text(t.logOut,
+              style: const TextStyle(
                 color: Color.fromARGB(255, 206, 206, 206),
                 fontSize: 25,
                 fontFamily: 'Lato',
@@ -133,9 +124,7 @@ Drawer sideAppBar(context) {
       ],
     ),
   );
-}
-
-AppBar Appbar(GlobalKey<ScaffoldState> scaffoldKey) {
+}AppBar Appbar(GlobalKey<ScaffoldState> scaffoldKey) {
   return AppBar(
     backgroundColor: Colors.transparent,
     elevation: 0.0,

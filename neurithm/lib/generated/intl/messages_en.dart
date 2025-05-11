@@ -24,7 +24,16 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
+    "about": MessageLookupByLibrary.simpleMessage("About us"),
+    "aboutUs": MessageLookupByLibrary.simpleMessage("About us"),
+    "accountInfo": MessageLookupByLibrary.simpleMessage("Account Info"),
     "accountSettings": MessageLookupByLibrary.simpleMessage("Account Settings"),
+    "acknowledgments": MessageLookupByLibrary.simpleMessage(
+      "We extend our gratitude to our university for their unwavering support and resources, enabling us to bring this project to life.",
+    ),
+    "acknowledgmentsTitle": MessageLookupByLibrary.simpleMessage(
+      "Acknowledgments",
+    ),
     "arabic": MessageLookupByLibrary.simpleMessage("Arabic"),
     "categories": MessageLookupByLibrary.simpleMessage("Categories"),
     "chooseLanguage": MessageLookupByLibrary.simpleMessage("Choose Language"),
@@ -35,8 +44,13 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "doneThinking": MessageLookupByLibrary.simpleMessage("Done Thinking"),
     "english": MessageLookupByLibrary.simpleMessage("English"),
+    "getInvolved": MessageLookupByLibrary.simpleMessage(
+      "We are continuously looking for collaborators, researchers, and users to shape the future of this technology. Contact us to join the journey!",
+    ),
+    "getInvolvedTitle": MessageLookupByLibrary.simpleMessage("Get Involved"),
     "headsetsFound": m0,
     "helpAndGuide": MessageLookupByLibrary.simpleMessage("Help & Guide"),
+    "helpAndSupport": MessageLookupByLibrary.simpleMessage("Help and Support"),
     "history": MessageLookupByLibrary.simpleMessage("History"),
     "home": MessageLookupByLibrary.simpleMessage("Home"),
     "languageSettings": MessageLookupByLibrary.simpleMessage(
@@ -46,6 +60,10 @@ class MessageLookup extends MessageLookupByLibrary {
       "Language updated successfully",
     ),
     "later": MessageLookupByLibrary.simpleMessage("Later"),
+    "logOut": MessageLookupByLibrary.simpleMessage("Log out"),
+    "mission": MessageLookupByLibrary.simpleMessage(
+      "At Neurithm, we are committed to breaking barriers in communication for individuals with severe speech and movement disabilities. Our system harnesses the power of Brain-Computer Interface (BCI) technology, artificial intelligence, and speech synthesis to transform neural activity into spoken language, empowering users with a new voice.",
+    ),
     "moveToNextWord": MessageLookupByLibrary.simpleMessage("Move to Next Word"),
     "next": MessageLookupByLibrary.simpleMessage("Next"),
     "noCategoriesFound": MessageLookupByLibrary.simpleMessage(
@@ -76,11 +94,30 @@ class MessageLookup extends MessageLookupByLibrary {
     "syncInstructions": MessageLookupByLibrary.simpleMessage(
       "Sync your mobile app to your headset to start voicing your thoughts",
     ),
+    "tagline": MessageLookupByLibrary.simpleMessage(
+      "Redefining Means of Communication",
+    ),
+    "team": MessageLookupByLibrary.simpleMessage(
+      "We are a dedicated group of software engineers, neuroscientists, and innovators passionate about leveraging technology to improve lives. Our multidisciplinary expertise fuels our mission to make cutting-edge solutions accessible to those who need them most.",
+    ),
+    "teamTitle": MessageLookupByLibrary.simpleMessage("Meet the Team"),
+    "technology": MessageLookupByLibrary.simpleMessage(
+      "• Non-Invasive BCI: Utilizing EEG headsets, our system captures and interprets brain activity without the need for invasive procedures.\n• Deep Learning Models: Multiple deep learning models were employed to decode neural signals into coherent speech in real time.\n• User-Centered Design: Designed with ease of use in mind, our system is accessible to individuals and caregivers alike.",
+    ),
+    "technologyTitle": MessageLookupByLibrary.simpleMessage("Our Technology"),
+    "vision": MessageLookupByLibrary.simpleMessage(
+      "To create a world where communication is limitless, regardless of physical ability. By merging cutting-edge neuroscience with technology, we aim to provide tools that restore independence and enhance human connection.",
+    ),
+    "visionTitle": MessageLookupByLibrary.simpleMessage("Our Vision"),
     "voiceSettings": MessageLookupByLibrary.simpleMessage("Voice Settings"),
     "voiceYourMind": MessageLookupByLibrary.simpleMessage(
       "Voice Your Mind Effortlessly",
     ),
     "welcomeMessage": MessageLookupByLibrary.simpleMessage("Welcome"),
+    "whyItMatters": MessageLookupByLibrary.simpleMessage(
+      "Millions of individuals worldwide live with conditions like ALS, locked-in syndrome, or severe paralysis. Our solution provides them with an avenue for expression, autonomy, and connection—one word at a time.",
+    ),
+    "whyItMattersTitle": MessageLookupByLibrary.simpleMessage("Why It Matters"),
     "wordBank": MessageLookupByLibrary.simpleMessage("Word Bank"),
   };
 }

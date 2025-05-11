@@ -24,7 +24,16 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
+    "about": MessageLookupByLibrary.simpleMessage("نبذة عنا"),
+    "aboutUs": MessageLookupByLibrary.simpleMessage("من نحن"),
+    "accountInfo": MessageLookupByLibrary.simpleMessage("معلومات عن الحساب"),
     "accountSettings": MessageLookupByLibrary.simpleMessage("إعدادات الحساب"),
+    "acknowledgments": MessageLookupByLibrary.simpleMessage(
+      "نود أن نعرب عن امتناننا لجامعتنا على دعمها المستمر ومواردها، مما مكننا من تحقيق هذا المشروع.",
+    ),
+    "acknowledgmentsTitle": MessageLookupByLibrary.simpleMessage(
+      "الشكر والتقدير",
+    ),
     "arabic": MessageLookupByLibrary.simpleMessage("العربية"),
     "categories": MessageLookupByLibrary.simpleMessage("فئات"),
     "chooseLanguage": MessageLookupByLibrary.simpleMessage("اختر اللغة"),
@@ -35,8 +44,13 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "doneThinking": MessageLookupByLibrary.simpleMessage("انتهيت من التفكير"),
     "english": MessageLookupByLibrary.simpleMessage("الإنجليزية"),
+    "getInvolved": MessageLookupByLibrary.simpleMessage(
+      "نحن نبحث باستمرار عن المتعاونين، والباحثين، والمستخدمين للمساهمة في تشكيل مستقبل هذه التكنولوجيا. تواصل معنا للانضمام إلى الرحلة!",
+    ),
+    "getInvolvedTitle": MessageLookupByLibrary.simpleMessage("شارك معنا"),
     "headsetsFound": m0,
     "helpAndGuide": MessageLookupByLibrary.simpleMessage("المساعدة والدليل"),
+    "helpAndSupport": MessageLookupByLibrary.simpleMessage("المساعدة والدعم"),
     "history": MessageLookupByLibrary.simpleMessage("التاريخ"),
     "home": MessageLookupByLibrary.simpleMessage("الرئيسية"),
     "languageSettings": MessageLookupByLibrary.simpleMessage("إعدادات اللغة"),
@@ -44,6 +58,10 @@ class MessageLookup extends MessageLookupByLibrary {
       "تم تحديث اللغة بنجاح",
     ),
     "later": MessageLookupByLibrary.simpleMessage("لاحقًا"),
+    "logOut": MessageLookupByLibrary.simpleMessage("تسجيل الخروج"),
+    "mission": MessageLookupByLibrary.simpleMessage(
+      "في نيوريثم، نلتزم بكسر الحواجز في التواصل للأفراد ذوي الإعاقات الشديدة في النطق والحركة. يستخدم نظامنا قوة واجهات الدماغ والحاسوب (BCI)، والذكاء الاصطناعي، وتوليف الصوت لتحويل النشاط العصبي إلى لغة منطوقة، مما يمنح المستخدمين صوتًا جديدًا.",
+    ),
     "moveToNextWord": MessageLookupByLibrary.simpleMessage(
       "انتقل إلى الكلمة التالية",
     ),
@@ -76,11 +94,30 @@ class MessageLookup extends MessageLookupByLibrary {
     "syncInstructions": MessageLookupByLibrary.simpleMessage(
       "قم بتوصيل التطبيق مع سماعة الرأس لبدء التعبير عن أفكارك",
     ),
+    "tagline": MessageLookupByLibrary.simpleMessage(
+      "إعادة تعريف وسائل التواصل",
+    ),
+    "team": MessageLookupByLibrary.simpleMessage(
+      "نحن مجموعة مكرسة من مهندسي البرمجيات، وعلماء الأعصاب، والمبتكرين الشغوفين باستخدام التكنولوجيا لتحسين الحياة. تغذي خبرتنا متعددة التخصصات مهمتنا لجعل الحلول المتقدمة متاحة لأولئك الذين يحتاجونها بشدة.",
+    ),
+    "teamTitle": MessageLookupByLibrary.simpleMessage("تعرف على الفريق"),
+    "technology": MessageLookupByLibrary.simpleMessage(
+      "• واجهات الدماغ غير الجراحية: باستخدام أجهزة EEG، يلتقط نظامنا النشاط الدماغي ويفسره دون الحاجة إلى إجراءات جراحية.\n• نماذج التعلم العميق: تم استخدام نماذج تعلم عميق متعددة لفك تشفير الإشارات العصبية إلى كلام متماسك في الوقت الفعلي.\n• تصميم يركز على المستخدم: صُمم نظامنا مع مراعاة سهولة الاستخدام، وهو متاح للأفراد ومقدمي الرعاية على حد سواء.",
+    ),
+    "technologyTitle": MessageLookupByLibrary.simpleMessage("تقنيتنا"),
+    "vision": MessageLookupByLibrary.simpleMessage(
+      "خلق عالم يكون فيه التواصل بلا حدود، بغض النظر عن القدرة الجسدية. من خلال دمج علوم الأعصاب المتقدمة مع التكنولوجيا، نهدف إلى توفير أدوات تعيد الاستقلالية وتعزز الاتصال البشري.",
+    ),
+    "visionTitle": MessageLookupByLibrary.simpleMessage("رؤيتنا"),
     "voiceSettings": MessageLookupByLibrary.simpleMessage("إعدادات الصوت"),
     "voiceYourMind": MessageLookupByLibrary.simpleMessage(
       "عبّر عن أفكارك بسهولة",
     ),
     "welcomeMessage": MessageLookupByLibrary.simpleMessage("مرحباً"),
-    "wordBank": MessageLookupByLibrary.simpleMessage("قاعدة الكلمات"),
+    "whyItMatters": MessageLookupByLibrary.simpleMessage(
+      "يعيش ملايين الأفراد حول العالم مع حالات مثل التصلب الجانبي الضموري، ومتلازمة الانحباس، أو الشلل الشديد. يوفر حلنا لهم وسيلة للتعبير، والاستقلالية، والتواصل—كلمة واحدة في كل مرة.",
+    ),
+    "whyItMattersTitle": MessageLookupByLibrary.simpleMessage("لماذا هذا مهم"),
+    "wordBank": MessageLookupByLibrary.simpleMessage("بنك الكلمات"),
   };
 }
