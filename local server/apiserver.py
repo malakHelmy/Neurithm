@@ -438,12 +438,20 @@ def get_sentence_corrections(text, num_options=5):
 
     logger.debug(f"Requesting sentence corrections with headers: {headers}")
 
-    # Simplified prompt with clearer formatting instructions
+    # Enhanced prompt for full sentence correction with context
     prompt = (
         "أنا أستخدم نظام واجهة الدماغ والحاسوب لقراءة الأفكار وتحويلها إلى نص. "
-        f"الجملة التالية تم إنشاؤها من قراءة دماغية وقد تحتوي على أخطاء: '{text}'\n\n"
-        f"قدم {num_options} احتمالات مختلفة للمعنى المقصود. قدم فقط الاحتمالات المرقمة دون أي تعليق إضافي:"
-    )
+        "الجملة التالية تم إنشاؤها من قراءة دماغية وقد تحتوي على أخطاء. "
+        "قم بتصحيح الجملة بالكامل وقدم {num_options} احتمالات مختلفة للمعنى المقصود، "
+        "مع مراعاة السياق والتماسك اللغوي. رتب الاحتمالات من الأكثر احتمالاً إلى الأقل احتمالاً. "
+        "تأكد من أن كل احتمال يشكل جملة كاملة ومفيدة ومنطقية بالعربية الفصحى. "
+        "رقم كل احتمال وافصل بينهم بسطر جديد بالشكل التالي:\n\n"
+        "1. [الجملة المصححة الأولى والأكثر احتمالاً]\n"
+        "2. [الجملة المصححة الثانية]\n"
+        "وهكذا...\n\n"
+        f"الجملة الأصلية: {text}\n\n"
+        "الاحتمالات المصححة:"
+    ) 
 
     payload = {
         "model": MODEL_NAME,
@@ -516,38 +524,23 @@ def done_thinking():
         num_options = request.args.get('num_options', default=5, type=int)
         
         # Get corrections
-        corrected_sentences = get_sentence_corrections(concatenated_word, num_options)
+        corrected_texts = get_multiple_corrections(concatenated_word, num_options)
         
-        # Ensure we have multiple corrections (duplicate if only one returned)
-        if len(corrected_sentences) == 1 and num_options > 1:
-            # Force multiple variations by adding slightly modified versions
-            base_correction = corrected_sentences[0]
-            corrected_sentences = [base_correction]
-            # Add some variations if we only got one result
-            if len(base_correction.split()) > 1:
-                words = base_correction.split()
-                corrected_sentences.append(" ".join(words[::-1]))  # Reverse word order
-                corrected_sentences.append(base_correction + ".")  # Add period
-                corrected_sentences.append("!" + base_correction)  # Add exclamation
-                corrected_sentences.append(base_correction + "?")  # Add question mark
-            
-            # Trim to requested number
-            corrected_sentences = corrected_sentences[:num_options]
 
-        logger.debug(f"Final corrections being returned: {corrected_sentences}")
+        logger.debug(f"Multiple predictions after OpenAI correction: {corrected_texts}")
+
 
         response = jsonify({
             "original_sentence": concatenated_word,
-            "corrected_sentences": corrected_sentences
+            "corrected_sentences": corrected_texts
         })
 
         concatenated_word = ""
         return response
 
     except Exception as e:
-        logger.error(f"Sentence correction processing error: {str(e)}")
-        logger.error(f"Detailed traceback: {traceback.format_exc()}")
-        return jsonify(error="Sentence correction failed"), 500
+        app.logger.error(f"Processing error: {str(e)}")
+        return jsonify(error="Processing failed"), 500
     
 
 @app.route('/restart', methods=['POST'])
