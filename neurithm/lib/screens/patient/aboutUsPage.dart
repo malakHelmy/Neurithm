@@ -179,6 +179,7 @@ class AboutUsPage extends StatelessWidget {
                               color: Colors.white,
                             ),
                           ),
+                          const SizedBox(height: 30),
                         ],
                       ),
                     ),

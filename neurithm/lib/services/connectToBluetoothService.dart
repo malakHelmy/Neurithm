@@ -31,10 +31,10 @@ class ConnectToBluetoothService {
     // Stop scanning after the timeout
     await FlutterBluePlus.stopScan();
     scanSubscription.cancel();
-    //  final fakeDevice = BluetoothDevice(
-    //   remoteId: DeviceIdentifier("EPOC X")
-    // );
-    // foundDevices.add(fakeDevice);
+     final fakeDevice = BluetoothDevice(
+      remoteId: DeviceIdentifier("EPOC X")
+    );
+    foundDevices.add(fakeDevice);
     return foundDevices;
   }
 
