@@ -95,105 +95,104 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        decoration: gradientBackground,
-        child: Stack(
-          children: [
-            wavesBackground(getScreenWidth(context), getScreenHeight(context)),
-            Padding(
-              padding: EdgeInsets.symmetric(
-                horizontal: spacing(15, getScreenHeight(context)),
-              ),
-              child: AppBar(
-                backgroundColor: Colors.transparent,
-                leading: IconButton(
-                  icon: const Icon(Icons.arrow_back_ios,
-                      color: Color.fromARGB(255, 206, 206, 206)),
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => SettingsPage(),
-                      ),
-                    );
-                  },
+            resizeToAvoidBottomInset: true,
+
+      body: SingleChildScrollView(
+        child: Container(
+          decoration: gradientBackground,
+          child: Stack(
+            children: [
+              wavesBackground(getScreenWidth(context), getScreenHeight(context)),
+              Padding(
+                padding: EdgeInsets.symmetric(
+                  horizontal: spacing(15, getScreenHeight(context)),
+                ),
+                child: AppBar(
+                  backgroundColor: Colors.transparent,
+                  leading: IconButton(
+                    icon: const Icon(Icons.arrow_back_ios,
+                        color: Color.fromARGB(255, 206, 206, 206)),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => SettingsPage(),
+                        ),
+                      );
+                    },
+                  ),
                 ),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 85),
-              child: Column(
-                children: [
-                  const Column(
-                    children: [
-                      CircleAvatar(
-                        radius: 50,
-                        backgroundColor: Color.fromARGB(255, 62, 99, 135),
-                        child:
-                            Icon(Icons.person, size: 50, color: Colors.white),
-                      ),
-                      SizedBox(height: 10),
-                      Text(
-                        'Settings',
-                        style: TextStyle(
-                          fontSize: 25,
-                          fontFamily: 'Lato',
-                          fontWeight: FontWeight.bold,
-                          color: Color.fromARGB(255, 255, 255, 255),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 10),
-                  Expanded(
-                    child: ListView(
+               Column(
+                  children: [
+                    const Column(
                       children: [
-                        _editableField(Icons.person, 'First Name',
-                            controller: firstNameController, readOnly: true),
-                        _editableField(Icons.person, 'Last Name',
-                            controller: lastNameController, readOnly: true),
-                        _editableField(Icons.email, 'Email',
-                            controller: emailController, readOnly: true),
-                        _editableField(Icons.lock, 'New Password',
-                            controller: passwordController, obscureText: true),
-                        _editableField(Icons.lock, 'Confirm Password',
-                            controller: confirmPasswordController,
-                            obscureText: true),
-                      ],
-                    ),
-                  ),
-                  SizedBox(height: 10,),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 25),
-                    child: SizedBox(
-                      width: double.infinity,
-                      child: ElevatedButton(
-                        onPressed: _saveChanges,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor:
-                              const Color.fromARGB(255, 240, 240, 240),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(50),
-                          ),
-                          padding: EdgeInsets.symmetric(
-                            vertical: spacing(12, getScreenHeight(context)),
-                          ),
+                        SizedBox(height: 85,),
+                        CircleAvatar(
+                          radius: 50,
+                          backgroundColor: Color.fromARGB(255, 62, 99, 135),
+                          child:
+                              Icon(Icons.person, size: 50, color: Colors.white),
                         ),
-                        child: const Text(
-                          "Save Changes",
+                        SizedBox(height: 10),
+                        Text(
+                          'Settings',
                           style: TextStyle(
                             fontSize: 25,
-                            fontWeight: FontWeight.normal,
-                            color: Color(0xFF1A2A3A),
+                            fontFamily: 'Lato',
+                            fontWeight: FontWeight.bold,
+                            color: Color.fromARGB(255, 255, 255, 255),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 10),
+                    
+                          _editableField(Icons.person, 'First Name',
+                              controller: firstNameController, readOnly: true),
+                          _editableField(Icons.person, 'Last Name',
+                              controller: lastNameController, readOnly: true),
+                          _editableField(Icons.email, 'Email',
+                              controller: emailController, readOnly: true),
+                          _editableField(Icons.lock, 'New Password',
+                              controller: passwordController, obscureText: true),
+                          _editableField(Icons.lock, 'Confirm Password',
+                              controller: confirmPasswordController,
+                              obscureText: true),
+                       
+                    SizedBox(height: 20,),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 25),
+                      child: SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          onPressed: _saveChanges,
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor:
+                                const Color.fromARGB(255, 240, 240, 240),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(50),
+                            ),
+                            padding: EdgeInsets.symmetric(
+                              vertical: spacing(12, getScreenHeight(context)),
+                            ),
+                          ),
+                          child: const Text(
+                            "Save Changes",
+                            style: TextStyle(
+                              fontSize: 25,
+                              fontWeight: FontWeight.normal,
+                              color: Color(0xFF1A2A3A),
+                            ),
                           ),
                         ),
                       ),
                     ),
-                  ),
-                ],
-              ),
-            ),
-          ],
+                  ],
+                ),
+              
+            ],
+          ),
         ),
       ),
     );
@@ -216,7 +215,6 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
             child: TextField(
               controller: controller,
               obscureText: obscureText,
-              readOnly: readOnly,
               style: const TextStyle(fontSize: 20, color: Colors.white),
               decoration: InputDecoration(
                 labelText: label,
