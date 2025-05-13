@@ -33,8 +33,8 @@ NOTEBOOK_PATH = "notebooks/Letters_notebook_file_by_file.ipynb"
 MODEL_PATH = "models/eegnet_model_letters 81.31.keras"
 LABEL_ENCODER_PATH = "models/label_encoder_eegnet_letters 81.31.pkl"
 # Add path for the alternative model
-ALT_MODEL_PATH = "models/without_pos_encoding.keras"
-ALT_LABEL_ENCODER_PATH = "models/without_pos_encoding.pkl"
+ALT_MODEL_PATH = "models/best_eegnet_transformer_model (1).keras"
+ALT_LABEL_ENCODER_PATH = "models/label_encoder_transformer_final (2).pkl"
 OUTPUT_DIR = Path("processed_results")
 
 # Access the API key from the environment
@@ -43,14 +43,8 @@ OPENROUTER_API_URL = "https://openrouter.ai/api/v1/chat/completions"
 MODEL_NAME = "deepseek/deepseek-chat-v3-0324"
 MAX_RETRIES = 3
 
-# You can now use OPENROUTER_API_KEY safely
 print(f"Your OpenRouter API Key is: {OPENROUTER_API_KEY}")
-# Custom Layer for Positional Encoding
-import numpy as np
-import tensorflow as tf
-from tensorflow.keras.layers import Lambda
-from tensorflow.keras.utils import register_keras_serializable
-import traceback
+
 
 # Load primary model once
 try:
