@@ -99,6 +99,12 @@
   "reciteAgain": "إعادة التلاوة",
   "returnToThinking": "العودة إلى التفكير",
   "sessionFeedback": "تقييم الجلسة",
-  "skip": "تخطي"
-
+  "skip": "تخطي",
+  "conversationHistory": "سجل الجلسات",
+  "noConversationsFound": "لا توجد جلسات",
+  "sessionDate": "تاريخ الجلسة",
+  "startTime": "وقت البدء",
+  "endTime": "وقت الانتهاء",
+  "delete": "حذف",
+  "confirmDelete": "هل أنت متأكد أنك تريد حذف هذه الجلسة؟"
 }

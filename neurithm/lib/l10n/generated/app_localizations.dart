@@ -700,6 +700,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Skip'**
   String get skip;
+
+  /// No description provided for @conversationHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'Conversation History'**
+  String get conversationHistory;
+
+  /// No description provided for @noConversationsFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No conversations found'**
+  String get noConversationsFound;
+
+  /// No description provided for @sessionDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Session Date'**
+  String get sessionDate;
+
+  /// No description provided for @startTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Start Time'**
+  String get startTime;
+
+  /// No description provided for @endTime.
+  ///
+  /// In en, this message translates to:
+  /// **'End Time'**
+  String get endTime;
+
+  /// No description provided for @delete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get delete;
+
+  /// No description provided for @confirmDelete.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete this session?'**
+  String get confirmDelete;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

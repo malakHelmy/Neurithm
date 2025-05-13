@@ -42,6 +42,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "chooseLanguage": MessageLookupByLibrary.simpleMessage("اختر اللغة"),
     "chosenLanguage": MessageLookupByLibrary.simpleMessage("ar"),
     "commentLabel": MessageLookupByLibrary.simpleMessage("تعليق أو رسالة"),
+    "confirmDelete": MessageLookupByLibrary.simpleMessage(
+      "هل أنت متأكد أنك تريد حذف هذه الجلسة؟",
+    ),
     "confirmPasswordLabel": MessageLookupByLibrary.simpleMessage(
       "تأكيد كلمة المرور",
     ),
@@ -49,11 +52,14 @@ class MessageLookup extends MessageLookupByLibrary {
     "connectToHeadset": MessageLookupByLibrary.simpleMessage(
       "اتصل بسماعة الرأس",
     ),
+    "conversationHistory": MessageLookupByLibrary.simpleMessage("سجل الجلسات"),
+    "delete": MessageLookupByLibrary.simpleMessage("حذف"),
     "doneThinking": MessageLookupByLibrary.simpleMessage("انتهيت من التفكير"),
     "emailLabel": MessageLookupByLibrary.simpleMessage("البريد الإلكتروني"),
     "emptyCommentError": MessageLookupByLibrary.simpleMessage(
       "لا يمكن ترك حقل التعليق/الرسالة فارغًا",
     ),
+    "endTime": MessageLookupByLibrary.simpleMessage("وقت الانتهاء"),
     "english": MessageLookupByLibrary.simpleMessage("الإنجليزية"),
     "faq1Answer": MessageLookupByLibrary.simpleMessage(
       "للاستخدام، تنقل من خلال القائمة واختر الميزة المطلوبة (ترجمة الأفكار، الوصول إلى بنك الكلمات، الملف الشخصي). توجد شروحات تفصيلية في قسم الدليل.",
@@ -112,6 +118,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "noCategoriesFound": MessageLookupByLibrary.simpleMessage(
       "لم يتم العثور على فئات",
     ),
+    "noConversationsFound": MessageLookupByLibrary.simpleMessage(
+      "لا توجد جلسات",
+    ),
     "noHeadsetsFound": MessageLookupByLibrary.simpleMessage(
       "لم يتم العثور على سماعات رأس",
     ),
@@ -144,6 +153,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "searchForCategories": MessageLookupByLibrary.simpleMessage(
       "البحث عن الفئات...",
     ),
+    "sessionDate": MessageLookupByLibrary.simpleMessage("تاريخ الجلسة"),
     "sessionFeedback": MessageLookupByLibrary.simpleMessage("تقييم الجلسة"),
     "settings": MessageLookupByLibrary.simpleMessage("الإعدادات"),
     "skip": MessageLookupByLibrary.simpleMessage("تخطي"),
@@ -151,6 +161,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "ابدأ التحدث الآن",
     ),
     "startThinking": MessageLookupByLibrary.simpleMessage("ابدأ التفكير"),
+    "startTime": MessageLookupByLibrary.simpleMessage("وقت البدء"),
     "submit": MessageLookupByLibrary.simpleMessage("إرسال"),
     "submitButton": MessageLookupByLibrary.simpleMessage("إرسال"),
     "submitFailure": MessageLookupByLibrary.simpleMessage(

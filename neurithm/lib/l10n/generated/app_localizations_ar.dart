@@ -310,4 +310,25 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get skip => 'تخطي';
+
+  @override
+  String get conversationHistory => 'سجل الجلسات';
+
+  @override
+  String get noConversationsFound => 'لا توجد جلسات';
+
+  @override
+  String get sessionDate => 'تاريخ الجلسة';
+
+  @override
+  String get startTime => 'وقت البدء';
+
+  @override
+  String get endTime => 'وقت الانتهاء';
+
+  @override
+  String get delete => 'حذف';
+
+  @override
+  String get confirmDelete => 'هل أنت متأكد أنك تريد حذف هذه الجلسة؟';
 }

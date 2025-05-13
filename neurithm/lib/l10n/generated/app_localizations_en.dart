@@ -310,4 +310,25 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get skip => 'Skip';
+
+  @override
+  String get conversationHistory => 'Conversation History';
+
+  @override
+  String get noConversationsFound => 'No conversations found';
+
+  @override
+  String get sessionDate => 'Session Date';
+
+  @override
+  String get startTime => 'Start Time';
+
+  @override
+  String get endTime => 'End Time';
+
+  @override
+  String get delete => 'Delete';
+
+  @override
+  String get confirmDelete => 'Are you sure you want to delete this session?';
 }

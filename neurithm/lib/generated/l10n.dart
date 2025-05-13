@@ -869,6 +869,61 @@ class S {
   String get skip {
     return Intl.message('Skip', name: 'skip', desc: '', args: []);
   }
+
+  /// `Conversation History`
+  String get conversationHistory {
+    return Intl.message(
+      'Conversation History',
+      name: 'conversationHistory',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No conversations found`
+  String get noConversationsFound {
+    return Intl.message(
+      'No conversations found',
+      name: 'noConversationsFound',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Session Date`
+  String get sessionDate {
+    return Intl.message(
+      'Session Date',
+      name: 'sessionDate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Start Time`
+  String get startTime {
+    return Intl.message('Start Time', name: 'startTime', desc: '', args: []);
+  }
+
+  /// `End Time`
+  String get endTime {
+    return Intl.message('End Time', name: 'endTime', desc: '', args: []);
+  }
+
+  /// `Delete`
+  String get delete {
+    return Intl.message('Delete', name: 'delete', desc: '', args: []);
+  }
+
+  /// `Are you sure you want to delete this session?`
+  String get confirmDelete {
+    return Intl.message(
+      'Are you sure you want to delete this session?',
+      name: 'confirmDelete',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

@@ -99,5 +99,12 @@
   "returnToThinking": "Return to Thinking",
   "reciteAgain": "Recite Again",
   "sessionFeedback": "Session Feedback",
-  "skip":"Skip"
+  "skip":"Skip",
+  "conversationHistory": "Conversation History",
+  "noConversationsFound": "No conversations found",
+  "sessionDate": "Session Date",
+  "startTime": "Start Time",
+  "endTime": "End Time",
+  "delete": "Delete",
+  "confirmDelete": "Are you sure you want to delete this session?"
 }

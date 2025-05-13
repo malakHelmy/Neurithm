@@ -42,6 +42,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "chooseLanguage": MessageLookupByLibrary.simpleMessage("Choose Language"),
     "chosenLanguage": MessageLookupByLibrary.simpleMessage("en"),
     "commentLabel": MessageLookupByLibrary.simpleMessage("Comment or Message"),
+    "confirmDelete": MessageLookupByLibrary.simpleMessage(
+      "Are you sure you want to delete this session?",
+    ),
     "confirmPasswordLabel": MessageLookupByLibrary.simpleMessage(
       "Confirm Password",
     ),
@@ -49,11 +52,16 @@ class MessageLookup extends MessageLookupByLibrary {
     "connectToHeadset": MessageLookupByLibrary.simpleMessage(
       "Connect to a Headset",
     ),
+    "conversationHistory": MessageLookupByLibrary.simpleMessage(
+      "Conversation History",
+    ),
+    "delete": MessageLookupByLibrary.simpleMessage("Delete"),
     "doneThinking": MessageLookupByLibrary.simpleMessage("Done Thinking"),
     "emailLabel": MessageLookupByLibrary.simpleMessage("Email"),
     "emptyCommentError": MessageLookupByLibrary.simpleMessage(
       "Comment/Message cannot be empty",
     ),
+    "endTime": MessageLookupByLibrary.simpleMessage("End Time"),
     "english": MessageLookupByLibrary.simpleMessage("English"),
     "enterTextWarning": MessageLookupByLibrary.simpleMessage(
       "Please enter some text to generate speech.",
@@ -117,6 +125,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "noCategoriesFound": MessageLookupByLibrary.simpleMessage(
       "No categories found",
     ),
+    "noConversationsFound": MessageLookupByLibrary.simpleMessage(
+      "No conversations found",
+    ),
     "noHeadsetsFound": MessageLookupByLibrary.simpleMessage(
       "No headsets found",
     ),
@@ -151,6 +162,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "searchForCategories": MessageLookupByLibrary.simpleMessage(
       "Search categories...",
     ),
+    "sessionDate": MessageLookupByLibrary.simpleMessage("Session Date"),
     "sessionFeedback": MessageLookupByLibrary.simpleMessage("Session Feedback"),
     "settings": MessageLookupByLibrary.simpleMessage("Settings"),
     "skip": MessageLookupByLibrary.simpleMessage("Skip"),
@@ -158,6 +170,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Start Speaking Now",
     ),
     "startThinking": MessageLookupByLibrary.simpleMessage("Start Thinking"),
+    "startTime": MessageLookupByLibrary.simpleMessage("Start Time"),
     "submit": MessageLookupByLibrary.simpleMessage("Submit"),
     "submitButton": MessageLookupByLibrary.simpleMessage("Submit"),
     "submitFailure": MessageLookupByLibrary.simpleMessage(

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:neurithm/l10n/generated/app_localizations.dart';
 import 'package:neurithm/widgets/appbar.dart';
 import 'package:neurithm/widgets/bottomBar.dart';
 import 'package:neurithm/widgets/wavesBackground.dart';
@@ -75,6 +76,7 @@ class _ConversationHistoryPageState extends State<ConversationHistoryPage> {
 
     double fontSize(double size) => size * screenWidth / 400;
     double spacing(double size) => size * screenHeight / 800;
+    final t = AppLocalizations.of(context)!;
 
     return Scaffold(
       key: _scaffoldKey,
@@ -144,25 +146,26 @@ class _ConversationHistoryPageState extends State<ConversationHistoryPage> {
                                           CrossAxisAlignment.start,
                                       children: [
                                         Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
                                           children: [
                                             Text(
-                                              'Session Date: ${formatDate(startTime)}',
+                                              '${t.sessionDate}: ${formatDate(startTime)}',
                                               style: TextStyle(
                                                 fontSize: fontSize(16),
                                                 color: Colors.white,
                                                 fontWeight: FontWeight.bold,
                                               ),
-                                              
-                                            ),IconButton(
-                                          icon: const Icon(
-                                            Icons.delete,
-                                            color: Colors.white,
-                                          ),
-                                          onPressed: () {
-                                            _deletePrediction(predictionId);
-                                          },
-                                        ),
+                                            ),
+                                            IconButton(
+                                              icon: const Icon(
+                                                Icons.delete,
+                                                color: Colors.white,
+                                              ),
+                                              onPressed: () {
+                                                _deletePrediction(predictionId);
+                                              },
+                                            ),
                                           ],
                                         ),
                                         SizedBox(height: spacing(5)),
@@ -173,10 +176,9 @@ class _ConversationHistoryPageState extends State<ConversationHistoryPage> {
                                             color: Colors.white,
                                           ),
                                         ),
-                                        
                                         SizedBox(height: spacing(5)),
                                         Text(
-                                          'Start Time: ${formatTime(startTime)}',
+                                          '${t.startTime}: ${formatTime(startTime)}',
                                           style: TextStyle(
                                             fontSize: fontSize(14),
                                             color: Colors.white54,
@@ -184,7 +186,7 @@ class _ConversationHistoryPageState extends State<ConversationHistoryPage> {
                                         ),
                                         SizedBox(height: spacing(5)),
                                         Text(
-                                          'End Time: ${formatTime(endTime)}',
+                                          '${t.endTime}: ${formatTime(endTime)}',
                                           style: TextStyle(
                                             fontSize: fontSize(14),
                                             color: Colors.white54,
@@ -193,7 +195,7 @@ class _ConversationHistoryPageState extends State<ConversationHistoryPage> {
                                       ],
                                     ),
                                     SizedBox(height: spacing(15)),
-                                    
+
                                     // Row(
                                     //   mainAxisAlignment: MainAxisAlignment.end,
                                     //   children: [
