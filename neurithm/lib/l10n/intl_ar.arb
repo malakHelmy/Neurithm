@@ -90,6 +90,15 @@
   "playing": "جاري التشغيل..",
   "preferencesSaved": "تم حفظ الإعدادات الصوتيه بنجاح.",
   "enterSomeText": "الرجاء إدخال نص لتحويله إلى صوت.",
-  "saveChanges": "حفظ التغييرات"
+  "saveChanges": "حفظ التغييرات",
+  "chooseCorrectionLabel": "اختر التصحيح الذي يناسبك أكثر",
+  "regenerate": "إعادة توليد",
+  "recite": "تشغيل",
+  "finish": "إنهاء",
+  "reciteThoughtLabel": "تلاوة فكرتك",
+  "reciteAgain": "إعادة التلاوة",
+  "returnToThinking": "العودة إلى التفكير",
+  "sessionFeedback": "تقييم الجلسة",
+  "skip": "تخطي"
 
 }

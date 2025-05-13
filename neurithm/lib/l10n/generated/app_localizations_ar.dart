@@ -279,8 +279,35 @@ class AppLocalizationsAr extends AppLocalizations {
   String get enterTextWarning => 'Please enter some text to generate speech.';
 
   @override
-  String get preferencesSaved => 'تم حفظ التفضيلات بنجاح.';
+  String get preferencesSaved => 'تم حفظ الإعدادات الصوتيه بنجاح.';
 
   @override
   String get saveChanges => 'حفظ التغييرات';
+
+  @override
+  String get chooseCorrectionLabel => 'اختر التصحيح الذي يناسبك أكثر';
+
+  @override
+  String get regenerate => 'إعادة توليد';
+
+  @override
+  String get recite => 'تشغيل';
+
+  @override
+  String get finish => 'إنهاء';
+
+  @override
+  String get reciteThoughtLabel => 'تلاوة فكرتك';
+
+  @override
+  String get returnToThinking => 'العودة إلى التفكير';
+
+  @override
+  String get reciteAgain => 'إعادة التلاوة';
+
+  @override
+  String get sessionFeedback => 'تقييم الجلسة';
+
+  @override
+  String get skip => 'تخطي';
 }

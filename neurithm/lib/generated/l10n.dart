@@ -799,6 +799,76 @@ class S {
       args: [],
     );
   }
+
+  /// `Choose Your Preferred\nCorrection`
+  String get chooseCorrectionLabel {
+    return Intl.message(
+      'Choose Your Preferred\nCorrection',
+      name: 'chooseCorrectionLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Regenerate`
+  String get regenerate {
+    return Intl.message('Regenerate', name: 'regenerate', desc: '', args: []);
+  }
+
+  /// `Recite`
+  String get recite {
+    return Intl.message('Recite', name: 'recite', desc: '', args: []);
+  }
+
+  /// `Finish`
+  String get finish {
+    return Intl.message('Finish', name: 'finish', desc: '', args: []);
+  }
+
+  /// `Reciting Your Thought`
+  String get reciteThoughtLabel {
+    return Intl.message(
+      'Reciting Your Thought',
+      name: 'reciteThoughtLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Return to Thinking`
+  String get returnToThinking {
+    return Intl.message(
+      'Return to Thinking',
+      name: 'returnToThinking',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Recite Again`
+  String get reciteAgain {
+    return Intl.message(
+      'Recite Again',
+      name: 'reciteAgain',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Session Feedback`
+  String get sessionFeedback {
+    return Intl.message(
+      'Session Feedback',
+      name: 'sessionFeedback',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Skip`
+  String get skip {
+    return Intl.message('Skip', name: 'skip', desc: '', args: []);
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

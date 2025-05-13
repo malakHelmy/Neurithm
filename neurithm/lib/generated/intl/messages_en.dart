@@ -36,6 +36,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "arabic": MessageLookupByLibrary.simpleMessage("Arabic"),
     "categories": MessageLookupByLibrary.simpleMessage("Categories"),
+    "chooseCorrectionLabel": MessageLookupByLibrary.simpleMessage(
+      "Choose Your Preferred\nCorrection",
+    ),
     "chooseLanguage": MessageLookupByLibrary.simpleMessage("Choose Language"),
     "chosenLanguage": MessageLookupByLibrary.simpleMessage("en"),
     "commentLabel": MessageLookupByLibrary.simpleMessage("Comment or Message"),
@@ -77,6 +80,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Frequently Asked Questions",
     ),
     "female": MessageLookupByLibrary.simpleMessage("Female"),
+    "finish": MessageLookupByLibrary.simpleMessage("Finish"),
     "firstNameLabel": MessageLookupByLibrary.simpleMessage("First Name"),
     "fullNameLabel": MessageLookupByLibrary.simpleMessage("Full Name"),
     "gender": MessageLookupByLibrary.simpleMessage("Gender"),
@@ -131,14 +135,25 @@ class MessageLookup extends MessageLookupByLibrary {
     "rateMessage": MessageLookupByLibrary.simpleMessage(
       "Please rate our app by selecting stars!",
     ),
+    "recite": MessageLookupByLibrary.simpleMessage("Recite"),
+    "reciteAgain": MessageLookupByLibrary.simpleMessage("Recite Again"),
+    "reciteThoughtLabel": MessageLookupByLibrary.simpleMessage(
+      "Reciting Your Thought",
+    ),
+    "regenerate": MessageLookupByLibrary.simpleMessage("Regenerate"),
     "replay": MessageLookupByLibrary.simpleMessage("Replay"),
     "restart": MessageLookupByLibrary.simpleMessage("Restart"),
+    "returnToThinking": MessageLookupByLibrary.simpleMessage(
+      "Return to Thinking",
+    ),
     "saveChanges": MessageLookupByLibrary.simpleMessage("Save Changes"),
     "scanning": MessageLookupByLibrary.simpleMessage("Scanning..."),
     "searchForCategories": MessageLookupByLibrary.simpleMessage(
       "Search categories...",
     ),
+    "sessionFeedback": MessageLookupByLibrary.simpleMessage("Session Feedback"),
     "settings": MessageLookupByLibrary.simpleMessage("Settings"),
+    "skip": MessageLookupByLibrary.simpleMessage("Skip"),
     "startSpeakingNow": MessageLookupByLibrary.simpleMessage(
       "Start Speaking Now",
     ),

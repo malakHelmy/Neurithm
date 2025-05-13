@@ -646,6 +646,60 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Save Changes'**
   String get saveChanges;
+
+  /// No description provided for @chooseCorrectionLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose Your Preferred\nCorrection'**
+  String get chooseCorrectionLabel;
+
+  /// No description provided for @regenerate.
+  ///
+  /// In en, this message translates to:
+  /// **'Regenerate'**
+  String get regenerate;
+
+  /// No description provided for @recite.
+  ///
+  /// In en, this message translates to:
+  /// **'Recite'**
+  String get recite;
+
+  /// No description provided for @finish.
+  ///
+  /// In en, this message translates to:
+  /// **'Finish'**
+  String get finish;
+
+  /// No description provided for @reciteThoughtLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Reciting Your Thought'**
+  String get reciteThoughtLabel;
+
+  /// No description provided for @returnToThinking.
+  ///
+  /// In en, this message translates to:
+  /// **'Return to Thinking'**
+  String get returnToThinking;
+
+  /// No description provided for @reciteAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Recite Again'**
+  String get reciteAgain;
+
+  /// No description provided for @sessionFeedback.
+  ///
+  /// In en, this message translates to:
+  /// **'Session Feedback'**
+  String get sessionFeedback;
+
+  /// No description provided for @skip.
+  ///
+  /// In en, this message translates to:
+  /// **'Skip'**
+  String get skip;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

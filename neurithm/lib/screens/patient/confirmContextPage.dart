@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:neurithm/l10n/generated/app_localizations.dart';
 import 'package:neurithm/models/patient.dart';
 import 'package:neurithm/screens/patient/feedbackPage.dart';
 import 'package:neurithm/screens/patient/reciteContextPage.dart';
@@ -109,19 +110,129 @@ class _ConfirmationPageState extends State<ConfirmContextPage> {
 
   @override
   Widget build(BuildContext context) {
+    final t = AppLocalizations.of(context)!;
+    Widget _actionButtons() {
+      return Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: ElevatedButton(
+                    onPressed: () {
+                      _handleRegenerate();
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color.fromARGB(255, 240, 240, 240),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(50),
+                      ),
+                      padding: EdgeInsets.symmetric(
+                          vertical: spacing(12, getScreenHeight(context))),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.refresh, color: Color(0xFF1A2A3A), size: 20),
+                        SizedBox(width: 5),
+                        Text(
+                          t.regenerate,
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.normal,
+                            color: Color(0xFF1A2A3A),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: ElevatedButton(
+                    onPressed: _selectedText == null
+                        ? null
+                        : () {
+                            _handleRecite();
+                          },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color.fromARGB(255, 240, 240, 240),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(50),
+                      ),
+                      padding: EdgeInsets.symmetric(
+                          vertical: spacing(12, getScreenHeight(context))),
+                    ),
+                    child:  Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.volume_up,
+                            color: Color(0xFF1A2A3A), size: 20),
+                        SizedBox(width: 5),
+                        Text(
+                          t.recite,
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.normal,
+                            color: Color(0xFF1A2A3A),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: ElevatedButton(
+              onPressed: () async {
+                if (_currentUser != null) {
+                  await signalReadingService
+                      .updateEndTimeByPatientId(_currentUser!.uid);
+                }
+
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const FeedbackPage()),
+                );
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.green,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(50),
+                ),
+                padding: EdgeInsets.symmetric(
+                    vertical: spacing(12, getScreenHeight(context))),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    t.finish,
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.normal,
+                      color: Colors.white,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      );
+    }
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        title: Text(
-          'Choose Your Preferred Correction',
-          style: TextStyle(
-            fontSize: 22,
-            fontWeight: FontWeight.w900,
-            fontFamily: 'Lato',
-            color: Colors.white,
-          ),
-        ),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
           onPressed: () => Navigator.pop(context),
@@ -162,6 +273,16 @@ class _ConfirmationPageState extends State<ConfirmContextPage> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         SizedBox(height: spacing(50, getScreenHeight(context))),
+                        Text(
+                          t.chooseCorrectionLabel,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 22,
+                            fontWeight: FontWeight.w900,
+                            fontFamily: 'Lato',
+                            color: Colors.white,
+                          ),
+                        ),
                         // Display all corrected text options
                         Expanded(
                           child: ListView.builder(
@@ -202,131 +323,13 @@ class _ConfirmationPageState extends State<ConfirmContextPage> {
                         ),
                         SizedBox(height: spacing(10, getScreenHeight(context))),
                         _actionButtons(),
-                                                SizedBox(height: spacing(40, getScreenHeight(context))),
-
+                        SizedBox(height: spacing(40, getScreenHeight(context))),
                       ],
                     ),
             ),
           ],
         ),
       ),
-    );
-  }
-
-  Widget _actionButtons() {
-    return Column(
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: ElevatedButton(
-                  onPressed: () {
-                    _handleRegenerate();
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color.fromARGB(255, 240, 240, 240),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(50),
-                    ),
-                    padding: EdgeInsets.symmetric(
-                        vertical: spacing(12, getScreenHeight(context))),
-                  ),
-                  child: const Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(Icons.refresh, color: Color(0xFF1A2A3A), size: 20),
-                      SizedBox(width: 5),
-                      Text(
-                        "Regenerate",
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.normal,
-                          color: Color(0xFF1A2A3A),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: ElevatedButton(
-                  onPressed: _selectedText == null
-                      ? null
-                      : () {
-                          _handleRecite();
-                        },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color.fromARGB(255, 240, 240, 240),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(50),
-                    ),
-                    padding: EdgeInsets.symmetric(
-                        vertical: spacing(12, getScreenHeight(context))),
-                  ),
-                  child: const Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(Icons.volume_up, color: Color(0xFF1A2A3A), size: 20),
-                      SizedBox(width: 5),
-                      Text(
-                        "Recite",
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.normal,
-                          color: Color(0xFF1A2A3A),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: ElevatedButton(
-            onPressed: () async {
-              if (_currentUser != null) {
-                await signalReadingService
-                    .updateEndTimeByPatientId(_currentUser!.uid);
-              }
-
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const FeedbackPage()),
-              );
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.green,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(50),
-              ),
-              padding: EdgeInsets.symmetric(
-                  vertical: spacing(12, getScreenHeight(context))),
-            ),
-            child: const Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  "Finish",
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.normal,
-                    color: Colors.white,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ],
     );
   }
 }

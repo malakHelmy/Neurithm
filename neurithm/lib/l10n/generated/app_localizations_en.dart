@@ -283,4 +283,31 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get saveChanges => 'Save Changes';
+
+  @override
+  String get chooseCorrectionLabel => 'Choose Your Preferred\nCorrection';
+
+  @override
+  String get regenerate => 'Regenerate';
+
+  @override
+  String get recite => 'Recite';
+
+  @override
+  String get finish => 'Finish';
+
+  @override
+  String get reciteThoughtLabel => 'Reciting Your Thought';
+
+  @override
+  String get returnToThinking => 'Return to Thinking';
+
+  @override
+  String get reciteAgain => 'Recite Again';
+
+  @override
+  String get sessionFeedback => 'Session Feedback';
+
+  @override
+  String get skip => 'Skip';
 }

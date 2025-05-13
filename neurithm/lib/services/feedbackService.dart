@@ -1,6 +1,9 @@
 import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 import 'package:neurithm/models/feedback.dart';
+import 'package:neurithm/models/locale.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class FeedbackService {
@@ -10,6 +13,58 @@ class FeedbackService {
   Future<void> addFeedback(FeedbackModel feedback) async {
     var feedbackRef = _db.collection('feedback').doc();
     await feedbackRef.set(feedback.toMap());
+  }
+
+  Future<void> addArabicPredefinedFeedback() async {
+    List<Map<String, String>> predefinedFeedback = [
+      {"category": "اتصال السماعة", "comment": "سهولة الاتصال"},
+      {"category": "اتصال السماعة", "comment": "انقطاعات متكررة"},
+      {"category": "اتصال السماعة", "comment": "استغرق وقتًا طويلاً للاتصال"},
+      {"category": "مخرجات النص", "comment": "وقت استجابة بطيء"},
+      {"category": "مخرجات النص", "comment": "فهم المقصد جيدًا"},
+      {"category": "مخرجات النص", "comment": "إعادة توليد النص مرات كثيرة"},
+      {"category": "مخرجات النص", "comment": "إعادة التوليد لا تحسن الدقة"},
+      {"category": "مخرجات النص", "comment": "إعادة التوليد كانت مفيدة"},
+      {"category": "مخرجات النص", "comment": "كشف الكلمات بدقة"},
+      {"category": "أداء تحويل النص إلى كلام", "comment": "الصوت بدا آليًا"},
+      {
+        "category": "أداء تحويل النص إلى كلام",
+        "comment": "الصوت كان رتيبًا جدًا"
+      },
+      {"category": "أداء تحويل النص إلى كلام", "comment": "صوت واضح وطبيعي"},
+      {
+        "category": "واجهة المستخدم وسهولة الاستخدام",
+        "comment": "سهولة التنقل"
+      },
+      {
+        "category": "واجهة المستخدم وسهولة الاستخدام",
+        "comment": "سلس وسريع الاستجابة"
+      },
+      {"category": "واجهة المستخدم وسهولة الاستخدام", "comment": "معقد جدًا"},
+      {
+        "category": "واجهة المستخدم وسهولة الاستخدام",
+        "comment": "يحتاج إلى تخطيط أفضل"
+      },
+      {"category": "بنك الكلمات والعبارات", "comment": "اختيار مفيد للعبارات"},
+      {
+        "category": "بنك الكلمات والعبارات",
+        "comment": "يحتاج إلى المزيد من فئات الكلمات"
+      },
+      {
+        "category": "بنك الكلمات والعبارات",
+        "comment": "لا يوجد ما يكفي من العبارات في كل فئة"
+      },
+      {"category": "بنك الكلمات والعبارات", "comment": "مفيد للتواصل السريع"},
+    ];
+
+    for (var feedback in predefinedFeedback) {
+      print("adding arabic feedback");
+      var feedbackRef = _db.collection('ar_feedback').doc();
+      await feedbackRef.set({
+        'category': feedback['category'],
+        'comment': feedback['comment'],
+      });
+    }
   }
 
   // Add predefined feedback comments to Firestore
@@ -68,9 +123,14 @@ class FeedbackService {
   }
 
   // Fetch distinct feedback categories
-  Future<List<String>> fetchCategories() async {
+  Future<List<String>> fetchCategories(BuildContext context) async {
     try {
-      var querySnapshot = await _db.collection('feedback').get();
+      LocaleModel localeModel =
+          Provider.of<LocaleModel>(context, listen: false);
+      String languageCode = localeModel.locale.languageCode;
+      String collectionName = languageCode == 'ar' ? 'ar_feedback' : 'feedback';
+
+      var querySnapshot = await _db.collection(collectionName).get();
       Set<String> categories = {};
 
       for (var doc in querySnapshot.docs) {
@@ -84,11 +144,17 @@ class FeedbackService {
     }
   }
 
-  // Fetch feedback comments by category
-  Future<List<String>> fetchCommentsByCategory(String category) async {
+// Fetch feedback comments by category
+  Future<List<String>> fetchCommentsByCategory(
+      String category, BuildContext context) async {
     try {
+      LocaleModel localeModel =
+          Provider.of<LocaleModel>(context, listen: false);
+      String languageCode = localeModel.locale.languageCode;
+      String collectionName = languageCode == 'ar' ? 'ar_feedback' : 'feedback';
+
       var querySnapshot = await _db
-          .collection('feedback')
+          .collection(collectionName)
           .where('category', isEqualTo: category)
           .get();
 
@@ -101,9 +167,14 @@ class FeedbackService {
 
   // Fetch all feedback comments
   Future<List<Map<String, dynamic>>> aggregateFeedbacks() async {
-    final feedbackQuery = await _db.collection('feedback').get();
+    // Get both English and Arabic feedback collections
+    final enFeedbackQuery = await _db.collection('feedback').get();
+    final arFeedbackQuery = await _db.collection('ar_feedback').get();
     final patientFeedbackQuery = await _db.collection('patient_feedback').get();
     final patientQuery = await _db.collection('patients').get();
+
+    // Combine all feedback documents
+    final allFeedbackDocs = [...enFeedbackQuery.docs, ...arFeedbackQuery.docs];
 
     Map<String, Set<DateTime>> uniqueFeedbacks = {};
     Map<String, Map<DateTime, List<String>>> feedbackComments = {};
@@ -113,35 +184,38 @@ class FeedbackService {
       final feedbackData = feedbackDoc.data();
       final patientId = feedbackData['patientId'];
       final feedbackId = feedbackData['feedbackId'];
-      final submittedAt = DateTime.parse(feedbackData['submittedAt']);
+      final submittedAt = feedbackData['submittedAt'] is Timestamp
+          ? (feedbackData['submittedAt'] as Timestamp).toDate()
+          : DateTime.parse(feedbackData['submittedAt']);
 
       final isResolved = feedbackData['isResolved'] ?? false;
       if (isResolved) continue;
 
       uniqueFeedbacks.putIfAbsent(patientId, () => {}).add(submittedAt);
-
       feedbackComments.putIfAbsent(patientId, () => {});
       feedbackComments[patientId]!.putIfAbsent(submittedAt, () => []);
 
-      final feedback =
-          feedbackQuery.docs.firstWhere((doc) => doc.id == feedbackId);
-      feedbackComments[patientId]![submittedAt]!
-          .add(feedback.data()['comment']);
+      // Search in combined feedback docs
+      final matchingFeedback =
+          allFeedbackDocs.where((doc) => doc.id == feedbackId);
+      if (matchingFeedback.isNotEmpty) {
+        feedbackComments[patientId]![submittedAt]!
+            .add(matchingFeedback.first['comment']);
+      }
     }
 
     for (var patientId in uniqueFeedbacks.keys) {
-      final user = patientQuery.docs.firstWhere((doc) => doc.id == patientId);
+      final user = patientQuery.docs.firstWhere(
+        (doc) => doc.id == patientId,
+        orElse: () => throw Exception('Patient not found'),
+      );
       final fullName = "${user['firstName']} ${user['lastName']}";
 
       for (var date in uniqueFeedbacks[patientId]!) {
-        final feedbacks = uniqueFeedbacks[patientId]!.join(', ');
-        final comments = feedbackComments[patientId]![date]!.join(', ');
-
         aggregatedFeedbackList.add({
           'userName': fullName,
           'date': date,
-          'feedbacks': feedbacks,
-          'comments': comments,
+          'comments': feedbackComments[patientId]![date]!.join(', '),
           'feedbackIds': feedbackComments[patientId]![date]!,
           'isResolved': false,
         });
@@ -187,9 +261,14 @@ class FeedbackService {
   }
 
   // Fetch feedback data and cache it locally
-  Future<Map<String, List<String>>> fetchFeedbackDataAndCache() async {
+  Future<Map<String, List<String>>> fetchFeedbackDataAndCache(
+      BuildContext context) async {
+    LocaleModel localeModel = Provider.of<LocaleModel>(context, listen: false);
+    String languageCode = localeModel.locale.languageCode;
+    String collectionName = languageCode == 'ar' ? 'ar_feedback' : 'feedback';
+
     final feedbackSnapshot =
-        await FirebaseFirestore.instance.collection('feedback').get();
+        await FirebaseFirestore.instance.collection(collectionName).get();
 
     Map<String, List<String>> feedbackData = {};
 
@@ -216,12 +295,17 @@ class FeedbackService {
     required Set<String> selectedComments,
     required Map<String, List<String>> feedbackData,
     required String patientId,
+    required BuildContext context,
   }) async {
     if (selectedComments.isEmpty || patientId.isEmpty) return;
 
+    LocaleModel localeModel = Provider.of<LocaleModel>(context, listen: false);
+    String languageCode = localeModel.locale.languageCode;
+    String collectionName = languageCode == 'ar' ? 'ar_feedback' : 'feedback';
+
     final today = DateTime.now();
     final feedbackCollection =
-        FirebaseFirestore.instance.collection('feedback');
+        FirebaseFirestore.instance.collection(collectionName);
     final patientFeedbackCollection =
         FirebaseFirestore.instance.collection('patient_feedback');
 
@@ -256,12 +340,11 @@ class FeedbackService {
     final patientCommentsCollection =
         FirebaseFirestore.instance.collection('patient_comments');
 
-      await patientCommentsCollection.add({
-        'patientId': patientId,
-        'comment': comment,
-        'submittedAt': today.toIso8601String(),
-        'isResolved': false,
-      });
-    
+    await patientCommentsCollection.add({
+      'patientId': patientId,
+      'comment': comment,
+      'submittedAt': today.toIso8601String(),
+      'isResolved': false,
+    });
   }
 }

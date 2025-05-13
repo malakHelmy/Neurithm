@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:neurithm/l10n/generated/app_localizations.dart';
 import 'package:neurithm/models/patient.dart';
 import 'package:neurithm/screens/homepage.dart';
 import 'package:neurithm/services/feedbackService.dart';
@@ -34,7 +35,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
   }
 
   Future<void> _fetchFeedbackDataInBackground() async {
-    final fetched = await _feedbackService.fetchFeedbackDataAndCache();
+    final fetched = await _feedbackService.fetchFeedbackDataAndCache(context);
     if (mounted) {
       setState(() {
         _feedbackData = fetched;
@@ -56,10 +57,10 @@ class _FeedbackPageState extends State<FeedbackPage> {
     if (_currentUser == null) return;
 
     await _feedbackService.submitFeedback(
-      selectedComments: _selectedComments,
-      feedbackData: _feedbackData,
-      patientId: _currentUser!.uid,
-    );
+        selectedComments: _selectedComments,
+        feedbackData: _feedbackData,
+        patientId: _currentUser!.uid,
+        context: context);
 
     final prefs = await SharedPreferences.getInstance();
     int openCount = prefs.getInt('open_count') ?? 0;
@@ -80,10 +81,12 @@ class _FeedbackPageState extends State<FeedbackPage> {
 
   @override
   Widget build(BuildContext context) {
+    final t = AppLocalizations.of(context)!;
+
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
-        title: const Text("Session Feedback"),
+        title: Text(t.sessionFeedback),
         backgroundColor: Colors.transparent,
         elevation: 0,
         systemOverlayStyle: SystemUiOverlayStyle.light,
@@ -182,7 +185,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12)),
                       ),
-                      child: const Text("Skip", style: TextStyle(fontSize: 18)),
+                      child: Text(t.skip, style: const TextStyle(fontSize: 18)),
                     ),
                     ElevatedButton(
                       onPressed:
@@ -195,8 +198,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12)),
                       ),
-                      child:
-                          const Text("Submit", style: TextStyle(fontSize: 18)),
+                      child: Text(t.submit, style: const TextStyle(fontSize: 18)),
                     ),
                   ],
                 ),

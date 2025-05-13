@@ -90,5 +90,14 @@
   "replay": "Replay",
   "enterTextWarning": "Please enter some text to generate speech.",
   "preferencesSaved": "Your preferences have been saved successfully.",
-  "saveChanges": "Save Changes"
+  "saveChanges": "Save Changes",
+  "chooseCorrectionLabel": "Choose Your Preferred\nCorrection",
+  "regenerate": "Regenerate",
+  "recite": "Recite",
+  "finish": "Finish",
+  "reciteThoughtLabel": "Reciting Your Thought",
+  "returnToThinking": "Return to Thinking",
+  "reciteAgain": "Recite Again",
+  "sessionFeedback": "Session Feedback",
+  "skip":"Skip"
 }

@@ -36,6 +36,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "arabic": MessageLookupByLibrary.simpleMessage("العربية"),
     "categories": MessageLookupByLibrary.simpleMessage("فئات"),
+    "chooseCorrectionLabel": MessageLookupByLibrary.simpleMessage(
+      "اختر التصحيح الذي يناسبك أكثر",
+    ),
     "chooseLanguage": MessageLookupByLibrary.simpleMessage("اختر اللغة"),
     "chosenLanguage": MessageLookupByLibrary.simpleMessage("ar"),
     "commentLabel": MessageLookupByLibrary.simpleMessage("تعليق أو رسالة"),
@@ -72,6 +75,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "faqTitle": MessageLookupByLibrary.simpleMessage("الأسئلة الشائعة"),
     "female": MessageLookupByLibrary.simpleMessage("أنثى"),
+    "finish": MessageLookupByLibrary.simpleMessage("إنهاء"),
     "firstNameLabel": MessageLookupByLibrary.simpleMessage("لاسم الأول"),
     "fullNameLabel": MessageLookupByLibrary.simpleMessage("الاسم الكامل"),
     "gender": MessageLookupByLibrary.simpleMessage("الجنس"),
@@ -126,14 +130,23 @@ class MessageLookup extends MessageLookupByLibrary {
     "rateMessage": MessageLookupByLibrary.simpleMessage(
       "يرجى تقييم تطبيقنا عن طريق اختيار النجوم!",
     ),
+    "recite": MessageLookupByLibrary.simpleMessage("تشغيل"),
+    "reciteAgain": MessageLookupByLibrary.simpleMessage("إعادة التلاوة"),
+    "reciteThoughtLabel": MessageLookupByLibrary.simpleMessage("تلاوة فكرتك"),
+    "regenerate": MessageLookupByLibrary.simpleMessage("إعادة توليد"),
     "replay": MessageLookupByLibrary.simpleMessage("إعادة تشغيل"),
     "restart": MessageLookupByLibrary.simpleMessage("إعادة البدء"),
+    "returnToThinking": MessageLookupByLibrary.simpleMessage(
+      "العودة إلى التفكير",
+    ),
     "saveChanges": MessageLookupByLibrary.simpleMessage("حفظ التغييرات"),
     "scanning": MessageLookupByLibrary.simpleMessage("جارٍ البحث..."),
     "searchForCategories": MessageLookupByLibrary.simpleMessage(
       "البحث عن الفئات...",
     ),
+    "sessionFeedback": MessageLookupByLibrary.simpleMessage("تقييم الجلسة"),
     "settings": MessageLookupByLibrary.simpleMessage("الإعدادات"),
+    "skip": MessageLookupByLibrary.simpleMessage("تخطي"),
     "startSpeakingNow": MessageLookupByLibrary.simpleMessage(
       "ابدأ التحدث الآن",
     ),

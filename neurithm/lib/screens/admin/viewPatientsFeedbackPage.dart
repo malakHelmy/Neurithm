@@ -26,6 +26,7 @@ class _PatientsFeedbackPageState extends State<ViewPatientsFeedbackPage> {
 
   Future<void> _loadFeedbacks() async {
     final data = await _feedbackService.aggregateFeedbacks();
+    print(data);
     setState(() {
       _feedbacks = data;
       pendingFeedbacks = data.length;

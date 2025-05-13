@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:neurithm/l10n/generated/app_localizations.dart';
 import 'package:neurithm/models/patient.dart';
 import 'package:neurithm/models/userPreferences.dart';
 import 'package:neurithm/models/voiceSettings.dart';
@@ -28,7 +29,7 @@ class _ReciteContextPageState extends State<ReciteContextPage>
   final TTSService _ttsService = TTSService();
   late AnimationController _animationController;
   late Timer _waveTimer;
-  List<double> waveHeights = List.filled(20, 0); 
+  List<double> waveHeights = List.filled(20, 0);
   final _audioPlayer = AudioPlayer();
   bool _isPlaying = false;
   bool _isGenerating = false;
@@ -125,12 +126,14 @@ class _ReciteContextPageState extends State<ReciteContextPage>
 
   @override
   Widget build(BuildContext context) {
+    final t = AppLocalizations.of(context)!;
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
           onPressed: () {
             Navigator.pop(context);
           },
@@ -147,9 +150,9 @@ class _ReciteContextPageState extends State<ReciteContextPage>
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Text(
-                    'Reciting Your Thought',
-                    style: TextStyle(
+                  Text(
+                    t.reciteThoughtLabel,
+                    style: const TextStyle(
                       fontSize: 27,
                       fontWeight: FontWeight.bold,
                       fontFamily: 'Lato',
@@ -191,18 +194,18 @@ class _ReciteContextPageState extends State<ReciteContextPage>
                         ),
                         padding: const EdgeInsets.symmetric(vertical: 13),
                       ),
-                      child: const Row(
+                      child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Icon(
+                          const Icon(
                             Icons.psychology,
                             color: Color(0xFF1A2A3A),
                             size: 25,
                           ),
-                          SizedBox(width: 10),
+                          const SizedBox(width: 10),
                           Text(
-                            "Return to Thinking",
-                            style: TextStyle(
+                            t.returnToThinking,
+                            style: const TextStyle(
                               fontSize: 25,
                               fontWeight: FontWeight.normal,
                               color: Color(0xFF1A2A3A),
@@ -229,18 +232,18 @@ class _ReciteContextPageState extends State<ReciteContextPage>
                         ),
                         padding: const EdgeInsets.symmetric(vertical: 13),
                       ),
-                      child: const Row(
+                      child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Icon(
+                          const Icon(
                             Icons.replay,
                             color: Color(0xFF1A2A3A),
                             size: 25,
                           ),
-                          SizedBox(width: 10),
+                          const SizedBox(width: 10),
                           Text(
-                            "Recite Again",
-                            style: TextStyle(
+                            t.reciteAgain,
+                            style: const TextStyle(
                               fontSize: 25,
                               fontWeight: FontWeight.normal,
                               color: Color(0xFF1A2A3A),
@@ -273,18 +276,18 @@ class _ReciteContextPageState extends State<ReciteContextPage>
                         ),
                         padding: const EdgeInsets.symmetric(vertical: 13),
                       ),
-                      child: const Row(
+                      child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Icon(
+                          const Icon(
                             Icons.check_circle,
                             color: Color(0xFF1A2A3A),
                             size: 25,
                           ),
-                          SizedBox(width: 10),
+                          const SizedBox(width: 10),
                           Text(
-                            "Finish",
-                            style: TextStyle(
+                            t.finish,
+                            style: const TextStyle(
                               fontSize: 25,
                               fontWeight: FontWeight.normal,
                               color: Colors.white,
