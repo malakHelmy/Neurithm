@@ -743,6 +743,54 @@ abstract class AppLocalizations {
   /// **'Are you sure you want to delete this session?'**
   String get confirmDelete;
 
+  /// No description provided for @step1.
+  ///
+  /// In en, this message translates to:
+  /// **'Get your headset (Emotiv Epoc X) out of its package.'**
+  String get step1;
+
+  /// No description provided for @step2.
+  ///
+  /// In en, this message translates to:
+  /// **'Hydrate the sensor felts using saline solution. Do not use contact lens cleaning or sterilizing solutions.'**
+  String get step2;
+
+  /// No description provided for @step3.
+  ///
+  /// In en, this message translates to:
+  /// **'Place the sensor felts in a glass, add saline solution, and soak. Squeeze out excess fluid before inserting them into the sensors.'**
+  String get step3;
+
+  /// No description provided for @step4.
+  ///
+  /// In en, this message translates to:
+  /// **'To rehydrate sensors while using the headset, add saline solution through the top opening of each sensor.'**
+  String get step4;
+
+  /// No description provided for @step5.
+  ///
+  /// In en, this message translates to:
+  /// **'Insert the sensor felts into each sensor opening and press the power button to turn on the headset. A white LED will illuminate, and the headset will beep. To optimize the use of your headset, we recommend that you fully charge it before making recordings.'**
+  String get step5;
+
+  /// No description provided for @step6.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn on Bluetooth on your phone and navigate to the \"Connect to Headset\" page.'**
+  String get step6;
+
+  /// No description provided for @step7.
+  ///
+  /// In en, this message translates to:
+  /// **'Click the big circular button to scan for devices and select the headset when it appears.'**
+  String get step7;
+
+  /// No description provided for @step8.
+  ///
+  /// In en, this message translates to:
+  /// **'Once connected, you can start the thought translation process!'**
+  String get step8;
+
   /// No description provided for @goBack.
   ///
   /// In en, this message translates to:

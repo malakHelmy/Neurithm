@@ -15,76 +15,61 @@ class _TutorialPageState extends State<TutorialPage> {
   final PageController _pageController = PageController();
   int currentStep = 0;
 
-  final List<Map<String, String>> tutorialSteps = [
-    {
-      'image': 'assets/images/headset_package.png',
-      'text': 'Get your headset (Emotiv Epoc X) out of its package.'
-    },
-    {
-      'image': 'assets/images/saline_solution.png',
-      'text':
-          'Hydrate the sensor felts using saline solution. Do not use contact lens cleaning or sterilizing solutions.'
-    },
-    {
-      'image': 'assets/images/soak_sensors.png',
-      'text':
-          'Place the sensor felts in a glass, add saline solution, and soak. Squeeze out excess fluid before inserting them into the sensors.'
-    },
-    {
-      'image': 'assets/images/rehydrate_sensors.png',
-      'text':
-          'To rehydrate sensors while using the headset, add saline solution through the top opening of each sensor.'
-    },
-    {
-      'image': 'assets/images/headset_power_on.png',
-      'text':
-          'Insert the sensor felts into each sensor opening and press the power button to turn on the headset. A white LED will illuminate, and the headset will beep.To optimize the use of your headset, we recommend that you fully charge it before making recordings.'
-    },
-    {
-      'image': '',
-      'text':
-          'Turn on Bluetooth on your phone and navigate to the "Connect to Headset" page.'
-    },
-    {
-      'image': '',
-      'text':
-          'Click the big circular button to scan for devices and select the headset when it appears.'
-    },
-    {
-      'image': '',
-      'text': 'Once connected, you can start the thought translation process!'
-    },
-  ];
-
-  void nextStep() {
-    if (currentStep < tutorialSteps.length - 1) {
-      _pageController.animateToPage(
-        currentStep + 1,
-        duration: const Duration(milliseconds: 500),
-        curve: Curves.easeInOut,
-      );
-      setState(() {
-        currentStep++;
-      });
-    }
-  }
-
-  void prevStep() {
-    if (currentStep > 0) {
-      _pageController.animateToPage(
-        currentStep - 1,
-        duration: const Duration(milliseconds: 500),
-        curve: Curves.easeInOut,
-      );
-      setState(() {
-        currentStep--;
-      });
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final t = AppLocalizations.of(context)!;
+
+    final List<Map<String, String>> tutorialSteps = [
+      {
+        'image': 'assets/images/headset_package.png',
+        'text': t.step1
+      },
+      {
+        'image': 'assets/images/saline_solution.png',
+        'text': t.step2
+      },
+      {
+        'image': 'assets/images/soak_sensors.png',
+        'text': t.step3
+      },
+      {
+        'image': 'assets/images/rehydrate_sensors.png',
+        'text': t.step4
+      },
+      {
+        'image': 'assets/images/headset_power_on.png',
+        'text': t.step5
+      },
+      {'image': '', 'text': t.step6},
+      {'image': '', 'text': t.step7},
+      {'image': '', 'text': t.step8},
+    ];
+
+    void nextStep() {
+      if (currentStep < tutorialSteps.length - 1) {
+        _pageController.animateToPage(
+          currentStep + 1,
+          duration: const Duration(milliseconds: 500),
+          curve: Curves.easeInOut,
+        );
+        setState(() {
+          currentStep++;
+        });
+      }
+    }
+
+    void prevStep() {
+      if (currentStep > 0) {
+        _pageController.animateToPage(
+          currentStep - 1,
+          duration: const Duration(milliseconds: 500),
+          curve: Curves.easeInOut,
+        );
+        setState(() {
+          currentStep--;
+        });
+      }
+    }
 
     return Scaffold(
       key: _scaffoldKey,
@@ -172,7 +157,7 @@ class _TutorialPageState extends State<TutorialPage> {
                                         horizontal: 30,
                                       ),
                                     ),
-                                    child:  Text(
+                                    child: Text(
                                       t.startSpeakingNow,
                                       style: TextStyle(
                                           fontSize: 18,

@@ -333,5 +333,29 @@ class AppLocalizationsEn extends AppLocalizations {
   String get confirmDelete => 'Are you sure you want to delete this session?';
 
   @override
+  String get step1 => 'Get your headset (Emotiv Epoc X) out of its package.';
+
+  @override
+  String get step2 => 'Hydrate the sensor felts using saline solution. Do not use contact lens cleaning or sterilizing solutions.';
+
+  @override
+  String get step3 => 'Place the sensor felts in a glass, add saline solution, and soak. Squeeze out excess fluid before inserting them into the sensors.';
+
+  @override
+  String get step4 => 'To rehydrate sensors while using the headset, add saline solution through the top opening of each sensor.';
+
+  @override
+  String get step5 => 'Insert the sensor felts into each sensor opening and press the power button to turn on the headset. A white LED will illuminate, and the headset will beep. To optimize the use of your headset, we recommend that you fully charge it before making recordings.';
+
+  @override
+  String get step6 => 'Turn on Bluetooth on your phone and navigate to the \"Connect to Headset\" page.';
+
+  @override
+  String get step7 => 'Click the big circular button to scan for devices and select the headset when it appears.';
+
+  @override
+  String get step8 => 'Once connected, you can start the thought translation process!';
+
+  @override
   String get goBack => 'Go Back';
 }

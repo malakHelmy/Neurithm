@@ -163,6 +163,30 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "startThinking": MessageLookupByLibrary.simpleMessage("ابدأ التفكير"),
     "startTime": MessageLookupByLibrary.simpleMessage("وقت البدء"),
+    "step1": MessageLookupByLibrary.simpleMessage(
+      "أخرج سماعة Emotiv Epoc X من علبتها.",
+    ),
+    "step2": MessageLookupByLibrary.simpleMessage(
+      "رطّب الوسائد الحسية باستخدام محلول ملحي. لا تستخدم محاليل تنظيف أو تعقيم العدسات اللاصقة.",
+    ),
+    "step3": MessageLookupByLibrary.simpleMessage(
+      "ضع الوسائد الحسية في كوب، وأضف المحلول الملحي، وانقعها جيدًا. اعصر السائل الزائد قبل إدخالها في الحساسات.",
+    ),
+    "step4": MessageLookupByLibrary.simpleMessage(
+      "لإعادة ترطيب الحساسات أثناء استخدام السماعة، أضف المحلول الملحي من الفتحة العلوية لكل حساس.",
+    ),
+    "step5": MessageLookupByLibrary.simpleMessage(
+      "أدخل الوسائد الحسية في فتحات الحساسات واضغط على زر التشغيل لتشغيل السماعة. سيضيء مصباح LED أبيض وتصدر السماعة صوت تنبيه. لتحسين الاستخدام، يُنصح بشحن السماعة بالكامل قبل بدء التسجيل.",
+    ),
+    "step6": MessageLookupByLibrary.simpleMessage(
+      "قم بتفعيل البلوتوث على هاتفك وانتقل إلى صفحة \"الاتصال بالسماعة\".",
+    ),
+    "step7": MessageLookupByLibrary.simpleMessage(
+      "اضغط على الزر الدائري الكبير للبحث عن الأجهزة واختر السماعة عند ظهورها.",
+    ),
+    "step8": MessageLookupByLibrary.simpleMessage(
+      "بمجرد الاتصال، يمكنك البدء بعملية ترجمة الأفكار!",
+    ),
     "submit": MessageLookupByLibrary.simpleMessage("إرسال"),
     "submitButton": MessageLookupByLibrary.simpleMessage("إرسال"),
     "submitFailure": MessageLookupByLibrary.simpleMessage(
