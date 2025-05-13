@@ -65,7 +65,7 @@ except Exception as e:
     raise e
 
 
-# Load alternative model (Transformer)
+# Load alternative model (EEGNET and EEG Transformer)
 try:
     alt_model = tf.keras.models.load_model(ALT_MODEL_PATH)
     logger.info("✅ Alternative EEGTransformer model loaded successfully.")
@@ -111,13 +111,10 @@ def process_eeg_data(df, sample_rate=128, letter_duration=10, gap=0.5):
     segments = []
 
     for start in range(0, len(df), rows_per_letter + rows_per_gap):
-        # For the last segment, avoid adding a gap after it
         if start + rows_per_letter + rows_per_gap > len(df):
             end = min(start + rows_per_letter, len(df))
         else:
             end = min(start + rows_per_letter, len(df))
-        
-        # Add the segment to the list
         segments.append(df.iloc[start:end].copy())
 
     return segments
@@ -137,7 +134,7 @@ def handle_upload(file):
     for i, segment in enumerate(segments, 1):
         segment.to_csv(word_path / f"letter_{i}.csv", index=False)
 
-    # Create in-memory zip (optional - you don't use it now)
+    # Create in-memory zip
     zip_buffer = io.BytesIO()
     with zipfile.ZipFile(zip_buffer, 'w') as zf:
         for csv_file in word_path.glob("*.csv"):
@@ -206,10 +203,10 @@ def run_predictions_in_memory(folder_path, model_path, label_encoder_path, alt_m
                 X_new = X_new[..., np.newaxis]
                 
 
-                if alt_model:  # Alternative model (eegtransformer)
-                    y_pred_probs = model.predict([X_new])  # Pass both inputs to the alt model
+                if alt_model:  # Alternative model (EEGNET and EEG Transformer)
+                    y_pred_probs = model.predict([X_new])
                 else:  # Main model (eegnet)
-                    y_pred_probs = model.predict(X_new)  # Main model uses only EEG data
+                    y_pred_probs = model.predict(X_new)
 
                 # Decode predictions
                 y_pred_labels = np.argmax(y_pred_probs, axis=-1)
@@ -249,7 +246,7 @@ def get_multiple_corrections(text, num_options=5):
     payload = {
         "model": MODEL_NAME,
         "messages": [{"role": "user", "content": prompt}],
-        "temperature": 0.7,  # Increased temperature for more variety
+        "temperature": 0.7,
         "max_tokens": 300,   # Increased token limit to accommodate multiple corrections
         "n": 1               # We'll parse multiple options from a single completion
     }
@@ -295,7 +292,7 @@ def get_multiple_corrections(text, num_options=5):
             if attempt == MAX_RETRIES - 1:
                 return [text]  # Fallback to original text as the only option
     
-    return [text]  # Fallback if all else fails
+    return [text]
 
 
 # Global variable to store the concatenated word
@@ -303,7 +300,7 @@ concatenated_word = ""
 
 @app.route('/start_thinking', methods=['POST'])
 def start_thinking():
-    global concatenated_word  # Use the global variable to store the concatenated word
+    global concatenated_word
 
     if 'file' not in request.files:
         return jsonify(error="No file provided"), 400
@@ -484,7 +481,7 @@ def restart():
 
     try:
         # Step 1: Reset the concatenated_word to an empty string
-        concatenated_word = ""  # Clear the concatenated word
+        concatenated_word = ""
 
         # Log the reset action
         logger.debug("Concatenated word has been reset.")
@@ -498,17 +495,13 @@ def restart():
         app.logger.error(f"Error during reset: {str(e)}")
         return jsonify(error="Failed to reset the server"), 500
     
-    
-    
-
-
-# Now ensure the regenerate endpoint can access this function
+        
 @app.route('/regenerate', methods=['POST'])
 def regenerate():
     """Regenerate predictions for a specific preprocessed word folder using the EEGTransformer model"""
     try:
         data = request.json
-        word_folder = data.get('word_folder')  # e.g., "word1"
+        word_folder = data.get('word_folder')
         num_options = data.get('num_options', 5)
 
         if not word_folder:
@@ -523,7 +516,6 @@ def regenerate():
 
         logger.info(f"♻ Regenerating predictions from folder: {full_path}")
 
-        # Use the updated transformer prediction function with proper frequency features
         predictions = run_predictions_in_memory(full_path, ALT_MODEL_PATH, ALT_LABEL_ENCODER_PATH, alt_model=True)
 
         logger.debug(f"EEGTransformer predictions: {json.dumps(predictions, ensure_ascii=False)}")
