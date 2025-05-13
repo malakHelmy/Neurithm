@@ -78,7 +78,7 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
       );
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error: \$e')),
+        const SnackBar(content: Text('Error: \$e')),
       );
     }
   }
@@ -128,21 +128,21 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
               ),
               Column(
                 children: [
-                  const Column(
+                  Column(
                     children: [
-                      SizedBox(
+                      const SizedBox(
                         height: 85,
                       ),
-                      CircleAvatar(
+                      const CircleAvatar(
                         radius: 50,
                         backgroundColor: Color.fromARGB(255, 62, 99, 135),
                         child:
                             Icon(Icons.person, size: 50, color: Colors.white),
                       ),
-                      SizedBox(height: 10),
+                      const SizedBox(height: 10),
                       Text(
-                        'Settings',
-                        style: TextStyle(
+                        t.settings,
+                        style: const TextStyle(
                           fontSize: 25,
                           fontFamily: 'Lato',
                           fontWeight: FontWeight.bold,
@@ -152,17 +152,17 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
                     ],
                   ),
                   const SizedBox(height: 10),
-                  _editableField(Icons.person, 'First Name',
+                  _editableField(Icons.person, t.firstNameLabel,
                       controller: firstNameController, readOnly: true),
-                  _editableField(Icons.person, 'Last Name',
+                  _editableField(Icons.person, t.lastNameLabel,
                       controller: lastNameController, readOnly: true),
-                  _editableField(Icons.email, 'Email',
+                  _editableField(Icons.email, t.emailLabel,
                       controller: emailController, readOnly: true),
-                  _editableField(Icons.lock, 'New Password',
+                  _editableField(Icons.lock, t.passwordLabel,
                       controller: passwordController, obscureText: true),
-                  _editableField(Icons.lock, 'Confirm Password',
+                  _editableField(Icons.lock,t.confirmPasswordLabel,
                       controller: confirmPasswordController, obscureText: true),
-                  SizedBox(
+                  const SizedBox(
                     height: 20,
                   ),
                   Padding(
@@ -181,9 +181,9 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
                             vertical: spacing(12, getScreenHeight(context)),
                           ),
                         ),
-                        child: const Text(
-                          "Save Changes",
-                          style: TextStyle(
+                        child:  Text(
+                          t.saveChanges,
+                          style: const TextStyle(
                             fontSize: 25,
                             fontWeight: FontWeight.normal,
                             color: Color(0xFF1A2A3A),

@@ -440,8 +440,32 @@ abstract class AppLocalizations {
   /// No description provided for @fullNameLabel.
   ///
   /// In en, this message translates to:
-  /// **'Full name'**
+  /// **'Full Name'**
   String get fullNameLabel;
+
+  /// No description provided for @firstNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'First Name'**
+  String get firstNameLabel;
+
+  /// No description provided for @lastNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Last Name'**
+  String get lastNameLabel;
+
+  /// No description provided for @passwordLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'New Password'**
+  String get passwordLabel;
+
+  /// No description provided for @confirmPasswordLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm Password'**
+  String get confirmPasswordLabel;
 
   /// No description provided for @emailLabel.
   ///
@@ -526,6 +550,102 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Saved data can be found in the \"History\" section accessible from the bottom bar.'**
   String get faq3Answer;
+
+  /// No description provided for @voiceOptions.
+  ///
+  /// In en, this message translates to:
+  /// **'Voice Options'**
+  String get voiceOptions;
+
+  /// No description provided for @pitch.
+  ///
+  /// In en, this message translates to:
+  /// **'Pitch'**
+  String get pitch;
+
+  /// No description provided for @language.
+  ///
+  /// In en, this message translates to:
+  /// **'Language'**
+  String get language;
+
+  /// No description provided for @gender.
+  ///
+  /// In en, this message translates to:
+  /// **'Gender'**
+  String get gender;
+
+  /// No description provided for @male.
+  ///
+  /// In en, this message translates to:
+  /// **'Male'**
+  String get male;
+
+  /// No description provided for @female.
+  ///
+  /// In en, this message translates to:
+  /// **'Female'**
+  String get female;
+
+  /// No description provided for @voice.
+  ///
+  /// In en, this message translates to:
+  /// **'Voice'**
+  String get voice;
+
+  /// No description provided for @testVoice.
+  ///
+  /// In en, this message translates to:
+  /// **'Test Voice'**
+  String get testVoice;
+
+  /// No description provided for @textToSpeakLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Text to speak'**
+  String get textToSpeakLabel;
+
+  /// No description provided for @textToSpeakHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter text here...'**
+  String get textToSpeakHint;
+
+  /// No description provided for @playVoice.
+  ///
+  /// In en, this message translates to:
+  /// **'Generate & Play Voice'**
+  String get playVoice;
+
+  /// No description provided for @playing.
+  ///
+  /// In en, this message translates to:
+  /// **'Playing..'**
+  String get playing;
+
+  /// No description provided for @replay.
+  ///
+  /// In en, this message translates to:
+  /// **'Replay'**
+  String get replay;
+
+  /// No description provided for @enterTextWarning.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter some text to generate speech.'**
+  String get enterTextWarning;
+
+  /// No description provided for @preferencesSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Your preferences have been saved successfully.'**
+  String get preferencesSaved;
+
+  /// No description provided for @saveChanges.
+  ///
+  /// In en, this message translates to:
+  /// **'Save Changes'**
+  String get saveChanges;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

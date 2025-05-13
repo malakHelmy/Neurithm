@@ -180,7 +180,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get helpSubtitle => 'Facing any issues? Submit the form below and we’ll get back to you via email as soon as possible.';
 
   @override
-  String get fullNameLabel => 'Full name';
+  String get fullNameLabel => 'Full Name';
+
+  @override
+  String get firstNameLabel => 'First Name';
+
+  @override
+  String get lastNameLabel => 'Last Name';
+
+  @override
+  String get passwordLabel => 'New Password';
+
+  @override
+  String get confirmPasswordLabel => 'Confirm Password';
 
   @override
   String get emailLabel => 'Email';
@@ -223,4 +235,52 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get faq3Answer => 'Saved data can be found in the \"History\" section accessible from the bottom bar.';
+
+  @override
+  String get voiceOptions => 'Voice Options';
+
+  @override
+  String get pitch => 'Pitch';
+
+  @override
+  String get language => 'Language';
+
+  @override
+  String get gender => 'Gender';
+
+  @override
+  String get male => 'Male';
+
+  @override
+  String get female => 'Female';
+
+  @override
+  String get voice => 'Voice';
+
+  @override
+  String get testVoice => 'Test Voice';
+
+  @override
+  String get textToSpeakLabel => 'Text to speak';
+
+  @override
+  String get textToSpeakHint => 'Enter text here...';
+
+  @override
+  String get playVoice => 'Generate & Play Voice';
+
+  @override
+  String get playing => 'Playing..';
+
+  @override
+  String get replay => 'Replay';
+
+  @override
+  String get enterTextWarning => 'Please enter some text to generate speech.';
+
+  @override
+  String get preferencesSaved => 'Your preferences have been saved successfully.';
+
+  @override
+  String get saveChanges => 'Save Changes';
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:neurithm/l10n/generated/app_localizations.dart';
 import 'package:neurithm/widgets/wavesBackground.dart';
 import 'package:neurithm/widgets/appbar.dart';
 import 'package:neurithm/widgets/bottombar.dart';
@@ -67,23 +68,6 @@ class _VoiceSettingsState extends State<VoiceSettingsPage> {
     }
   }
 
-  Future<void> _savePreferences() async {
-    await UserPreferences.saveVoiceSettings(_userSettings);
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text("Your preferences have been saved successfully."),
-        backgroundColor: Colors.white,
-        behavior: SnackBarBehavior.floating,
-        duration: Duration(seconds: 3),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10),
-        ),
-        margin: EdgeInsets.all(16),
-      ),
-    );
-  }
-
   Future<void> synthesizeSpeech(String text) async {
     if (!mounted || text.trim().isEmpty) return;
 
@@ -112,7 +96,7 @@ class _VoiceSettingsState extends State<VoiceSettingsPage> {
 
     print('Attempting to play audio from: $filePath');
 
-    if (filePath != "error") {      
+    if (filePath != "error") {
       await _audioPlayer.setPitch(_userSettings.pitch);
       await _audioPlayer.setFilePath(filePath);
       await _audioPlayer.play();
@@ -140,6 +124,23 @@ class _VoiceSettingsState extends State<VoiceSettingsPage> {
 
     double fontSize(double size) => size * screenWidth / 400;
     double spacing(double size) => size * screenHeight / 800;
+    final t = AppLocalizations.of(context)!;
+    Future<void> _savePreferences() async {
+      await UserPreferences.saveVoiceSettings(_userSettings);
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(t.preferencesSaved),
+          backgroundColor: Colors.white,
+          behavior: SnackBarBehavior.floating,
+          duration: Duration(seconds: 3),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          margin: EdgeInsets.all(16),
+        ),
+      );
+    }
 
     return Scaffold(
       key: _scaffoldKey,
@@ -175,7 +176,7 @@ class _VoiceSettingsState extends State<VoiceSettingsPage> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                "Voice Options",
+                                t.voiceSettings,
                                 style: TextStyle(
                                   fontSize: fontSize(24),
                                   color: Colors.white,
@@ -184,7 +185,7 @@ class _VoiceSettingsState extends State<VoiceSettingsPage> {
                               ),
                               SizedBox(height: spacing(20)),
                               Text(
-                                "Pitch",
+                                t.pitch,
                                 style: TextStyle(
                                   fontSize: fontSize(18),
                                   color: Colors.white,
@@ -213,7 +214,7 @@ class _VoiceSettingsState extends State<VoiceSettingsPage> {
                               ),
                               SizedBox(height: spacing(20)),
                               Text(
-                                "Language",
+                                t.language,
                                 style: TextStyle(
                                   fontSize: fontSize(18),
                                   color: Colors.white,
@@ -236,16 +237,16 @@ class _VoiceSettingsState extends State<VoiceSettingsPage> {
                                       _userSettings.language = value!;
                                     });
                                   },
-                                  items: const [
+                                  items: [
                                     DropdownMenuItem(
                                         value: "en-US",
-                                        child: Text("English",
-                                            style: TextStyle(
+                                        child: Text(t.english,
+                                            style: const TextStyle(
                                                 color: Colors.white))),
                                     DropdownMenuItem(
                                         value: "ar-XA",
-                                        child: Text("Arabic",
-                                            style: TextStyle(
+                                        child: Text(t.arabic,
+                                            style: const TextStyle(
                                                 color: Colors.white))),
                                   ],
                                   isExpanded: true,
@@ -255,7 +256,7 @@ class _VoiceSettingsState extends State<VoiceSettingsPage> {
                               ),
                               SizedBox(height: spacing(20)),
                               Text(
-                                "Gender",
+                                t.gender,
                                 style: TextStyle(
                                   fontSize: fontSize(18),
                                   color: Colors.white,
@@ -279,16 +280,16 @@ class _VoiceSettingsState extends State<VoiceSettingsPage> {
                                       _updateVoiceList();
                                     });
                                   },
-                                  items: const [
+                                  items: [
                                     DropdownMenuItem(
                                         value: "male",
-                                        child: Text("Male",
-                                            style: TextStyle(
+                                        child: Text(t.male,
+                                            style: const TextStyle(
                                                 color: Colors.white))),
                                     DropdownMenuItem(
                                         value: "female",
-                                        child: Text("Female",
-                                            style: TextStyle(
+                                        child: Text(t.female,
+                                            style: const TextStyle(
                                                 color: Colors.white))),
                                   ],
                                   isExpanded: true,
@@ -298,7 +299,7 @@ class _VoiceSettingsState extends State<VoiceSettingsPage> {
                               ),
                               SizedBox(height: spacing(20)),
                               Text(
-                                "Voice",
+                                t.voice,
                                 style: TextStyle(
                                   fontSize: fontSize(18),
                                   color: Colors.white,
@@ -336,7 +337,7 @@ class _VoiceSettingsState extends State<VoiceSettingsPage> {
                         SizedBox(height: spacing(16)),
                         Container(
                           decoration: BoxDecoration(
-                            color: Color(0xFF1A2A3A).withOpacity(0.7),
+                            color: const Color(0xFF1A2A3A).withOpacity(0.7),
                             borderRadius: BorderRadius.circular(15),
                           ),
                           padding: EdgeInsets.all(spacing(16)),
@@ -344,7 +345,7 @@ class _VoiceSettingsState extends State<VoiceSettingsPage> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                "Test Voice",
+                                t.testVoice,
                                 style: TextStyle(
                                   fontSize: fontSize(24),
                                   color: Colors.white,
@@ -354,15 +355,17 @@ class _VoiceSettingsState extends State<VoiceSettingsPage> {
                               SizedBox(height: spacing(16)),
                               TextField(
                                 controller: _textController,
-                                style: TextStyle(color: Colors.white),
+                                style: const TextStyle(color: Colors.white),
                                 decoration: InputDecoration(
-                                  border: OutlineInputBorder(
+                                  border: const OutlineInputBorder(
                                     borderSide: BorderSide(color: Colors.grey),
                                   ),
-                                  labelText: 'Text to speak',
-                                  labelStyle: TextStyle(color: Colors.grey),
-                                  hintText: 'Enter text here...',
-                                  hintStyle: TextStyle(color: Colors.grey),
+                                  labelText: t.textToSpeakLabel,
+                                  labelStyle:
+                                      const TextStyle(color: Colors.grey),
+                                  hintText: t.textToSpeakHint,
+                                  hintStyle:
+                                      const TextStyle(color: Colors.grey),
                                   fillColor: Colors.white.withOpacity(0.1),
                                   filled: true,
                                 ),
@@ -387,20 +390,22 @@ class _VoiceSettingsState extends State<VoiceSettingsPage> {
                                                     .showSnackBar(
                                                   SnackBar(
                                                     content: Text(
-                                                        "Please enter some text to generate speech."),
+                                                        t.enterTextWarning),
                                                     backgroundColor:
                                                         Colors.white,
                                                     behavior: SnackBarBehavior
                                                         .floating,
-                                                    duration:
-                                                        Duration(seconds: 2),
+                                                    duration: const Duration(
+                                                        seconds: 2),
                                                     shape:
                                                         RoundedRectangleBorder(
                                                       borderRadius:
                                                           BorderRadius.circular(
                                                               10),
                                                     ),
-                                                    margin: EdgeInsets.all(16),
+                                                    margin:
+                                                        const EdgeInsets.all(
+                                                            16),
                                                   ),
                                                 );
                                               } else {
@@ -408,9 +413,9 @@ class _VoiceSettingsState extends State<VoiceSettingsPage> {
                                                     _textToSynthesize);
                                               }
                                             },
-                                      icon: Icon(Icons.record_voice_over),
+                                      icon: const Icon(Icons.record_voice_over),
                                       label: Text(
-                                        "Generate & Play Voice",
+                                        t.playVoice,
                                         style:
                                             TextStyle(fontSize: fontSize(20)),
                                       ),
@@ -428,7 +433,7 @@ class _VoiceSettingsState extends State<VoiceSettingsPage> {
                                       ),
                                     ),
                                   ),
-                                  SizedBox(
+                                  const SizedBox(
                                     height: 15,
                                   ),
                                   SizedBox(
@@ -443,7 +448,7 @@ class _VoiceSettingsState extends State<VoiceSettingsPage> {
                                           ? Icons.pause
                                           : Icons.play_arrow),
                                       label: Text(
-                                        _isPlaying ? "Playing.." : "Replay",
+                                        _isPlaying ? t.playing : t.replay,
                                         style:
                                             TextStyle(fontSize: fontSize(20)),
                                       ),
@@ -461,7 +466,7 @@ class _VoiceSettingsState extends State<VoiceSettingsPage> {
                                       ),
                                     ),
                                   ),
-                                  SizedBox(
+                                  const SizedBox(
                                     height: 15,
                                   ),
                                   SizedBox(
@@ -470,9 +475,9 @@ class _VoiceSettingsState extends State<VoiceSettingsPage> {
                                       onPressed: () {
                                         _savePreferences();
                                       },
-                                      icon: Icon(Icons.record_voice_over),
+                                      icon: const Icon(Icons.record_voice_over),
                                       label: Text(
-                                        "Save Changes",
+                                        t.saveChanges,
                                         style:
                                             TextStyle(fontSize: fontSize(20)),
                                       ),

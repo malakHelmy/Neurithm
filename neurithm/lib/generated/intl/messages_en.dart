@@ -39,6 +39,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "chooseLanguage": MessageLookupByLibrary.simpleMessage("Choose Language"),
     "chosenLanguage": MessageLookupByLibrary.simpleMessage("en"),
     "commentLabel": MessageLookupByLibrary.simpleMessage("Comment or Message"),
+    "confirmPasswordLabel": MessageLookupByLibrary.simpleMessage(
+      "Confirm Password",
+    ),
     "connect": MessageLookupByLibrary.simpleMessage("Connect"),
     "connectToHeadset": MessageLookupByLibrary.simpleMessage(
       "Connect to a Headset",
@@ -49,6 +52,9 @@ class MessageLookup extends MessageLookupByLibrary {
       "Comment/Message cannot be empty",
     ),
     "english": MessageLookupByLibrary.simpleMessage("English"),
+    "enterTextWarning": MessageLookupByLibrary.simpleMessage(
+      "Please enter some text to generate speech.",
+    ),
     "faq1Answer": MessageLookupByLibrary.simpleMessage(
       "To use the app, navigate through the menu and select the desired feature (translate thoughts, access word bank, user profile). Detailed tutorials are available in the tutorial section.",
     ),
@@ -70,7 +76,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "faqTitle": MessageLookupByLibrary.simpleMessage(
       "Frequently Asked Questions",
     ),
-    "fullNameLabel": MessageLookupByLibrary.simpleMessage("Full name"),
+    "female": MessageLookupByLibrary.simpleMessage("Female"),
+    "firstNameLabel": MessageLookupByLibrary.simpleMessage("First Name"),
+    "fullNameLabel": MessageLookupByLibrary.simpleMessage("Full Name"),
+    "gender": MessageLookupByLibrary.simpleMessage("Gender"),
     "getInvolved": MessageLookupByLibrary.simpleMessage(
       "We are continuously looking for collaborators, researchers, and users to shape the future of this technology. Contact us to join the journey!",
     ),
@@ -85,14 +94,17 @@ class MessageLookup extends MessageLookupByLibrary {
     "helpTitle": MessageLookupByLibrary.simpleMessage("Help & Support"),
     "history": MessageLookupByLibrary.simpleMessage("History"),
     "home": MessageLookupByLibrary.simpleMessage("Home"),
+    "language": MessageLookupByLibrary.simpleMessage("Language"),
     "languageSettings": MessageLookupByLibrary.simpleMessage(
       "Language Settings",
     ),
     "languageUpdated": MessageLookupByLibrary.simpleMessage(
       "Language updated successfully",
     ),
+    "lastNameLabel": MessageLookupByLibrary.simpleMessage("Last Name"),
     "later": MessageLookupByLibrary.simpleMessage("Later"),
     "logOut": MessageLookupByLibrary.simpleMessage("Log out"),
+    "male": MessageLookupByLibrary.simpleMessage("Male"),
     "mission": MessageLookupByLibrary.simpleMessage(
       "At Neurithm, we are committed to breaking barriers in communication for individuals with severe speech and movement disabilities. Our system harnesses the power of Brain-Computer Interface (BCI) technology, artificial intelligence, and speech synthesis to transform neural activity into spoken language, empowering users with a new voice.",
     ),
@@ -104,6 +116,13 @@ class MessageLookup extends MessageLookupByLibrary {
     "noHeadsetsFound": MessageLookupByLibrary.simpleMessage(
       "No headsets found",
     ),
+    "passwordLabel": MessageLookupByLibrary.simpleMessage("New Password"),
+    "pitch": MessageLookupByLibrary.simpleMessage("Pitch"),
+    "playVoice": MessageLookupByLibrary.simpleMessage("Generate & Play Voice"),
+    "playing": MessageLookupByLibrary.simpleMessage("Playing.."),
+    "preferencesSaved": MessageLookupByLibrary.simpleMessage(
+      "Your preferences have been saved successfully.",
+    ),
     "processing": MessageLookupByLibrary.simpleMessage("Processing"),
     "processingSubtitle": MessageLookupByLibrary.simpleMessage(
       "Reading and analyzing your signal data",
@@ -112,7 +131,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "rateMessage": MessageLookupByLibrary.simpleMessage(
       "Please rate our app by selecting stars!",
     ),
+    "replay": MessageLookupByLibrary.simpleMessage("Replay"),
     "restart": MessageLookupByLibrary.simpleMessage("Restart"),
+    "saveChanges": MessageLookupByLibrary.simpleMessage("Save Changes"),
     "scanning": MessageLookupByLibrary.simpleMessage("Scanning..."),
     "searchForCategories": MessageLookupByLibrary.simpleMessage(
       "Search categories...",
@@ -144,10 +165,17 @@ class MessageLookup extends MessageLookupByLibrary {
       "• Non-Invasive BCI: Utilizing EEG headsets, our system captures and interprets brain activity without the need for invasive procedures.\n• Deep Learning Models: Multiple deep learning models were employed to decode neural signals into coherent speech in real time.\n• User-Centered Design: Designed with ease of use in mind, our system is accessible to individuals and caregivers alike.",
     ),
     "technologyTitle": MessageLookupByLibrary.simpleMessage("Our Technology"),
+    "testVoice": MessageLookupByLibrary.simpleMessage("Test Voice"),
+    "textToSpeakHint": MessageLookupByLibrary.simpleMessage(
+      "Enter text here...",
+    ),
+    "textToSpeakLabel": MessageLookupByLibrary.simpleMessage("Text to speak"),
     "vision": MessageLookupByLibrary.simpleMessage(
       "To create a world where communication is limitless, regardless of physical ability. By merging cutting-edge neuroscience with technology, we aim to provide tools that restore independence and enhance human connection.",
     ),
     "visionTitle": MessageLookupByLibrary.simpleMessage("Our Vision"),
+    "voice": MessageLookupByLibrary.simpleMessage("Voice"),
+    "voiceOptions": MessageLookupByLibrary.simpleMessage("Voice Options"),
     "voiceSettings": MessageLookupByLibrary.simpleMessage("Voice Settings"),
     "voiceYourMind": MessageLookupByLibrary.simpleMessage(
       "Voice Your Mind Effortlessly",

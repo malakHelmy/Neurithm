@@ -39,6 +39,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "chooseLanguage": MessageLookupByLibrary.simpleMessage("اختر اللغة"),
     "chosenLanguage": MessageLookupByLibrary.simpleMessage("ar"),
     "commentLabel": MessageLookupByLibrary.simpleMessage("تعليق أو رسالة"),
+    "confirmPasswordLabel": MessageLookupByLibrary.simpleMessage(
+      "تأكيد كلمة المرور",
+    ),
     "connect": MessageLookupByLibrary.simpleMessage("اتصال"),
     "connectToHeadset": MessageLookupByLibrary.simpleMessage(
       "اتصل بسماعة الرأس",
@@ -68,7 +71,10 @@ class MessageLookup extends MessageLookupByLibrary {
       "أين أجد سجل النشاطات الخاص بي؟",
     ),
     "faqTitle": MessageLookupByLibrary.simpleMessage("الأسئلة الشائعة"),
+    "female": MessageLookupByLibrary.simpleMessage("أنثى"),
+    "firstNameLabel": MessageLookupByLibrary.simpleMessage("لاسم الأول"),
     "fullNameLabel": MessageLookupByLibrary.simpleMessage("الاسم الكامل"),
+    "gender": MessageLookupByLibrary.simpleMessage("الجنس"),
     "getInvolved": MessageLookupByLibrary.simpleMessage(
       "نحن نبحث باستمرار عن المتعاونين، والباحثين، والمستخدمين للمساهمة في تشكيل مستقبل هذه التكنولوجيا. تواصل معنا للانضمام إلى الرحلة!",
     ),
@@ -83,12 +89,15 @@ class MessageLookup extends MessageLookupByLibrary {
     "helpTitle": MessageLookupByLibrary.simpleMessage("الدعم والمساعدة"),
     "history": MessageLookupByLibrary.simpleMessage("التاريخ"),
     "home": MessageLookupByLibrary.simpleMessage("الرئيسية"),
+    "language": MessageLookupByLibrary.simpleMessage("اللغة"),
     "languageSettings": MessageLookupByLibrary.simpleMessage("إعدادات اللغة"),
     "languageUpdated": MessageLookupByLibrary.simpleMessage(
       "تم تحديث اللغة بنجاح",
     ),
+    "lastNameLabel": MessageLookupByLibrary.simpleMessage("الاسم الأخير"),
     "later": MessageLookupByLibrary.simpleMessage("لاحقًا"),
     "logOut": MessageLookupByLibrary.simpleMessage("تسجيل الخروج"),
+    "male": MessageLookupByLibrary.simpleMessage("ذكر"),
     "mission": MessageLookupByLibrary.simpleMessage(
       "في نيوريثم، نلتزم بكسر الحواجز في التواصل للأفراد ذوي الإعاقات الشديدة في النطق والحركة. يستخدم نظامنا قوة واجهات الدماغ والحاسوب (BCI)، والذكاء الاصطناعي، وتوليف الصوت لتحويل النشاط العصبي إلى لغة منطوقة، مما يمنح المستخدمين صوتًا جديدًا.",
     ),
@@ -102,6 +111,13 @@ class MessageLookup extends MessageLookupByLibrary {
     "noHeadsetsFound": MessageLookupByLibrary.simpleMessage(
       "لم يتم العثور على سماعات رأس",
     ),
+    "passwordLabel": MessageLookupByLibrary.simpleMessage("كلمة المرور"),
+    "pitch": MessageLookupByLibrary.simpleMessage("حدة الصوت"),
+    "playVoice": MessageLookupByLibrary.simpleMessage("تحويل النص إلى صوت"),
+    "playing": MessageLookupByLibrary.simpleMessage("جاري التشغيل.."),
+    "preferencesSaved": MessageLookupByLibrary.simpleMessage(
+      "تم حفظ الإعدادات الصوتيه بنجاح.",
+    ),
     "processing": MessageLookupByLibrary.simpleMessage("جارٍ المعالجة"),
     "processingSubtitle": MessageLookupByLibrary.simpleMessage(
       "جارٍ قراءة وتحليل بيانات الإشارة الخاصة بك",
@@ -110,7 +126,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "rateMessage": MessageLookupByLibrary.simpleMessage(
       "يرجى تقييم تطبيقنا عن طريق اختيار النجوم!",
     ),
+    "replay": MessageLookupByLibrary.simpleMessage("إعادة تشغيل"),
     "restart": MessageLookupByLibrary.simpleMessage("إعادة البدء"),
+    "saveChanges": MessageLookupByLibrary.simpleMessage("حفظ التغييرات"),
     "scanning": MessageLookupByLibrary.simpleMessage("جارٍ البحث..."),
     "searchForCategories": MessageLookupByLibrary.simpleMessage(
       "البحث عن الفئات...",
@@ -142,10 +160,15 @@ class MessageLookup extends MessageLookupByLibrary {
       "• واجهات الدماغ غير الجراحية: باستخدام أجهزة EEG، يلتقط نظامنا النشاط الدماغي ويفسره دون الحاجة إلى إجراءات جراحية.\n• نماذج التعلم العميق: تم استخدام نماذج تعلم عميق متعددة لفك تشفير الإشارات العصبية إلى كلام متماسك في الوقت الفعلي.\n• تصميم يركز على المستخدم: صُمم نظامنا مع مراعاة سهولة الاستخدام، وهو متاح للأفراد ومقدمي الرعاية على حد سواء.",
     ),
     "technologyTitle": MessageLookupByLibrary.simpleMessage("تقنيتنا"),
+    "testVoice": MessageLookupByLibrary.simpleMessage("اختبار الصوت"),
+    "textToSpeakHint": MessageLookupByLibrary.simpleMessage("أدخل النص هنا..."),
+    "textToSpeakLabel": MessageLookupByLibrary.simpleMessage("النص للتحدث"),
     "vision": MessageLookupByLibrary.simpleMessage(
       "خلق عالم يكون فيه التواصل بلا حدود، بغض النظر عن القدرة الجسدية. من خلال دمج علوم الأعصاب المتقدمة مع التكنولوجيا، نهدف إلى توفير أدوات تعيد الاستقلالية وتعزز الاتصال البشري.",
     ),
     "visionTitle": MessageLookupByLibrary.simpleMessage("رؤيتنا"),
+    "voice": MessageLookupByLibrary.simpleMessage("الصوت"),
+    "voiceOptions": MessageLookupByLibrary.simpleMessage("إعدادات الصوت"),
     "voiceSettings": MessageLookupByLibrary.simpleMessage("إعدادات الصوت"),
     "voiceYourMind": MessageLookupByLibrary.simpleMessage(
       "عبّر عن أفكارك بسهولة",

@@ -60,7 +60,7 @@ class _HelpPageState extends State<HelpPage> {
       if (commentText.isEmpty) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: const Text('Comment/Message cannot be empty'),
+            content: Text(t.emptyCommentError),
             backgroundColor: Colors.red,
             behavior: SnackBarBehavior.floating,
             duration: const Duration(seconds: 2),

@@ -515,9 +515,44 @@ class S {
     );
   }
 
-  /// `Full name`
+  /// `Full Name`
   String get fullNameLabel {
-    return Intl.message('Full name', name: 'fullNameLabel', desc: '', args: []);
+    return Intl.message('Full Name', name: 'fullNameLabel', desc: '', args: []);
+  }
+
+  /// `First Name`
+  String get firstNameLabel {
+    return Intl.message(
+      'First Name',
+      name: 'firstNameLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Last Name`
+  String get lastNameLabel {
+    return Intl.message('Last Name', name: 'lastNameLabel', desc: '', args: []);
+  }
+
+  /// `New Password`
+  String get passwordLabel {
+    return Intl.message(
+      'New Password',
+      name: 'passwordLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Confirm Password`
+  String get confirmPasswordLabel {
+    return Intl.message(
+      'Confirm Password',
+      name: 'confirmPasswordLabel',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Email`
@@ -645,6 +680,121 @@ class S {
     return Intl.message(
       'Saved data can be found in the "History" section accessible from the bottom bar.',
       name: 'faq3Answer',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Voice Options`
+  String get voiceOptions {
+    return Intl.message(
+      'Voice Options',
+      name: 'voiceOptions',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Pitch`
+  String get pitch {
+    return Intl.message('Pitch', name: 'pitch', desc: '', args: []);
+  }
+
+  /// `Language`
+  String get language {
+    return Intl.message('Language', name: 'language', desc: '', args: []);
+  }
+
+  /// `Gender`
+  String get gender {
+    return Intl.message('Gender', name: 'gender', desc: '', args: []);
+  }
+
+  /// `Male`
+  String get male {
+    return Intl.message('Male', name: 'male', desc: '', args: []);
+  }
+
+  /// `Female`
+  String get female {
+    return Intl.message('Female', name: 'female', desc: '', args: []);
+  }
+
+  /// `Voice`
+  String get voice {
+    return Intl.message('Voice', name: 'voice', desc: '', args: []);
+  }
+
+  /// `Test Voice`
+  String get testVoice {
+    return Intl.message('Test Voice', name: 'testVoice', desc: '', args: []);
+  }
+
+  /// `Text to speak`
+  String get textToSpeakLabel {
+    return Intl.message(
+      'Text to speak',
+      name: 'textToSpeakLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter text here...`
+  String get textToSpeakHint {
+    return Intl.message(
+      'Enter text here...',
+      name: 'textToSpeakHint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Generate & Play Voice`
+  String get playVoice {
+    return Intl.message(
+      'Generate & Play Voice',
+      name: 'playVoice',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Playing..`
+  String get playing {
+    return Intl.message('Playing..', name: 'playing', desc: '', args: []);
+  }
+
+  /// `Replay`
+  String get replay {
+    return Intl.message('Replay', name: 'replay', desc: '', args: []);
+  }
+
+  /// `Please enter some text to generate speech.`
+  String get enterTextWarning {
+    return Intl.message(
+      'Please enter some text to generate speech.',
+      name: 'enterTextWarning',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Your preferences have been saved successfully.`
+  String get preferencesSaved {
+    return Intl.message(
+      'Your preferences have been saved successfully.',
+      name: 'preferencesSaved',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Save Changes`
+  String get saveChanges {
+    return Intl.message(
+      'Save Changes',
+      name: 'saveChanges',
       desc: '',
       args: [],
     );

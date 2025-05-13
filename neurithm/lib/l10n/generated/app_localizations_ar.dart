@@ -183,6 +183,18 @@ class AppLocalizationsAr extends AppLocalizations {
   String get fullNameLabel => 'الاسم الكامل';
 
   @override
+  String get firstNameLabel => 'لاسم الأول';
+
+  @override
+  String get lastNameLabel => 'الاسم الأخير';
+
+  @override
+  String get passwordLabel => 'كلمة المرور';
+
+  @override
+  String get confirmPasswordLabel => 'تأكيد كلمة المرور';
+
+  @override
   String get emailLabel => 'البريد الإلكتروني';
 
   @override
@@ -223,4 +235,52 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get faq3Answer => 'يمكنك العثور على البيانات المحفوظة في قسم \"التاريخ\" من الشريط السفلي.';
+
+  @override
+  String get voiceOptions => 'إعدادات الصوت';
+
+  @override
+  String get pitch => 'حدة الصوت';
+
+  @override
+  String get language => 'اللغة';
+
+  @override
+  String get gender => 'الجنس';
+
+  @override
+  String get male => 'ذكر';
+
+  @override
+  String get female => 'أنثى';
+
+  @override
+  String get voice => 'الصوت';
+
+  @override
+  String get testVoice => 'اختبار الصوت';
+
+  @override
+  String get textToSpeakLabel => 'النص للتحدث';
+
+  @override
+  String get textToSpeakHint => 'أدخل النص هنا...';
+
+  @override
+  String get playVoice => 'تحويل النص إلى صوت';
+
+  @override
+  String get playing => 'جاري التشغيل..';
+
+  @override
+  String get replay => 'إعادة تشغيل';
+
+  @override
+  String get enterTextWarning => 'Please enter some text to generate speech.';
+
+  @override
+  String get preferencesSaved => 'تم حفظ التفضيلات بنجاح.';
+
+  @override
+  String get saveChanges => 'حفظ التغييرات';
 }
