@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:neurithm/l10n/generated/app_localizations.dart';
 import 'package:neurithm/screens/patient/setUpConnectionPage.dart';
 import 'package:neurithm/widgets/appbar.dart';
 import 'package:neurithm/widgets/bottomBar.dart';
@@ -83,6 +84,8 @@ class _TutorialPageState extends State<TutorialPage> {
 
   @override
   Widget build(BuildContext context) {
+    final t = AppLocalizations.of(context)!;
+
     return Scaffold(
       key: _scaffoldKey,
       resizeToAvoidBottomInset: true,
@@ -142,20 +145,21 @@ class _TutorialPageState extends State<TutorialPage> {
                                 textAlign: TextAlign.center,
                               ),
                             ),
-                            if (index == tutorialSteps.length - 1) 
+                            if (index == tutorialSteps.length - 1)
                               Padding(
-                                padding: const EdgeInsets.only(top: 20.0,  left: 15, right: 15),
+                                padding: const EdgeInsets.only(
+                                    top: 20.0, left: 15, right: 15),
                                 child: SizedBox(
                                   width: double.infinity,
                                   child: ElevatedButton(
                                     onPressed: () {
                                       Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) =>
-                                          SetUpConnectionPage(),
-                                    ),
-                                  );
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              SetUpConnectionPage(),
+                                        ),
+                                      );
                                     },
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor: Colors.white,
@@ -163,15 +167,16 @@ class _TutorialPageState extends State<TutorialPage> {
                                         borderRadius: BorderRadius.circular(50),
                                       ),
                                       padding: EdgeInsets.symmetric(
-                                        vertical:
-                                            spacing(12, getScreenHeight(context)),
+                                        vertical: spacing(
+                                            12, getScreenHeight(context)),
                                         horizontal: 30,
                                       ),
                                     ),
-                                    child: const Text(
-                                      "Start Speaking Now",
+                                    child:  Text(
+                                      t.startSpeakingNow,
                                       style: TextStyle(
-                                          fontSize: 18, color: Color(0xFF1A2A3A)),
+                                          fontSize: 18,
+                                          color: Color(0xFF1A2A3A)),
                                     ),
                                   ),
                                 ),
@@ -187,48 +192,47 @@ class _TutorialPageState extends State<TutorialPage> {
                     SizedBox(
                       width: 165,
                       child: ElevatedButton(
-                        onPressed: currentStep == 0 ? null : prevStep,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor:
-                              const Color.fromARGB(255, 240, 240, 240),
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(50)),
-                          padding: EdgeInsets.symmetric(
-                              vertical: spacing(12, getScreenHeight(context))),
-                        ),
-                        child: 
-                            Text("Go Back",
-                                style: TextStyle(
-                                    fontSize: 18,
-                                    color: Color(
-                                      0xFF1A2A3A,
-                                    )))
-                         
-                      ),
+                          onPressed: currentStep == 0 ? null : prevStep,
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor:
+                                const Color.fromARGB(255, 240, 240, 240),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(50)),
+                            padding: EdgeInsets.symmetric(
+                                vertical:
+                                    spacing(12, getScreenHeight(context))),
+                          ),
+                          child: Text(t.goBack,
+                              style: TextStyle(
+                                  fontSize: 18,
+                                  color: Color(
+                                    0xFF1A2A3A,
+                                  )))),
                     ),
-                    if(currentStep < tutorialSteps.length - 1)
-                    SizedBox(
-                      width: 165,
-                      child: ElevatedButton(
-                        onPressed: currentStep == tutorialSteps.length - 1
-                            ? null
-                            : nextStep,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor:
-                              const Color.fromARGB(255, 240, 240, 240),
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(50)),
-                          padding: EdgeInsets.symmetric(
-                              vertical: spacing(12, getScreenHeight(context))),
+                    if (currentStep < tutorialSteps.length - 1)
+                      SizedBox(
+                        width: 165,
+                        child: ElevatedButton(
+                          onPressed: currentStep == tutorialSteps.length - 1
+                              ? null
+                              : nextStep,
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor:
+                                const Color.fromARGB(255, 240, 240, 240),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(50)),
+                            padding: EdgeInsets.symmetric(
+                                vertical:
+                                    spacing(12, getScreenHeight(context))),
+                          ),
+                          child: Text(t.next,
+                              style: TextStyle(
+                                  fontSize: 18,
+                                  color: Color(
+                                    0xFF1A2A3A,
+                                  ))),
                         ),
-                        child: const Text("Next",
-                            style: TextStyle(
-                                fontSize: 18,
-                                color: Color(
-                                  0xFF1A2A3A,
-                                ))),
                       ),
-                    ),
                   ],
                 ),
                 SizedBox(height: 20),

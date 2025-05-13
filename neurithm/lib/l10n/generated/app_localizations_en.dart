@@ -331,4 +331,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get confirmDelete => 'Are you sure you want to delete this session?';
+
+  @override
+  String get goBack => 'Go Back';
 }

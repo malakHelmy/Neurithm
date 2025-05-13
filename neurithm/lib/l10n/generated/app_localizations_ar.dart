@@ -331,4 +331,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get confirmDelete => 'هل أنت متأكد أنك تريد حذف هذه الجلسة؟';
+
+  @override
+  String get goBack => 'الرجوع';
 }

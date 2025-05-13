@@ -89,6 +89,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "نحن نبحث باستمرار عن المتعاونين، والباحثين، والمستخدمين للمساهمة في تشكيل مستقبل هذه التكنولوجيا. تواصل معنا للانضمام إلى الرحلة!",
     ),
     "getInvolvedTitle": MessageLookupByLibrary.simpleMessage("شارك معنا"),
+    "goBack": MessageLookupByLibrary.simpleMessage("الرجوع"),
     "goToTutorial": MessageLookupByLibrary.simpleMessage("اذهب إلى الدليل"),
     "headsetsFound": m0,
     "helpAndGuide": MessageLookupByLibrary.simpleMessage("المساعدة والدليل"),

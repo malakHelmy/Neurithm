@@ -96,6 +96,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "We are continuously looking for collaborators, researchers, and users to shape the future of this technology. Contact us to join the journey!",
     ),
     "getInvolvedTitle": MessageLookupByLibrary.simpleMessage("Get Involved"),
+    "goBack": MessageLookupByLibrary.simpleMessage("Go Back"),
     "goToTutorial": MessageLookupByLibrary.simpleMessage("Go to Tutorial"),
     "headsetsFound": m0,
     "helpAndGuide": MessageLookupByLibrary.simpleMessage("Help & Guide"),
@@ -171,6 +172,30 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "startThinking": MessageLookupByLibrary.simpleMessage("Start Thinking"),
     "startTime": MessageLookupByLibrary.simpleMessage("Start Time"),
+    "step1": MessageLookupByLibrary.simpleMessage(
+      "Get your headset (Emotiv Epoc X) out of its package.",
+    ),
+    "step2": MessageLookupByLibrary.simpleMessage(
+      "Hydrate the sensor felts using saline solution. Do not use contact lens cleaning or sterilizing solutions.",
+    ),
+    "step3": MessageLookupByLibrary.simpleMessage(
+      "Place the sensor felts in a glass, add saline solution, and soak. Squeeze out excess fluid before inserting them into the sensors.",
+    ),
+    "step4": MessageLookupByLibrary.simpleMessage(
+      "To rehydrate sensors while using the headset, add saline solution through the top opening of each sensor.",
+    ),
+    "step5": MessageLookupByLibrary.simpleMessage(
+      "Insert the sensor felts into each sensor opening and press the power button to turn on the headset. A white LED will illuminate, and the headset will beep. To optimize the use of your headset, we recommend that you fully charge it before making recordings.",
+    ),
+    "step6": MessageLookupByLibrary.simpleMessage(
+      "Turn on Bluetooth on your phone and navigate to the \"Connect to Headset\" page.",
+    ),
+    "step7": MessageLookupByLibrary.simpleMessage(
+      "Click the big circular button to scan for devices and select the headset when it appears.",
+    ),
+    "step8": MessageLookupByLibrary.simpleMessage(
+      "Once connected, you can start the thought translation process!",
+    ),
     "submit": MessageLookupByLibrary.simpleMessage("Submit"),
     "submitButton": MessageLookupByLibrary.simpleMessage("Submit"),
     "submitFailure": MessageLookupByLibrary.simpleMessage(

@@ -924,6 +924,91 @@ class S {
       args: [],
     );
   }
+
+  /// `Get your headset (Emotiv Epoc X) out of its package.`
+  String get step1 {
+    return Intl.message(
+      'Get your headset (Emotiv Epoc X) out of its package.',
+      name: 'step1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Hydrate the sensor felts using saline solution. Do not use contact lens cleaning or sterilizing solutions.`
+  String get step2 {
+    return Intl.message(
+      'Hydrate the sensor felts using saline solution. Do not use contact lens cleaning or sterilizing solutions.',
+      name: 'step2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Place the sensor felts in a glass, add saline solution, and soak. Squeeze out excess fluid before inserting them into the sensors.`
+  String get step3 {
+    return Intl.message(
+      'Place the sensor felts in a glass, add saline solution, and soak. Squeeze out excess fluid before inserting them into the sensors.',
+      name: 'step3',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `To rehydrate sensors while using the headset, add saline solution through the top opening of each sensor.`
+  String get step4 {
+    return Intl.message(
+      'To rehydrate sensors while using the headset, add saline solution through the top opening of each sensor.',
+      name: 'step4',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Insert the sensor felts into each sensor opening and press the power button to turn on the headset. A white LED will illuminate, and the headset will beep. To optimize the use of your headset, we recommend that you fully charge it before making recordings.`
+  String get step5 {
+    return Intl.message(
+      'Insert the sensor felts into each sensor opening and press the power button to turn on the headset. A white LED will illuminate, and the headset will beep. To optimize the use of your headset, we recommend that you fully charge it before making recordings.',
+      name: 'step5',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Turn on Bluetooth on your phone and navigate to the "Connect to Headset" page.`
+  String get step6 {
+    return Intl.message(
+      'Turn on Bluetooth on your phone and navigate to the "Connect to Headset" page.',
+      name: 'step6',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Click the big circular button to scan for devices and select the headset when it appears.`
+  String get step7 {
+    return Intl.message(
+      'Click the big circular button to scan for devices and select the headset when it appears.',
+      name: 'step7',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Once connected, you can start the thought translation process!`
+  String get step8 {
+    return Intl.message(
+      'Once connected, you can start the thought translation process!',
+      name: 'step8',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Go Back`
+  String get goBack {
+    return Intl.message('Go Back', name: 'goBack', desc: '', args: []);
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
