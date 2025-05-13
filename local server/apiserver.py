@@ -172,6 +172,7 @@ def run_notebook(folder_path):
 def run_predictions_in_memory(folder_path, model_path, label_encoder_path, alt_model=False):
     try:
         # Load the appropriate model (either primary or alternative)
+        print(">>> Using UPDATED run_predictions_in_memory")
         model = tf.keras.models.load_model(model_path)
         with open(label_encoder_path, 'rb') as f:
             label_encoder = pickle.load(f)
@@ -204,19 +205,9 @@ def run_predictions_in_memory(folder_path, model_path, label_encoder_path, alt_m
                 X_new = np.transpose(X_temp, (0, 2, 1))
                 X_new = X_new[..., np.newaxis]
                 
-                
 
-                # Extract frequency-domain features
-                X_new_freq = extract_frequency_features(X_new)
-                
-                
-                # Log the shape of frequency features in inference
-                logger.debug(f"Extracted frequency features shape (Inference): {X_new_freq.shape}")
-                logger.debug(f"Extracted frequency features sample values (Inference - first 5): {X_new_freq[0, :5]}")
-
-                # Run prediction for both EEG data and frequency-domain features
                 if alt_model:  # Alternative model (eegtransformer)
-                    y_pred_probs = model.predict([X_new, X_new_freq])  # Pass both inputs to the alt model
+                    y_pred_probs = model.predict([X_new])  # Pass both inputs to the alt model
                 else:  # Main model (eegnet)
                     y_pred_probs = model.predict(X_new)  # Main model uses only EEG data
 
