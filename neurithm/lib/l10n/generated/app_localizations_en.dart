@@ -172,4 +172,55 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get getInvolved => 'We are continuously looking for collaborators, researchers, and users to shape the future of this technology. Contact us to join the journey!';
+
+  @override
+  String get helpTitle => 'Help & Support';
+
+  @override
+  String get helpSubtitle => 'Facing any issues? Submit the form below and we’ll get back to you via email as soon as possible.';
+
+  @override
+  String get fullNameLabel => 'Full name';
+
+  @override
+  String get emailLabel => 'Email';
+
+  @override
+  String get commentLabel => 'Comment or Message';
+
+  @override
+  String get submitButton => 'Submit';
+
+  @override
+  String get faqTitle => 'Frequently Asked Questions';
+
+  @override
+  String get goToTutorial => 'Go to Tutorial';
+
+  @override
+  String get emptyCommentError => 'Comment/Message cannot be empty';
+
+  @override
+  String get submitSuccess => 'Comment submitted successfully.';
+
+  @override
+  String get submitFailure => 'Failed to submit feedback.';
+
+  @override
+  String get faq1Question => 'How do I use this app?';
+
+  @override
+  String get faq1Answer => 'To use the app, navigate through the menu and select the desired feature (translate thoughts, access word bank, user profile). Detailed tutorials are available in the tutorial section.';
+
+  @override
+  String get faq2Question => 'How can I contact support?';
+
+  @override
+  String get faq2Answer => 'You can contact support through the submitting the form above this section or email us at neurithm1@gmail.com.';
+
+  @override
+  String get faq3Question => 'Where can I find my history?';
+
+  @override
+  String get faq3Answer => 'Saved data can be found in the \"History\" section accessible from the bottom bar.';
 }

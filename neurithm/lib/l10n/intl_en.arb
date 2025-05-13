@@ -53,5 +53,22 @@
   "acknowledgmentsTitle": "Acknowledgments",
   "acknowledgments": "We extend our gratitude to our university for their unwavering support and resources, enabling us to bring this project to life.",
   "getInvolvedTitle": "Get Involved",
-  "getInvolved": "We are continuously looking for collaborators, researchers, and users to shape the future of this technology. Contact us to join the journey!"
+  "getInvolved": "We are continuously looking for collaborators, researchers, and users to shape the future of this technology. Contact us to join the journey!",
+  "helpTitle": "Help & Support",
+  "helpSubtitle": "Facing any issues? Submit the form below and we’ll get back to you via email as soon as possible.",
+  "fullNameLabel": "Full name",
+  "emailLabel": "Email",
+  "commentLabel": "Comment or Message",
+  "submitButton": "Submit",
+  "faqTitle": "Frequently Asked Questions",
+  "goToTutorial": "Go to Tutorial",
+  "emptyCommentError": "Comment/Message cannot be empty",
+  "submitSuccess": "Comment submitted successfully.",
+  "submitFailure": "Failed to submit feedback.",
+  "faq1Question": "How do I use this app?",
+  "faq1Answer": "To use the app, navigate through the menu and select the desired feature (translate thoughts, access word bank, user profile). Detailed tutorials are available in the tutorial section.",
+  "faq2Question": "How can I contact support?",
+  "faq2Answer": "You can contact support through the submitting the form above this section or email us at neurithm1@gmail.com.",
+  "faq3Question": "Where can I find my history?",
+  "faq3Answer": "Saved data can be found in the \"History\" section accessible from the bottom bar."
 }

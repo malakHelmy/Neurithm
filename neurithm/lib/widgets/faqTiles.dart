@@ -1,28 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:neurithm/l10n/generated/app_localizations.dart';
 
 class FAQSection extends StatelessWidget {
-  final List<Map<String, String>> faqs = [
-    {
-      'question': 'How do I use this app?',
-      'answer':
-          'To use the app, navigate through the menu and select the desired feature (translate thoughts, access word bank, user profile). Detailed tutorials are available in the tutorial section.'
-    },
-    {
-      'question': 'How can I contact support?',
-      'answer':
-          'You can contact support through the "Contact Us" section in the app or email us at neurithm1@gmail.com.'
-    },
-    {
-      'question': 'Where can I find my history?',
-      'answer':
-          'Saved data can be found in the "History" section accessible from the bottom bar.'
-    },
-  ];
-
-   FAQSection({super.key});
+  FAQSection({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final t = AppLocalizations.of(context)!;
+    final List<Map<String, String>> faqs = [
+      {'question': t.faq1Question, 'answer': t.faq1Answer},
+      {'question': t.faq2Question, 'answer': t.faq2Answer},
+      {'question': t.faq3Question, 'answer': t.faq3Answer},
+    ];
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: faqs.map((faq) {

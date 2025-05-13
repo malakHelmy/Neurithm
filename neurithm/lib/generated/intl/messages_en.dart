@@ -38,19 +38,51 @@ class MessageLookup extends MessageLookupByLibrary {
     "categories": MessageLookupByLibrary.simpleMessage("Categories"),
     "chooseLanguage": MessageLookupByLibrary.simpleMessage("Choose Language"),
     "chosenLanguage": MessageLookupByLibrary.simpleMessage("en"),
+    "commentLabel": MessageLookupByLibrary.simpleMessage("Comment or Message"),
     "connect": MessageLookupByLibrary.simpleMessage("Connect"),
     "connectToHeadset": MessageLookupByLibrary.simpleMessage(
       "Connect to a Headset",
     ),
     "doneThinking": MessageLookupByLibrary.simpleMessage("Done Thinking"),
+    "emailLabel": MessageLookupByLibrary.simpleMessage("Email"),
+    "emptyCommentError": MessageLookupByLibrary.simpleMessage(
+      "Comment/Message cannot be empty",
+    ),
     "english": MessageLookupByLibrary.simpleMessage("English"),
+    "faq1Answer": MessageLookupByLibrary.simpleMessage(
+      "To use the app, navigate through the menu and select the desired feature (translate thoughts, access word bank, user profile). Detailed tutorials are available in the tutorial section.",
+    ),
+    "faq1Question": MessageLookupByLibrary.simpleMessage(
+      "How do I use this app?",
+    ),
+    "faq2Answer": MessageLookupByLibrary.simpleMessage(
+      "You can contact support through the submitting the form above this section or email us at neurithm1@gmail.com.",
+    ),
+    "faq2Question": MessageLookupByLibrary.simpleMessage(
+      "How can I contact support?",
+    ),
+    "faq3Answer": MessageLookupByLibrary.simpleMessage(
+      "Saved data can be found in the \"History\" section accessible from the bottom bar.",
+    ),
+    "faq3Question": MessageLookupByLibrary.simpleMessage(
+      "Where can I find my history?",
+    ),
+    "faqTitle": MessageLookupByLibrary.simpleMessage(
+      "Frequently Asked Questions",
+    ),
+    "fullNameLabel": MessageLookupByLibrary.simpleMessage("Full name"),
     "getInvolved": MessageLookupByLibrary.simpleMessage(
       "We are continuously looking for collaborators, researchers, and users to shape the future of this technology. Contact us to join the journey!",
     ),
     "getInvolvedTitle": MessageLookupByLibrary.simpleMessage("Get Involved"),
+    "goToTutorial": MessageLookupByLibrary.simpleMessage("Go to Tutorial"),
     "headsetsFound": m0,
     "helpAndGuide": MessageLookupByLibrary.simpleMessage("Help & Guide"),
     "helpAndSupport": MessageLookupByLibrary.simpleMessage("Help and Support"),
+    "helpSubtitle": MessageLookupByLibrary.simpleMessage(
+      "Facing any issues? Submit the form below and we’ll get back to you via email as soon as possible.",
+    ),
+    "helpTitle": MessageLookupByLibrary.simpleMessage("Help & Support"),
     "history": MessageLookupByLibrary.simpleMessage("History"),
     "home": MessageLookupByLibrary.simpleMessage("Home"),
     "languageSettings": MessageLookupByLibrary.simpleMessage(
@@ -91,6 +123,13 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "startThinking": MessageLookupByLibrary.simpleMessage("Start Thinking"),
     "submit": MessageLookupByLibrary.simpleMessage("Submit"),
+    "submitButton": MessageLookupByLibrary.simpleMessage("Submit"),
+    "submitFailure": MessageLookupByLibrary.simpleMessage(
+      "Failed to submit feedback.",
+    ),
+    "submitSuccess": MessageLookupByLibrary.simpleMessage(
+      "Comment submitted successfully.",
+    ),
     "syncInstructions": MessageLookupByLibrary.simpleMessage(
       "Sync your mobile app to your headset to start voicing your thoughts",
     ),

@@ -4,7 +4,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:neurithm/l10n/generated/app_localizations.dart';
 import 'package:neurithm/models/locale.dart';
-import 'package:neurithm/screens/patient/setLanguage.dart';
+import 'package:neurithm/screens/admin/adminDashboardPage.dart';
 import 'package:neurithm/screens/welcomePage.dart';
 import 'package:provider/provider.dart';  
 

@@ -6,7 +6,6 @@ import 'package:neurithm/screens/patient/helpPage.dart';
 import 'package:neurithm/screens/homepage.dart';
 import 'package:neurithm/screens/introPage.dart';
 import 'package:neurithm/screens/patient/wordBankPage.dart';
-import 'package:neurithm/screens/patient/contactUsPage.dart';
 import 'package:neurithm/services/authService.dart';
 
 bool isConnected = false;

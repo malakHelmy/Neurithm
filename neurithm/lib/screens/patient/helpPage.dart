@@ -1,18 +1,112 @@
 import 'package:flutter/material.dart';
-import 'package:neurithm/screens/homepage.dart';
+import 'package:neurithm/l10n/generated/app_localizations.dart';
+import 'package:neurithm/models/patient.dart';
 import 'package:neurithm/screens/patient/connectionTutorialPage.dart';
+import 'package:neurithm/services/authService.dart';
+import 'package:neurithm/services/patientProfileService.dart';
 import 'package:neurithm/widgets/appbar.dart';
 import 'package:neurithm/widgets/bottomBar.dart';
 import 'package:neurithm/widgets/customTextField.dart';
 import 'package:neurithm/widgets/wavesBackground.dart';
 import 'package:neurithm/widgets/faqTiles.dart';
+import 'package:neurithm/services/feedbackService.dart';
 
-class HelpPage extends StatelessWidget {
+class HelpPage extends StatefulWidget {
+  const HelpPage({super.key});
+
+  @override
+  _HelpPageState createState() => _HelpPageState();
+}
+
+class _HelpPageState extends State<HelpPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final _formKey = GlobalKey<FormState>();
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController commentController = TextEditingController();
+  final FeedbackService _feedbackService = FeedbackService();
+  final PatientProfileService _profileService = PatientProfileService();
+  final AuthService _authService = AuthService();
+
+  late String comment;
+  Patient? _currentUser;
+  @override
+  void initState() {
+    super.initState();
+    _fetchUser();
+  }
+
+  Future<void> _fetchUser() async {
+    Patient? user = await _authService.getCurrentUser();
+    if (user != null) {
+      final data = await _profileService.fetchPatientData(user.uid);
+      if (mounted && data != null) {
+        setState(() {
+          _currentUser = user;
+          nameController.text =
+              data['firstName'] + ' ' + data['lastName'] ?? '';
+          emailController.text = data['email'] ?? '';
+        });
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+    final t = AppLocalizations.of(context)!;
+    void _submitComment(BuildContext context) async {
+      if (_currentUser == null) return;
+      final commentText = commentController.text.trim();
+      if (commentText.isEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: const Text('Comment/Message cannot be empty'),
+            backgroundColor: Colors.red,
+            behavior: SnackBarBehavior.floating,
+            duration: const Duration(seconds: 2),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+            margin: const EdgeInsets.all(16),
+          ),
+        );
+        return;
+      }
+      try {
+        await _feedbackService.submitHelp(
+          comment: commentController.text,
+          patientId: _currentUser!.uid,
+        );
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(t.submitSuccess),
+            backgroundColor: Colors.white,
+            behavior: SnackBarBehavior.floating,
+            duration: const Duration(seconds: 2),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+            margin: const EdgeInsets.all(16),
+          ),
+        );
+      } catch (e) {
+        print(e);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(t.submitFailure),
+            backgroundColor: Colors.red,
+            behavior: SnackBarBehavior.floating,
+            duration: const Duration(seconds: 2),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+            margin: const EdgeInsets.all(16),
+          ),
+        );
+      }
+    }
+
     return Scaffold(
       key: _scaffoldKey,
       resizeToAvoidBottomInset: true,
@@ -45,36 +139,52 @@ class HelpPage extends StatelessWidget {
 
                     SizedBox(height: spacing(15, getScreenHeight(context))),
 
-                    const Text(
-                      'Help & Support',
-                      style: TextStyle(
+                    Text(
+                      t.helpTitle,
+                      style: const TextStyle(
                         fontSize: 28,
                         fontWeight: FontWeight.normal,
                         color: Colors.white,
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    Text(
+                      t.helpSubtitle,
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.normal,
+                        color: Colors.white70,
                       ),
                     ),
                     Form(
                       key: _formKey,
                       child: Column(
                         children: [
-                          const SizedBox(height: 20),
+                          const SizedBox(height: 10),
                           TextFormField(
+                            controller: nameController,
+                            readOnly: true,
                             style: const TextStyle(
                                 fontSize: 20, color: Colors.white),
-                            decoration: customTextField('Full name'),
+                            decoration: customTextField(t.fullNameLabel),
                             // validator: _validateEmail,
                           ),
                           TextFormField(
+                            controller: emailController,
+                            readOnly: true,
+
                             style: const TextStyle(
                                 fontSize: 20, color: Colors.white),
-                            decoration: customTextField('Email'),
+                            decoration: customTextField(t.emailLabel),
                             // validator: _validateEmail,
                           ),
                           TextFormField(
+                              controller: commentController,
                               style: const TextStyle(
                                   fontSize: 20, color: Colors.white),
-                              decoration: customTextField(
-                                  'Comment or Message')
+                              decoration: customTextField(t.commentLabel)
                               // validator: _validateAge,
                               ),
 
@@ -84,15 +194,7 @@ class HelpPage extends StatelessWidget {
                           SizedBox(
                             width: double.infinity,
                             child: ElevatedButton(
-                              onPressed: () {
-                                ScaffoldMessenger.of(context)
-                                    .showSnackBar(const SnackBar(
-                                  content: Text(
-                                      'Your message has been submitted successfully!'),
-                                  backgroundColor: Color.fromARGB(255, 255, 255, 255),
-                                  duration: Duration(seconds: 3),
-                                ));
-                              },
+                              onPressed: () => _submitComment(context),
                               style: ElevatedButton.styleFrom(
                                 backgroundColor:
                                     const Color.fromARGB(255, 255, 255, 255),
@@ -102,9 +204,9 @@ class HelpPage extends StatelessWidget {
                                 padding:
                                     const EdgeInsets.symmetric(vertical: 12),
                               ),
-                              child: const Text(
-                                "Submit",
-                                style: TextStyle(
+                              child: Text(
+                                t.submit,
+                                style: const TextStyle(
                                   fontSize: 20,
                                   color: Color(0xFF1A2A3A),
                                 ),
@@ -117,9 +219,9 @@ class HelpPage extends StatelessWidget {
                       ),
                     ),
                     SizedBox(height: spacing(25, getScreenHeight(context))),
-                    const Text(
-                      'Frequently Asked Questions',
-                      style: TextStyle(
+                    Text(
+                      t.faqTitle,
+                      style: const TextStyle(
                         fontSize: 28,
                         fontWeight: FontWeight.normal,
                         color: Colors.white,
@@ -156,8 +258,8 @@ class HelpPage extends StatelessWidget {
                                 vertical:
                                     spacing(13, getScreenHeight(context))),
                           ),
-                          child: const Text(
-                            'Go to Tutorial',
+                          child: Text(
+                            t.goToTutorial,
                             style: TextStyle(
                               fontSize: 20,
                               color: Color(0xFF1A2A3A),

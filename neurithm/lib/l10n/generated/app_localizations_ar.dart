@@ -172,4 +172,55 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get getInvolved => 'نحن نبحث باستمرار عن المتعاونين، والباحثين، والمستخدمين للمساهمة في تشكيل مستقبل هذه التكنولوجيا. تواصل معنا للانضمام إلى الرحلة!';
+
+  @override
+  String get helpTitle => 'الدعم والمساعدة';
+
+  @override
+  String get helpSubtitle => 'هل تواجه أي مشكلة؟ أرسل النموذج أدناه وسنعاود التواصل معك عبر البريد الإلكتروني في أقرب وقت ممكن.';
+
+  @override
+  String get fullNameLabel => 'الاسم الكامل';
+
+  @override
+  String get emailLabel => 'البريد الإلكتروني';
+
+  @override
+  String get commentLabel => 'تعليق أو رسالة';
+
+  @override
+  String get submitButton => 'إرسال';
+
+  @override
+  String get faqTitle => 'الأسئلة الشائعة';
+
+  @override
+  String get goToTutorial => 'اذهب إلى الدليل';
+
+  @override
+  String get emptyCommentError => 'لا يمكن ترك حقل التعليق/الرسالة فارغًا';
+
+  @override
+  String get submitSuccess => 'تم إرسال التعليق بنجاح.';
+
+  @override
+  String get submitFailure => 'فشل في إرسال التعليق.';
+
+  @override
+  String get faq1Question => 'كيف أستخدم هذا التطبيق؟';
+
+  @override
+  String get faq1Answer => 'للاستخدام، تنقل من خلال القائمة واختر الميزة المطلوبة (ترجمة الأفكار، الوصول إلى بنك الكلمات، الملف الشخصي). توجد شروحات تفصيلية في قسم الدليل.';
+
+  @override
+  String get faq2Question => 'كيف يمكنني التواصل مع الدعم؟';
+
+  @override
+  String get faq2Answer => 'يمكنك التواصل مع الدعم من خلال قسم \"الدعم و المساعدة\" أو عبر البريد الإلكتروني neurithm1@gmail.com.';
+
+  @override
+  String get faq3Question => 'أين أجد سجل النشاطات الخاص بي؟';
+
+  @override
+  String get faq3Answer => 'يمكنك العثور على البيانات المحفوظة في قسم \"التاريخ\" من الشريط السفلي.';
 }

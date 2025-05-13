@@ -494,6 +494,161 @@ class S {
       args: [],
     );
   }
+
+  /// `Help & Support`
+  String get helpTitle {
+    return Intl.message(
+      'Help & Support',
+      name: 'helpTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Facing any issues? Submit the form below and we’ll get back to you via email as soon as possible.`
+  String get helpSubtitle {
+    return Intl.message(
+      'Facing any issues? Submit the form below and we’ll get back to you via email as soon as possible.',
+      name: 'helpSubtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Full name`
+  String get fullNameLabel {
+    return Intl.message('Full name', name: 'fullNameLabel', desc: '', args: []);
+  }
+
+  /// `Email`
+  String get emailLabel {
+    return Intl.message('Email', name: 'emailLabel', desc: '', args: []);
+  }
+
+  /// `Comment or Message`
+  String get commentLabel {
+    return Intl.message(
+      'Comment or Message',
+      name: 'commentLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Submit`
+  String get submitButton {
+    return Intl.message('Submit', name: 'submitButton', desc: '', args: []);
+  }
+
+  /// `Frequently Asked Questions`
+  String get faqTitle {
+    return Intl.message(
+      'Frequently Asked Questions',
+      name: 'faqTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Go to Tutorial`
+  String get goToTutorial {
+    return Intl.message(
+      'Go to Tutorial',
+      name: 'goToTutorial',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Comment/Message cannot be empty`
+  String get emptyCommentError {
+    return Intl.message(
+      'Comment/Message cannot be empty',
+      name: 'emptyCommentError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Comment submitted successfully.`
+  String get submitSuccess {
+    return Intl.message(
+      'Comment submitted successfully.',
+      name: 'submitSuccess',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Failed to submit feedback.`
+  String get submitFailure {
+    return Intl.message(
+      'Failed to submit feedback.',
+      name: 'submitFailure',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `How do I use this app?`
+  String get faq1Question {
+    return Intl.message(
+      'How do I use this app?',
+      name: 'faq1Question',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `To use the app, navigate through the menu and select the desired feature (translate thoughts, access word bank, user profile). Detailed tutorials are available in the tutorial section.`
+  String get faq1Answer {
+    return Intl.message(
+      'To use the app, navigate through the menu and select the desired feature (translate thoughts, access word bank, user profile). Detailed tutorials are available in the tutorial section.',
+      name: 'faq1Answer',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `How can I contact support?`
+  String get faq2Question {
+    return Intl.message(
+      'How can I contact support?',
+      name: 'faq2Question',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You can contact support through the submitting the form above this section or email us at neurithm1@gmail.com.`
+  String get faq2Answer {
+    return Intl.message(
+      'You can contact support through the submitting the form above this section or email us at neurithm1@gmail.com.',
+      name: 'faq2Answer',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Where can I find my history?`
+  String get faq3Question {
+    return Intl.message(
+      'Where can I find my history?',
+      name: 'faq3Question',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Saved data can be found in the "History" section accessible from the bottom bar.`
+  String get faq3Answer {
+    return Intl.message(
+      'Saved data can be found in the "History" section accessible from the bottom bar.',
+      name: 'faq3Answer',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

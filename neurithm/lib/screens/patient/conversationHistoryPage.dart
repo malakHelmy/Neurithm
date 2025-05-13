@@ -143,14 +143,37 @@ class _ConversationHistoryPageState extends State<ConversationHistoryPage> {
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
-                                        Text(
-                                          'Session Date: ${formatDate(startTime)}',
-                                          style: TextStyle(
-                                            fontSize: fontSize(16),
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Text(
+                                              'Session Date: ${formatDate(startTime)}',
+                                              style: TextStyle(
+                                                fontSize: fontSize(16),
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                              
+                                            ),IconButton(
+                                          icon: const Icon(
+                                            Icons.delete,
                                             color: Colors.white,
-                                            fontWeight: FontWeight.bold,
+                                          ),
+                                          onPressed: () {
+                                            _deletePrediction(predictionId);
+                                          },
+                                        ),
+                                          ],
+                                        ),
+                                        SizedBox(height: spacing(5)),
+                                        Text(
+                                          content,
+                                          style: TextStyle(
+                                            fontSize: fontSize(18),
+                                            color: Colors.white,
                                           ),
                                         ),
+                                        
                                         SizedBox(height: spacing(5)),
                                         Text(
                                           'Start Time: ${formatTime(startTime)}',
@@ -170,65 +193,21 @@ class _ConversationHistoryPageState extends State<ConversationHistoryPage> {
                                       ],
                                     ),
                                     SizedBox(height: spacing(15)),
-                                    Container(
-                                      padding: EdgeInsets.all(spacing(12)),
-                                      decoration: BoxDecoration(
-                                        color: Colors.blue.withOpacity(0.1),
-                                        borderRadius: BorderRadius.circular(12),
-                                        boxShadow: const [
-                                          BoxShadow(
-                                            color: Colors.black26,
-                                            blurRadius: 8,
-                                            spreadRadius: 2,
-                                          ),
-                                        ],
-                                      ),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            content,
-                                            style: TextStyle(
-                                              fontSize: fontSize(18),
-                                              color: Colors.white,
-                                            ),
-                                          ),
-                                          SizedBox(height: spacing(10)),
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.end,
-                                            children: [
-                                              IconButton(
-                                                icon: const Icon(
-                                                  Icons.delete,
-                                                  color: Colors.white,
-                                                ),
-                                                onPressed: () {
-                                                  _deletePrediction(
-                                                      predictionId); 
-                                                },
-                                              ),
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    SizedBox(height: spacing(10)),
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.end,
-                                      children: [
-                                        IconButton(
-                                          icon: const Icon(
-                                            Icons.delete_forever,
-                                            color: Colors.red,
-                                          ),
-                                          onPressed: () {
-                                            _deleteSession(sessionId);
-                                          },
-                                        ),
-                                      ],
-                                    ),
+                                    
+                                    // Row(
+                                    //   mainAxisAlignment: MainAxisAlignment.end,
+                                    //   children: [
+                                    //     IconButton(
+                                    //       icon: const Icon(
+                                    //         Icons.delete_forever,
+                                    //         color: Colors.red,
+                                    //       ),
+                                    //       onPressed: () {
+                                    //         _deleteSession(sessionId);
+                                    //       },
+                                    //     ),
+                                    //   ],
+                                    // ),
                                   ],
                                 ),
                               ),

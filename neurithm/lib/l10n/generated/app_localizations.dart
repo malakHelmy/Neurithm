@@ -424,6 +424,108 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'We are continuously looking for collaborators, researchers, and users to shape the future of this technology. Contact us to join the journey!'**
   String get getInvolved;
+
+  /// No description provided for @helpTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Help & Support'**
+  String get helpTitle;
+
+  /// No description provided for @helpSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Facing any issues? Submit the form below and we’ll get back to you via email as soon as possible.'**
+  String get helpSubtitle;
+
+  /// No description provided for @fullNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Full name'**
+  String get fullNameLabel;
+
+  /// No description provided for @emailLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get emailLabel;
+
+  /// No description provided for @commentLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Comment or Message'**
+  String get commentLabel;
+
+  /// No description provided for @submitButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Submit'**
+  String get submitButton;
+
+  /// No description provided for @faqTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Frequently Asked Questions'**
+  String get faqTitle;
+
+  /// No description provided for @goToTutorial.
+  ///
+  /// In en, this message translates to:
+  /// **'Go to Tutorial'**
+  String get goToTutorial;
+
+  /// No description provided for @emptyCommentError.
+  ///
+  /// In en, this message translates to:
+  /// **'Comment/Message cannot be empty'**
+  String get emptyCommentError;
+
+  /// No description provided for @submitSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Comment submitted successfully.'**
+  String get submitSuccess;
+
+  /// No description provided for @submitFailure.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to submit feedback.'**
+  String get submitFailure;
+
+  /// No description provided for @faq1Question.
+  ///
+  /// In en, this message translates to:
+  /// **'How do I use this app?'**
+  String get faq1Question;
+
+  /// No description provided for @faq1Answer.
+  ///
+  /// In en, this message translates to:
+  /// **'To use the app, navigate through the menu and select the desired feature (translate thoughts, access word bank, user profile). Detailed tutorials are available in the tutorial section.'**
+  String get faq1Answer;
+
+  /// No description provided for @faq2Question.
+  ///
+  /// In en, this message translates to:
+  /// **'How can I contact support?'**
+  String get faq2Question;
+
+  /// No description provided for @faq2Answer.
+  ///
+  /// In en, this message translates to:
+  /// **'You can contact support through the submitting the form above this section or email us at neurithm1@gmail.com.'**
+  String get faq2Answer;
+
+  /// No description provided for @faq3Question.
+  ///
+  /// In en, this message translates to:
+  /// **'Where can I find my history?'**
+  String get faq3Question;
+
+  /// No description provided for @faq3Answer.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved data can be found in the \"History\" section accessible from the bottom bar.'**
+  String get faq3Answer;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

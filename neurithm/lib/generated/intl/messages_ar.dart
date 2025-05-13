@@ -38,19 +38,49 @@ class MessageLookup extends MessageLookupByLibrary {
     "categories": MessageLookupByLibrary.simpleMessage("فئات"),
     "chooseLanguage": MessageLookupByLibrary.simpleMessage("اختر اللغة"),
     "chosenLanguage": MessageLookupByLibrary.simpleMessage("ar"),
+    "commentLabel": MessageLookupByLibrary.simpleMessage("تعليق أو رسالة"),
     "connect": MessageLookupByLibrary.simpleMessage("اتصال"),
     "connectToHeadset": MessageLookupByLibrary.simpleMessage(
       "اتصل بسماعة الرأس",
     ),
     "doneThinking": MessageLookupByLibrary.simpleMessage("انتهيت من التفكير"),
+    "emailLabel": MessageLookupByLibrary.simpleMessage("البريد الإلكتروني"),
+    "emptyCommentError": MessageLookupByLibrary.simpleMessage(
+      "لا يمكن ترك حقل التعليق/الرسالة فارغًا",
+    ),
     "english": MessageLookupByLibrary.simpleMessage("الإنجليزية"),
+    "faq1Answer": MessageLookupByLibrary.simpleMessage(
+      "للاستخدام، تنقل من خلال القائمة واختر الميزة المطلوبة (ترجمة الأفكار، الوصول إلى بنك الكلمات، الملف الشخصي). توجد شروحات تفصيلية في قسم الدليل.",
+    ),
+    "faq1Question": MessageLookupByLibrary.simpleMessage(
+      "كيف أستخدم هذا التطبيق؟",
+    ),
+    "faq2Answer": MessageLookupByLibrary.simpleMessage(
+      "يمكنك التواصل مع الدعم من خلال قسم \"الدعم و المساعدة\" أو عبر البريد الإلكتروني neurithm1@gmail.com.",
+    ),
+    "faq2Question": MessageLookupByLibrary.simpleMessage(
+      "كيف يمكنني التواصل مع الدعم؟",
+    ),
+    "faq3Answer": MessageLookupByLibrary.simpleMessage(
+      "يمكنك العثور على البيانات المحفوظة في قسم \"التاريخ\" من الشريط السفلي.",
+    ),
+    "faq3Question": MessageLookupByLibrary.simpleMessage(
+      "أين أجد سجل النشاطات الخاص بي؟",
+    ),
+    "faqTitle": MessageLookupByLibrary.simpleMessage("الأسئلة الشائعة"),
+    "fullNameLabel": MessageLookupByLibrary.simpleMessage("الاسم الكامل"),
     "getInvolved": MessageLookupByLibrary.simpleMessage(
       "نحن نبحث باستمرار عن المتعاونين، والباحثين، والمستخدمين للمساهمة في تشكيل مستقبل هذه التكنولوجيا. تواصل معنا للانضمام إلى الرحلة!",
     ),
     "getInvolvedTitle": MessageLookupByLibrary.simpleMessage("شارك معنا"),
+    "goToTutorial": MessageLookupByLibrary.simpleMessage("اذهب إلى الدليل"),
     "headsetsFound": m0,
     "helpAndGuide": MessageLookupByLibrary.simpleMessage("المساعدة والدليل"),
     "helpAndSupport": MessageLookupByLibrary.simpleMessage("المساعدة والدعم"),
+    "helpSubtitle": MessageLookupByLibrary.simpleMessage(
+      "هل تواجه أي مشكلة؟ أرسل النموذج أدناه وسنعاود التواصل معك عبر البريد الإلكتروني في أقرب وقت ممكن.",
+    ),
+    "helpTitle": MessageLookupByLibrary.simpleMessage("الدعم والمساعدة"),
     "history": MessageLookupByLibrary.simpleMessage("التاريخ"),
     "home": MessageLookupByLibrary.simpleMessage("الرئيسية"),
     "languageSettings": MessageLookupByLibrary.simpleMessage("إعدادات اللغة"),
@@ -91,6 +121,13 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "startThinking": MessageLookupByLibrary.simpleMessage("ابدأ التفكير"),
     "submit": MessageLookupByLibrary.simpleMessage("إرسال"),
+    "submitButton": MessageLookupByLibrary.simpleMessage("إرسال"),
+    "submitFailure": MessageLookupByLibrary.simpleMessage(
+      "فشل في إرسال التعليق.",
+    ),
+    "submitSuccess": MessageLookupByLibrary.simpleMessage(
+      "تم إرسال التعليق بنجاح.",
+    ),
     "syncInstructions": MessageLookupByLibrary.simpleMessage(
       "قم بتوصيل التطبيق مع سماعة الرأس لبدء التعبير عن أفكارك",
     ),

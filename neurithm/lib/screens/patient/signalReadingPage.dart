@@ -202,15 +202,16 @@ class _SignalReadingpageState extends State<SignalReadingpage> {
                               isNewWord: false);
                         }),
                         const SizedBox(height: 10),
-                        _actionButton(Icons.check_circle, t.doneThinking, () {
-                          signalReadingService.doneThinking(context);
-                        }),
-                        const SizedBox(height: 10),
                         _actionButton(Icons.skip_next, t.moveToNextWord, () {
                           signalReadingService.uploadFileAndStartThinking(
                               context,
                               isNewWord: true);
                         }),
+                        const SizedBox(height: 10),
+                        _actionButton(Icons.check_circle, t.doneThinking, () {
+                          signalReadingService.doneThinking(context);
+                        }),
+                        
                         const SizedBox(height: 10),
                         _actionButton(Icons.restart_alt, t.restart, () {
                           signalReadingService.restartServer(context);

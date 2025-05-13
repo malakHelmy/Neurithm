@@ -245,4 +245,23 @@ class FeedbackService {
       }
     }
   }
+
+  Future<void> submitHelp({
+    required String comment,
+    required String patientId,
+  }) async {
+    if (comment.isEmpty || patientId.isEmpty) return;
+
+    final today = DateTime.now();
+    final patientCommentsCollection =
+        FirebaseFirestore.instance.collection('patient_comments');
+
+      await patientCommentsCollection.add({
+        'patientId': patientId,
+        'comment': comment,
+        'submittedAt': today.toIso8601String(),
+        'isResolved': false,
+      });
+    
+  }
 }
