@@ -33,8 +33,8 @@ NOTEBOOK_PATH = "notebooks/Letters_notebook_file_by_file.ipynb"
 MODEL_PATH = "models/eegnet_model_letters 81.31.keras"
 LABEL_ENCODER_PATH = "models/label_encoder_eegnet_letters 81.31.pkl"
 # Add path for the alternative model
-ALT_MODEL_PATH = "models/without_pos_encoding.keras"
-ALT_LABEL_ENCODER_PATH = "models/without_pos_encoding.pkl"
+ALT_MODEL_PATH = "models/best_eegnet_transformer_model (1).keras"
+ALT_LABEL_ENCODER_PATH = "models/label_encoder_transformer_final (2).pkl"
 OUTPUT_DIR = Path("processed_results")
 
 # Access the API key from the environment
@@ -43,14 +43,8 @@ OPENROUTER_API_URL = "https://openrouter.ai/api/v1/chat/completions"
 MODEL_NAME = "deepseek/deepseek-chat-v3-0324"
 MAX_RETRIES = 3
 
-# You can now use OPENROUTER_API_KEY safely
 print(f"Your OpenRouter API Key is: {OPENROUTER_API_KEY}")
-# Custom Layer for Positional Encoding
-import numpy as np
-import tensorflow as tf
-from tensorflow.keras.layers import Lambda
-from tensorflow.keras.utils import register_keras_serializable
-import traceback
+
 
 # Load primary model once
 try:
@@ -71,7 +65,7 @@ except Exception as e:
     raise e
 
 
-# Load alternative model (Transformer)
+# Load alternative model (EEGNET and EEG Transformer)
 try:
     alt_model = tf.keras.models.load_model(ALT_MODEL_PATH)
     logger.info("✅ Alternative EEGTransformer model loaded successfully.")
@@ -117,13 +111,10 @@ def process_eeg_data(df, sample_rate=128, letter_duration=10, gap=0.5):
     segments = []
 
     for start in range(0, len(df), rows_per_letter + rows_per_gap):
-        # For the last segment, avoid adding a gap after it
         if start + rows_per_letter + rows_per_gap > len(df):
             end = min(start + rows_per_letter, len(df))
         else:
             end = min(start + rows_per_letter, len(df))
-        
-        # Add the segment to the list
         segments.append(df.iloc[start:end].copy())
 
     return segments
@@ -143,7 +134,7 @@ def handle_upload(file):
     for i, segment in enumerate(segments, 1):
         segment.to_csv(word_path / f"letter_{i}.csv", index=False)
 
-    # Create in-memory zip (optional - you don't use it now)
+    # Create in-memory zip
     zip_buffer = io.BytesIO()
     with zipfile.ZipFile(zip_buffer, 'w') as zf:
         for csv_file in word_path.glob("*.csv"):
@@ -175,59 +166,10 @@ def run_notebook(folder_path):
         return None
 
 
-
-from scipy import signal
-from sklearn.preprocessing import StandardScaler
-import numpy as np   
-def extract_frequency_features(X, fs=128):
-    """Extract frequency domain features for EEG signals"""
-    bands = {
-        'delta': (0.5, 4),   # Associated with attention
-        'theta': (4, 8),     # Memory and language processing
-        'alpha': (8, 13),    # Visual processing and recognition
-        'beta': (13, 30),    # Active thinking and focus
-        'gamma': (30, 50)    # Higher cognitive processing and feature binding
-    }
-
-    batch_size, channels, samples, _ = X.shape
-    X_freq = np.zeros((batch_size, channels, len(bands)))
-
-    for i in range(batch_size):
-        for c in range(channels):
-            signal_data = X[i, c, :, 0]
-
-            # Log the raw EEG data range before frequency extraction
-            logger.debug(f"Raw EEG data range for channel {c}, sample {i}: min={np.min(signal_data)}, max={np.max(signal_data)}")
-            logger.debug(f"Raw EEG data sample values (first 5) before frequency extraction: {signal_data[:5]}")
-
-            # Calculate power spectrum using Welch method
-            nperseg = min(256, len(signal_data))  # Align with training notebook logic
-            freqs, psd = signal.welch(signal_data, fs=fs, nperseg=nperseg)
-
-            # Log the PSD for debugging purposes
-            logger.debug(f"Power spectral density (psd) for channel {c}, sample {i}: {psd[:5]}")  # Log first 5 PSD values
-
-            # Extract band powers
-            for j, (band_name, (low, high)) in enumerate(bands.items()):
-                idx_band = np.logical_and(freqs >= low, freqs <= high)
-                if np.any(idx_band):
-                    X_freq[i, c, j] = np.mean(psd[idx_band])
-
-    # Normalize features (same as training notebook)
-    X_freq_reshaped = X_freq.reshape(batch_size, -1)
-    scaler = StandardScaler()
-    X_freq_normalized = scaler.fit_transform(X_freq_reshaped)
-
-    # Log the normalized frequency features (for debugging)
-    logger.debug(f"Normalized frequency features: {X_freq_normalized[:5]}")
-    
-    return X_freq_normalized.reshape(batch_size, channels, len(bands))
-
-
-
 def run_predictions_in_memory(folder_path, model_path, label_encoder_path, alt_model=False):
     try:
         # Load the appropriate model (either primary or alternative)
+        print(">>> Using UPDATED run_predictions_in_memory")
         model = tf.keras.models.load_model(model_path)
         with open(label_encoder_path, 'rb') as f:
             label_encoder = pickle.load(f)
@@ -260,21 +202,11 @@ def run_predictions_in_memory(folder_path, model_path, label_encoder_path, alt_m
                 X_new = np.transpose(X_temp, (0, 2, 1))
                 X_new = X_new[..., np.newaxis]
                 
-                
 
-                # Extract frequency-domain features
-                X_new_freq = extract_frequency_features(X_new)
-                
-                
-                # Log the shape of frequency features in inference
-                logger.debug(f"Extracted frequency features shape (Inference): {X_new_freq.shape}")
-                logger.debug(f"Extracted frequency features sample values (Inference - first 5): {X_new_freq[0, :5]}")
-
-                # Run prediction for both EEG data and frequency-domain features
-                if alt_model:  # Alternative model (eegtransformer)
-                    y_pred_probs = model.predict([X_new, X_new_freq])  # Pass both inputs to the alt model
+                if alt_model:  # Alternative model (EEGNET and EEG Transformer)
+                    y_pred_probs = model.predict([X_new])
                 else:  # Main model (eegnet)
-                    y_pred_probs = model.predict(X_new)  # Main model uses only EEG data
+                    y_pred_probs = model.predict(X_new)
 
                 # Decode predictions
                 y_pred_labels = np.argmax(y_pred_probs, axis=-1)
@@ -314,7 +246,7 @@ def get_multiple_corrections(text, num_options=5):
     payload = {
         "model": MODEL_NAME,
         "messages": [{"role": "user", "content": prompt}],
-        "temperature": 0.7,  # Increased temperature for more variety
+        "temperature": 0.7,
         "max_tokens": 300,   # Increased token limit to accommodate multiple corrections
         "n": 1               # We'll parse multiple options from a single completion
     }
@@ -360,7 +292,7 @@ def get_multiple_corrections(text, num_options=5):
             if attempt == MAX_RETRIES - 1:
                 return [text]  # Fallback to original text as the only option
     
-    return [text]  # Fallback if all else fails
+    return [text]
 
 
 # Global variable to store the concatenated word
@@ -368,7 +300,7 @@ concatenated_word = ""
 
 @app.route('/start_thinking', methods=['POST'])
 def start_thinking():
-    global concatenated_word  # Use the global variable to store the concatenated word
+    global concatenated_word
 
     if 'file' not in request.files:
         return jsonify(error="No file provided"), 400
@@ -549,7 +481,7 @@ def restart():
 
     try:
         # Step 1: Reset the concatenated_word to an empty string
-        concatenated_word = ""  # Clear the concatenated word
+        concatenated_word = ""
 
         # Log the reset action
         logger.debug("Concatenated word has been reset.")
@@ -563,17 +495,13 @@ def restart():
         app.logger.error(f"Error during reset: {str(e)}")
         return jsonify(error="Failed to reset the server"), 500
     
-    
-    
-
-
-# Now ensure the regenerate endpoint can access this function
+        
 @app.route('/regenerate', methods=['POST'])
 def regenerate():
     """Regenerate predictions for a specific preprocessed word folder using the EEGTransformer model"""
     try:
         data = request.json
-        word_folder = data.get('word_folder')  # e.g., "word1"
+        word_folder = data.get('word_folder')
         num_options = data.get('num_options', 5)
 
         if not word_folder:
@@ -588,7 +516,6 @@ def regenerate():
 
         logger.info(f"♻ Regenerating predictions from folder: {full_path}")
 
-        # Use the updated transformer prediction function with proper frequency features
         predictions = run_predictions_in_memory(full_path, ALT_MODEL_PATH, ALT_LABEL_ENCODER_PATH, alt_model=True)
 
         logger.debug(f"EEGTransformer predictions: {json.dumps(predictions, ensure_ascii=False)}")
