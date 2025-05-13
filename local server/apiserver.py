@@ -175,56 +175,6 @@ def run_notebook(folder_path):
         return None
 
 
-
-from scipy import signal
-from sklearn.preprocessing import StandardScaler
-import numpy as np   
-def extract_frequency_features(X, fs=128):
-    """Extract frequency domain features for EEG signals"""
-    bands = {
-        'delta': (0.5, 4),   # Associated with attention
-        'theta': (4, 8),     # Memory and language processing
-        'alpha': (8, 13),    # Visual processing and recognition
-        'beta': (13, 30),    # Active thinking and focus
-        'gamma': (30, 50)    # Higher cognitive processing and feature binding
-    }
-
-    batch_size, channels, samples, _ = X.shape
-    X_freq = np.zeros((batch_size, channels, len(bands)))
-
-    for i in range(batch_size):
-        for c in range(channels):
-            signal_data = X[i, c, :, 0]
-
-            # Log the raw EEG data range before frequency extraction
-            logger.debug(f"Raw EEG data range for channel {c}, sample {i}: min={np.min(signal_data)}, max={np.max(signal_data)}")
-            logger.debug(f"Raw EEG data sample values (first 5) before frequency extraction: {signal_data[:5]}")
-
-            # Calculate power spectrum using Welch method
-            nperseg = min(256, len(signal_data))  # Align with training notebook logic
-            freqs, psd = signal.welch(signal_data, fs=fs, nperseg=nperseg)
-
-            # Log the PSD for debugging purposes
-            logger.debug(f"Power spectral density (psd) for channel {c}, sample {i}: {psd[:5]}")  # Log first 5 PSD values
-
-            # Extract band powers
-            for j, (band_name, (low, high)) in enumerate(bands.items()):
-                idx_band = np.logical_and(freqs >= low, freqs <= high)
-                if np.any(idx_band):
-                    X_freq[i, c, j] = np.mean(psd[idx_band])
-
-    # Normalize features (same as training notebook)
-    X_freq_reshaped = X_freq.reshape(batch_size, -1)
-    scaler = StandardScaler()
-    X_freq_normalized = scaler.fit_transform(X_freq_reshaped)
-
-    # Log the normalized frequency features (for debugging)
-    logger.debug(f"Normalized frequency features: {X_freq_normalized[:5]}")
-    
-    return X_freq_normalized.reshape(batch_size, channels, len(bands))
-
-
-
 def run_predictions_in_memory(folder_path, model_path, label_encoder_path, alt_model=False):
     try:
         # Load the appropriate model (either primary or alternative)
