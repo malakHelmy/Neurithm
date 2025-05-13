@@ -20,7 +20,7 @@ class AppRatingsService {
     for (var doc in ratingsQuery.docs) {
       var ratingData = doc.data();
       String patientId = ratingData['patientId'];
-      double rating = ratingData['rating'];
+      int rating = ratingData['rating'];
       var submittedAt = ratingData['submittedAt'];
 
       DateTime submittedDate;
