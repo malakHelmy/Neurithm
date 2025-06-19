@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:neurithm/models/prediction.dart';
 import 'package:neurithm/services/authService.dart'; 
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 class ConfirmContextService {
   final AuthService _authService = AuthService();
@@ -55,4 +57,25 @@ class ConfirmContextService {
       throw e;
     }
   }
+
+  Future<void> sendCustomTextToServer(String text) async {
+  const String localServerUrl = 'https://944d-45-241-30-135.ngrok-free.app/retrain_model'; 
+
+  try {
+    var response = await http.post(
+      Uri.parse(localServerUrl),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({'sentence': text}),
+    );
+
+    if (response.statusCode == 200) {
+      print('Sentence successfully sent: $text');
+    } else {
+      print('Server error: ${response.statusCode}');
+    }
+  } catch (e) {
+    print('Error sending sentence: $e');
+  }
+}
+
 }

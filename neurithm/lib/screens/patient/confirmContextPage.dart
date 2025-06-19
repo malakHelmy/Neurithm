@@ -167,7 +167,7 @@ class _ConfirmationPageState extends State<ConfirmContextPage> {
                       padding: EdgeInsets.symmetric(
                           vertical: spacing(12, getScreenHeight(context))),
                     ),
-                    child:  Row(
+                    child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Icon(Icons.volume_up,
@@ -324,6 +324,58 @@ class _ConfirmationPageState extends State<ConfirmContextPage> {
                         SizedBox(height: spacing(10, getScreenHeight(context))),
                         _actionButtons(),
                         SizedBox(height: spacing(40, getScreenHeight(context))),
+                        if (_regenerationDone) ...[
+                          const Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: Text(
+                              "Didn't find the right sentence? Press regenerate or write your own version below:",
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 8.0),
+                            child: TextField(
+                              decoration: InputDecoration(
+                                filled: true,
+                                fillColor: Colors.white,
+                                hintText: "Rephrase it...",
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                              ),
+                              onChanged: (value) {
+                                setState(() {
+                                  _selectedText = value;
+                                });
+                              },
+                            ),
+                          ),
+                          SizedBox(height: 8),
+                          ElevatedButton.icon(
+                            onPressed: _selectedText == null ? null : () async {
+                              await _handleRecite();
+                              await confirmContextService.sendCustomTextToServer(_selectedText!);
+                            },
+                            icon: Icon(Icons.volume_up, color: Colors.white),
+                            label: Text(
+                              "Recite",
+                              style: TextStyle(color: Colors.white),
+                            ),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Color(0xFF1A2A3A),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(50),
+                              ),
+                              padding: EdgeInsets.symmetric(
+                                  vertical:
+                                      spacing(12, getScreenHeight(context))),
+                            ),
+                          ),
+                        ],
                       ],
                     ),
             ),
