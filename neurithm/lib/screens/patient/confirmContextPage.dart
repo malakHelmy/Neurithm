@@ -51,13 +51,6 @@ class _ConfirmationPageState extends State<ConfirmContextPage> {
         String aiModelId =
             await confirmContextService.getAiModelId('EEG Transformer');
 
-        await confirmContextService.addPrediction(
-          sessionId: widget.sessionId,
-          aiModelId: aiModelId,
-          predictedText: _selectedText!,
-          isAccepted: false,
-        );
-
         setState(() {
           _regenerationDone = true;
           _isRegenerating = true;
@@ -91,7 +84,6 @@ class _ConfirmationPageState extends State<ConfirmContextPage> {
           sessionId: widget.sessionId,
           aiModelId: aiModelId,
           predictedText: _selectedText!,
-          isAccepted: true,
         );
 
         Navigator.push(
@@ -358,7 +350,6 @@ class _ConfirmationPageState extends State<ConfirmContextPage> {
                           ElevatedButton.icon(
                             onPressed: _selectedText == null ? null : () async {
                               await _handleRecite();
-                              await confirmContextService.sendCustomTextToServer(_selectedText!);
                             },
                             icon: Icon(Icons.volume_up, color: Colors.white),
                             label: Text(

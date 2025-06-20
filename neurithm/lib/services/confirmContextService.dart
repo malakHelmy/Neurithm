@@ -30,7 +30,6 @@ class ConfirmContextService {
     required String sessionId,
     required String aiModelId, 
     required String predictedText,
-    required bool isAccepted,
   }) async {
     try {
       var currentUser = await _authService.getCurrentUser();
@@ -44,7 +43,6 @@ class ConfirmContextService {
         sessionId: sessionId,
         aiModelId: aiModelId,
         predictedText: predictedText,
-        isAccepted: isAccepted,
       );
 
       await FirebaseFirestore.instance
@@ -57,25 +55,5 @@ class ConfirmContextService {
       throw e;
     }
   }
-
-  Future<void> sendCustomTextToServer(String text) async {
-  const String localServerUrl = 'https://944d-45-241-30-135.ngrok-free.app/retrain_model'; 
-
-  try {
-    var response = await http.post(
-      Uri.parse(localServerUrl),
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode({'sentence': text}),
-    );
-
-    if (response.statusCode == 200) {
-      print('Sentence successfully sent: $text');
-    } else {
-      print('Server error: ${response.statusCode}');
-    }
-  } catch (e) {
-    print('Error sending sentence: $e');
-  }
-}
 
 }

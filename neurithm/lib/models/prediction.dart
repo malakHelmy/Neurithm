@@ -3,14 +3,12 @@ class Prediction {
   String sessionId;
   String aiModelId;
   String predictedText;
-  bool isAccepted;
 
   Prediction({
     required this.id,
     required this.sessionId,
     required this.aiModelId,
     required this.predictedText,
-    required this.isAccepted,
   });
 
   Map<String, dynamic> toMap() {
@@ -18,7 +16,6 @@ class Prediction {
       'sessionId': sessionId,
       'aiModelId': aiModelId,
       'predictedText': predictedText,
-      'isAccepted': isAccepted,
     };
   }
 
@@ -28,7 +25,6 @@ class Prediction {
       sessionId: map['sessionId'],
       aiModelId: map['aiModelId'],
       predictedText: map['predictedText'],
-      isAccepted: map['isAccepted'],
     );
   }
 }
