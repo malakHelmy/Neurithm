@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:neurithm/models/flagModel.dart';
 import 'package:neurithm/models/prediction.dart';
 import 'package:neurithm/services/authService.dart'; 
 import 'dart:convert';
@@ -55,5 +56,10 @@ class ConfirmContextService {
       throw e;
     }
   }
+
+  Future<void> saveFlag(FlagModel flagModel) async {
+  await FirebaseFirestore.instance.collection('flagModel').add(flagModel.toMap());
+}
+
 
 }
