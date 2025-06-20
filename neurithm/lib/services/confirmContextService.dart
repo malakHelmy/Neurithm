@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:neurithm/models/flagModel.dart';
 import 'package:neurithm/models/prediction.dart';
-import 'package:neurithm/services/authService.dart'; 
+import 'package:neurithm/services/authService.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
@@ -29,7 +29,7 @@ class ConfirmContextService {
 
   Future<void> addPrediction({
     required String sessionId,
-    required String aiModelId, 
+    required String aiModelId,
     required String predictedText,
   }) async {
     try {
@@ -40,7 +40,7 @@ class ConfirmContextService {
       }
 
       Prediction prediction = Prediction(
-        id: '',  // Firestore will auto-generate the ID
+        id: '', // Firestore will auto-generate the ID
         sessionId: sessionId,
         aiModelId: aiModelId,
         predictedText: predictedText,
@@ -58,8 +58,25 @@ class ConfirmContextService {
   }
 
   Future<void> saveFlag(FlagModel flagModel) async {
-  await FirebaseFirestore.instance.collection('flagModel').add(flagModel.toMap());
-}
+    await FirebaseFirestore.instance
+        .collection('flagModel')
+        .add(flagModel.toMap());
+  }
 
+  Future<String> saveFlagAndReturnId(FlagModel flagModel) async {
+    final docRef = await FirebaseFirestore.instance
+        .collection('flags')
+        .add(flagModel.toMap());
+    return docRef.id;
+  }
 
+  Future<void> updateFlagCorrectText({
+    required String documentId,
+    required String correctText,
+  }) async {
+    await FirebaseFirestore.instance
+        .collection('flags')
+        .doc(documentId)
+        .update({'correctText': correctText});
+  }
 }

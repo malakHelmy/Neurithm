@@ -29,6 +29,7 @@ class _ConfirmationPageState extends State<ConfirmContextPage> {
   String? _selectedText;
   Patient? _currentUser;
   bool _regenerationDone = false;
+  String? _flagDocumentId;
 
   @override
   void initState() {
@@ -54,17 +55,21 @@ class _ConfirmationPageState extends State<ConfirmContextPage> {
           // First time regenerate
           aiModelId = await confirmContextService.getAiModelId('EEGNet');
 
-          // Save FlagModel with EEGNet (no correctText)
+          // Create FlagModel without correctText
           FlagModel flagModel = FlagModel(
             sessionId: widget.sessionId,
             modelId: aiModelId,
             correctText: null,
           );
-          await confirmContextService.saveFlag(flagModel);
+
+          // Save and capture document ID
+          _flagDocumentId =
+              await confirmContextService.saveFlagAndReturnId(flagModel);
         } else {
-          // Subsequent regenerations
+          // Subsequent regenerations (EEG Transformer)
           aiModelId =
               await confirmContextService.getAiModelId('EEG Transformer');
+          // (no need to save anything for transformer on regenerate)
         }
 
         setState(() {
@@ -92,7 +97,8 @@ class _ConfirmationPageState extends State<ConfirmContextPage> {
         if (_regenerationDone) {
           aiModelId = await confirmContextService.getAiModelId('EEGNet');
         } else {
-          aiModelId = await confirmContextService.getAiModelId('EEG Transformer');
+          aiModelId =
+              await confirmContextService.getAiModelId('EEG Transformer');
         }
 
         await confirmContextService.addPrediction(
@@ -305,18 +311,13 @@ class _ConfirmationPageState extends State<ConfirmContextPage> {
                                           widget.correctedTexts[index];
                                     });
 
-                                    if (_regenerationDone) {
-                                      String aiModelId =
-                                          await confirmContextService
-                                              .getAiModelId('EEG Transformer');
-
-                                      FlagModel flagModel = FlagModel(
-                                        sessionId: widget.sessionId,
-                                        modelId: aiModelId,
-                                        correctText: _selectedText,
-                                      );
+                                    if (_regenerationDone &&
+                                        _flagDocumentId != null) {
                                       await confirmContextService
-                                          .saveFlag(flagModel);
+                                          .updateFlagCorrectText(
+                                        documentId: _flagDocumentId!,
+                                        correctText: _selectedText!,
+                                      );
                                     }
                                   },
                                   style: ElevatedButton.styleFrom(
