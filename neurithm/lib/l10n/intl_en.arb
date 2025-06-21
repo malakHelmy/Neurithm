@@ -91,7 +91,7 @@
   "enterTextWarning": "Please enter some text to generate speech.",
   "preferencesSaved": "Your preferences have been saved successfully.",
   "saveChanges": "Save Changes",
-  "chooseCorrectionLabel": "Choose Your Preferred\nCorrection",
+  "chooseCorrectionLabel": "Choose Your Preferred Correction",
   "regenerate": "Regenerate",
   "recite": "Recite",
   "finish": "Finish",
@@ -115,5 +115,12 @@
   "step6": "Turn on Bluetooth on your phone and navigate to the \"Connect to Headset\" page.",
   "step7": "Click the big circular button to scan for devices and select the headset when it appears.",
   "step8": "Once connected, you can start the thought translation process!",
-  "goBack": "Go Back"
+  "goBack": "Go Back",
+  "regenerating": "Regenerating...",
+  "rephraseHint": "Rephrase it...",
+  "customSentenceInstruction": "Didn't find the right sentence? Press regenerate or write your own version below:",
+  "reciteThisSentence": "Recite this sentence",
+  "errorOccurred": "Error: {error}",
+  "regenerationFailed": "Failed to regenerate sentence",
+  "noConversations": "Nothing to show here"
 }

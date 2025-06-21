@@ -19,7 +19,7 @@ class Biometricauth {
         bool authenticated = await auth.authenticate(
           localizedReason: "Authenticate using biometrics",
         );
-        UserPreferences.saveBiometricAuth(email, password);
+        UserPreferences.saveBiometricAuth(email.trim(), password);
       }
     }
   }

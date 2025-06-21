@@ -650,7 +650,7 @@ abstract class AppLocalizations {
   /// No description provided for @chooseCorrectionLabel.
   ///
   /// In en, this message translates to:
-  /// **'Choose Your Preferred\nCorrection'**
+  /// **'Choose Your Preferred Correction'**
   String get chooseCorrectionLabel;
 
   /// No description provided for @regenerate.
@@ -796,6 +796,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Go Back'**
   String get goBack;
+
+  /// No description provided for @regenerating.
+  ///
+  /// In en, this message translates to:
+  /// **'Regenerating...'**
+  String get regenerating;
+
+  /// No description provided for @rephraseHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Rephrase it...'**
+  String get rephraseHint;
+
+  /// No description provided for @customSentenceInstruction.
+  ///
+  /// In en, this message translates to:
+  /// **'Didn\'t find the right sentence? Press regenerate or write your own version below:'**
+  String get customSentenceInstruction;
+
+  /// No description provided for @reciteThisSentence.
+  ///
+  /// In en, this message translates to:
+  /// **'Recite this sentence'**
+  String get reciteThisSentence;
+
+  /// No description provided for @errorOccurred.
+  ///
+  /// In en, this message translates to:
+  /// **'Error: {error}'**
+  String errorOccurred(Object error);
+
+  /// No description provided for @regenerationFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to regenerate sentence'**
+  String get regenerationFailed;
+
+  /// No description provided for @noConversations.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing to show here'**
+  String get noConversations;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

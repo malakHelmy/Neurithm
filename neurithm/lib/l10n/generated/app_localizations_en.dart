@@ -285,7 +285,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get saveChanges => 'Save Changes';
 
   @override
-  String get chooseCorrectionLabel => 'Choose Your Preferred\nCorrection';
+  String get chooseCorrectionLabel => 'Choose Your Preferred Correction';
 
   @override
   String get regenerate => 'Regenerate';
@@ -358,4 +358,27 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get goBack => 'Go Back';
+
+  @override
+  String get regenerating => 'Regenerating...';
+
+  @override
+  String get rephraseHint => 'Rephrase it...';
+
+  @override
+  String get customSentenceInstruction => 'Didn\'t find the right sentence? Press regenerate or write your own version below:';
+
+  @override
+  String get reciteThisSentence => 'Recite this sentence';
+
+  @override
+  String errorOccurred(Object error) {
+    return 'Error: $error';
+  }
+
+  @override
+  String get regenerationFailed => 'Failed to regenerate sentence';
+
+  @override
+  String get noConversations => 'Nothing to show here';
 }

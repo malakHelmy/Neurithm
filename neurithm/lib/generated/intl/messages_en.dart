@@ -20,7 +20,9 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'en';
 
-  static String m0(count) => "${count} headset(s) found";
+  static String m0(error) => "Error: ${error}";
+
+  static String m1(count) => "${count} headset(s) found";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -37,7 +39,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "arabic": MessageLookupByLibrary.simpleMessage("Arabic"),
     "categories": MessageLookupByLibrary.simpleMessage("Categories"),
     "chooseCorrectionLabel": MessageLookupByLibrary.simpleMessage(
-      "Choose Your Preferred\nCorrection",
+      "Choose Your Preferred Correction",
     ),
     "chooseLanguage": MessageLookupByLibrary.simpleMessage("Choose Language"),
     "chosenLanguage": MessageLookupByLibrary.simpleMessage("en"),
@@ -55,6 +57,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "conversationHistory": MessageLookupByLibrary.simpleMessage(
       "Conversation History",
     ),
+    "customSentenceInstruction": MessageLookupByLibrary.simpleMessage(
+      "Didn\'t find the right sentence? Press regenerate or write your own version below:",
+    ),
     "delete": MessageLookupByLibrary.simpleMessage("Delete"),
     "doneThinking": MessageLookupByLibrary.simpleMessage("Done Thinking"),
     "emailLabel": MessageLookupByLibrary.simpleMessage("Email"),
@@ -66,6 +71,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "enterTextWarning": MessageLookupByLibrary.simpleMessage(
       "Please enter some text to generate speech.",
     ),
+    "errorOccurred": m0,
     "faq1Answer": MessageLookupByLibrary.simpleMessage(
       "To use the app, navigate through the menu and select the desired feature (translate thoughts, access word bank, user profile). Detailed tutorials are available in the tutorial section.",
     ),
@@ -98,7 +104,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "getInvolvedTitle": MessageLookupByLibrary.simpleMessage("Get Involved"),
     "goBack": MessageLookupByLibrary.simpleMessage("Go Back"),
     "goToTutorial": MessageLookupByLibrary.simpleMessage("Go to Tutorial"),
-    "headsetsFound": m0,
+    "headsetsFound": m1,
     "helpAndGuide": MessageLookupByLibrary.simpleMessage("Help & Guide"),
     "helpAndSupport": MessageLookupByLibrary.simpleMessage("Help and Support"),
     "helpSubtitle": MessageLookupByLibrary.simpleMessage(
@@ -126,6 +132,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "noCategoriesFound": MessageLookupByLibrary.simpleMessage(
       "No categories found",
     ),
+    "noConversations": MessageLookupByLibrary.simpleMessage(
+      "Nothing to show here",
+    ),
     "noConversationsFound": MessageLookupByLibrary.simpleMessage(
       "No conversations found",
     ),
@@ -149,10 +158,18 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "recite": MessageLookupByLibrary.simpleMessage("Recite"),
     "reciteAgain": MessageLookupByLibrary.simpleMessage("Recite Again"),
+    "reciteThisSentence": MessageLookupByLibrary.simpleMessage(
+      "Recite this sentence",
+    ),
     "reciteThoughtLabel": MessageLookupByLibrary.simpleMessage(
       "Reciting Your Thought",
     ),
     "regenerate": MessageLookupByLibrary.simpleMessage("Regenerate"),
+    "regenerating": MessageLookupByLibrary.simpleMessage("Regenerating..."),
+    "regenerationFailed": MessageLookupByLibrary.simpleMessage(
+      "Failed to regenerate sentence",
+    ),
+    "rephraseHint": MessageLookupByLibrary.simpleMessage("Rephrase it..."),
     "replay": MessageLookupByLibrary.simpleMessage("Replay"),
     "restart": MessageLookupByLibrary.simpleMessage("Restart"),
     "returnToThinking": MessageLookupByLibrary.simpleMessage(

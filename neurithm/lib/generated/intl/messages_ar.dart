@@ -20,7 +20,9 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'ar';
 
-  static String m0(count) => "تم العثور على ${count} سماعة/سماعات";
+  static String m0(error) => "خطأ: ${error}";
+
+  static String m1(count) => "تم العثور على ${count} سماعة/سماعات";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -53,6 +55,9 @@ class MessageLookup extends MessageLookupByLibrary {
       "اتصل بسماعة الرأس",
     ),
     "conversationHistory": MessageLookupByLibrary.simpleMessage("سجل الجلسات"),
+    "customSentenceInstruction": MessageLookupByLibrary.simpleMessage(
+      "لم تجد الجملة المناسبة؟ اضغط إعادة التوليد أو اكتب نسختك الخاصة أدناه:",
+    ),
     "delete": MessageLookupByLibrary.simpleMessage("حذف"),
     "doneThinking": MessageLookupByLibrary.simpleMessage("انتهيت من التفكير"),
     "emailLabel": MessageLookupByLibrary.simpleMessage("البريد الإلكتروني"),
@@ -61,6 +66,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "endTime": MessageLookupByLibrary.simpleMessage("وقت الانتهاء"),
     "english": MessageLookupByLibrary.simpleMessage("الإنجليزية"),
+    "errorOccurred": m0,
     "faq1Answer": MessageLookupByLibrary.simpleMessage(
       "للاستخدام، تنقل من خلال القائمة واختر الميزة المطلوبة (ترجمة الأفكار، الوصول إلى بنك الكلمات، الملف الشخصي). توجد شروحات تفصيلية في قسم الدليل.",
     ),
@@ -91,7 +97,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "getInvolvedTitle": MessageLookupByLibrary.simpleMessage("شارك معنا"),
     "goBack": MessageLookupByLibrary.simpleMessage("الرجوع"),
     "goToTutorial": MessageLookupByLibrary.simpleMessage("اذهب إلى الدليل"),
-    "headsetsFound": m0,
+    "headsetsFound": m1,
     "helpAndGuide": MessageLookupByLibrary.simpleMessage("المساعدة والدليل"),
     "helpAndSupport": MessageLookupByLibrary.simpleMessage("المساعدة والدعم"),
     "helpSubtitle": MessageLookupByLibrary.simpleMessage(
@@ -119,6 +125,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "noCategoriesFound": MessageLookupByLibrary.simpleMessage(
       "لم يتم العثور على فئات",
     ),
+    "noConversations": MessageLookupByLibrary.simpleMessage(
+      "لا يوجد محتوى لعرضه",
+    ),
     "noConversationsFound": MessageLookupByLibrary.simpleMessage(
       "لا توجد جلسات",
     ),
@@ -142,8 +151,18 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "recite": MessageLookupByLibrary.simpleMessage("تشغيل"),
     "reciteAgain": MessageLookupByLibrary.simpleMessage("إعادة التلاوة"),
+    "reciteThisSentence": MessageLookupByLibrary.simpleMessage(
+      "انطق هذه الجملة",
+    ),
     "reciteThoughtLabel": MessageLookupByLibrary.simpleMessage("تلاوة فكرتك"),
     "regenerate": MessageLookupByLibrary.simpleMessage("إعادة توليد"),
+    "regenerating": MessageLookupByLibrary.simpleMessage(
+      "جاري إعادة التوليد...",
+    ),
+    "regenerationFailed": MessageLookupByLibrary.simpleMessage(
+      "فشل في إعادة توليد الجملة",
+    ),
+    "rephraseHint": MessageLookupByLibrary.simpleMessage("أعد صياغتها..."),
     "replay": MessageLookupByLibrary.simpleMessage("إعادة تشغيل"),
     "restart": MessageLookupByLibrary.simpleMessage("إعادة البدء"),
     "returnToThinking": MessageLookupByLibrary.simpleMessage(

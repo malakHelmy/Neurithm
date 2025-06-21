@@ -53,7 +53,7 @@ class AuthService {
     try {
       // Create the user with email and password
       UserCredential userCredential = await _auth
-          .createUserWithEmailAndPassword(email: email, password: password);
+          .createUserWithEmailAndPassword(email: email.trim(), password: password);
       User? user = userCredential.user;
 
       if (user != null) {
@@ -78,7 +78,7 @@ class AuthService {
       String email, String password) async {
     try {
       UserCredential userCredential = await _auth.signInWithEmailAndPassword(
-          email: email, password: password);
+          email: email.trim(), password: password);
       User? user = userCredential.user;
 
       if (user != null) {

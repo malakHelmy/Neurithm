@@ -38,7 +38,7 @@ ALT_LABEL_ENCODER_PATH = "models/label_encoder_eegnet_letters 81.31.pkl"
 OUTPUT_DIR = Path("processed_results")
 
 # Access the API key from the environment
-OPENROUTER_API_KEY = "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"
+OPENROUTER_API_KEY = ""
 OPENROUTER_API_URL = "https://openrouter.ai/api/v1/chat/completions"
 MODEL_NAME = "deepseek/deepseek-chat-v3-0324"
 MAX_RETRIES = 3

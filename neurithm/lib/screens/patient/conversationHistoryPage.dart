@@ -112,110 +112,126 @@ class _ConversationHistoryPageState extends State<ConversationHistoryPage> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         // Scrollable content area for conversation history
-                        ListView.builder(
-                          shrinkWrap: true,
-                          itemCount: _conversationHistory.length,
-                          itemBuilder: (context, index) {
-                            final history = _conversationHistory[index];
-                            final date = history['date'] ?? '';
-                            final content = history['content'] ?? '';
-                            final sessionId = history['sessionId'] ?? '';
-                            final predictionId = history['predictionId'] ?? '';
-
-                            // Split the date into start and end time
-                            List<String> dateRange = date.split(" - ");
-                            DateTime startTime = DateTime.parse(dateRange[0]);
-                            DateTime endTime = dateRange.length > 1
-                                ? DateTime.parse(dateRange[1])
-                                : DateTime.now();
-
-                            return Card(
-                              color: Colors.transparent,
-                              margin:
-                                  EdgeInsets.symmetric(vertical: spacing(8)),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              child: Padding(
-                                padding: EdgeInsets.all(spacing(10)),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Text(
-                                              '${t.sessionDate}: ${formatDate(startTime)}',
-                                              style: TextStyle(
-                                                fontSize: fontSize(16),
-                                                color: Colors.white,
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                            ),
-                                            IconButton(
-                                              icon: const Icon(
-                                                Icons.delete,
-                                                color: Colors.white,
-                                              ),
-                                              onPressed: () {
-                                                _deletePrediction(predictionId);
-                                              },
-                                            ),
-                                          ],
-                                        ),
-                                        SizedBox(height: spacing(5)),
-                                        Text(
-                                          content,
-                                          style: TextStyle(
-                                            fontSize: fontSize(18),
-                                            color: Colors.white,
-                                          ),
-                                        ),
-                                        SizedBox(height: spacing(5)),
-                                        Text(
-                                          '${t.startTime}: ${formatTime(startTime)}',
-                                          style: TextStyle(
-                                            fontSize: fontSize(14),
-                                            color: Colors.white54,
-                                          ),
-                                        ),
-                                        SizedBox(height: spacing(5)),
-                                        Text(
-                                          '${t.endTime}: ${formatTime(endTime)}',
-                                          style: TextStyle(
-                                            fontSize: fontSize(14),
-                                            color: Colors.white54,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    SizedBox(height: spacing(15)),
-
-                                    // Row(
-                                    //   mainAxisAlignment: MainAxisAlignment.end,
-                                    //   children: [
-                                    //     IconButton(
-                                    //       icon: const Icon(
-                                    //         Icons.delete_forever,
-                                    //         color: Colors.red,
-                                    //       ),
-                                    //       onPressed: () {
-                                    //         _deleteSession(sessionId);
-                                    //       },
-                                    //     ),
-                                    //   ],
-                                    // ),
-                                  ],
+                        _conversationHistory.length == 0
+                            ? SizedBox(
+                                height: 600,
+                                child: Center(
+                                  child: Text(
+                                    t.noConversationsFound,
+                                    style: TextStyle(fontSize: 18),
+                                  ),
                                 ),
+                              )
+                            : ListView.builder(
+                                shrinkWrap: true,
+                                itemCount: _conversationHistory.length,
+                                itemBuilder: (context, index) {
+                                  final history = _conversationHistory[index];
+                                  final date = history['date'] ?? '';
+                                  final content = history['content'] ?? '';
+                                  final sessionId = history['sessionId'] ?? '';
+                                  final predictionId =
+                                      history['predictionId'] ?? '';
+
+                                  // Split the date into start and end time
+                                  List<String> dateRange = date.split(" - ");
+                                  DateTime startTime =
+                                      DateTime.parse(dateRange[0]);
+                                  DateTime endTime = dateRange.length > 1
+                                      ? DateTime.parse(dateRange[1])
+                                      : DateTime.now();
+
+                                  return Card(
+                                    color: Colors.transparent,
+                                    margin: EdgeInsets.symmetric(
+                                        vertical: spacing(8)),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    child: Padding(
+                                      padding: EdgeInsets.all(spacing(10)),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                children: [
+                                                  Text(
+                                                    '${t.sessionDate}: ${formatDate(startTime)}',
+                                                    style: TextStyle(
+                                                      fontSize: fontSize(16),
+                                                      color: Colors.white,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    ),
+                                                  ),
+                                                  IconButton(
+                                                    icon: const Icon(
+                                                      Icons.delete,
+                                                      color: Colors.white,
+                                                    ),
+                                                    onPressed: () {
+                                                      _deletePrediction(
+                                                          predictionId);
+                                                    },
+                                                  ),
+                                                ],
+                                              ),
+                                              SizedBox(height: spacing(5)),
+                                              Text(
+                                                content,
+                                                style: TextStyle(
+                                                  fontSize: fontSize(18),
+                                                  color: Colors.white,
+                                                ),
+                                              ),
+                                              SizedBox(height: spacing(5)),
+                                              Text(
+                                                '${t.startTime}: ${formatTime(startTime)}',
+                                                style: TextStyle(
+                                                  fontSize: fontSize(14),
+                                                  color: Colors.white54,
+                                                ),
+                                              ),
+                                              SizedBox(height: spacing(5)),
+                                              Text(
+                                                '${t.endTime}: ${formatTime(endTime)}',
+                                                style: TextStyle(
+                                                  fontSize: fontSize(14),
+                                                  color: Colors.white54,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          SizedBox(height: spacing(15)),
+
+                                          // Row(
+                                          //   mainAxisAlignment: MainAxisAlignment.end,
+                                          //   children: [
+                                          //     IconButton(
+                                          //       icon: const Icon(
+                                          //         Icons.delete_forever,
+                                          //         color: Colors.red,
+                                          //       ),
+                                          //       onPressed: () {
+                                          //         _deleteSession(sessionId);
+                                          //       },
+                                          //     ),
+                                          //   ],
+                                          // ),
+                                        ],
+                                      ),
+                                    ),
+                                  );
+                                },
                               ),
-                            );
-                          },
-                        ),
                       ],
                     ),
                   ),

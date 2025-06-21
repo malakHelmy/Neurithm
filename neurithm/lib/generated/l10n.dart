@@ -800,10 +800,10 @@ class S {
     );
   }
 
-  /// `Choose Your Preferred\nCorrection`
+  /// `Choose Your Preferred Correction`
   String get chooseCorrectionLabel {
     return Intl.message(
-      'Choose Your Preferred\nCorrection',
+      'Choose Your Preferred Correction',
       name: 'chooseCorrectionLabel',
       desc: '',
       args: [],
@@ -1008,6 +1008,76 @@ class S {
   /// `Go Back`
   String get goBack {
     return Intl.message('Go Back', name: 'goBack', desc: '', args: []);
+  }
+
+  /// `Regenerating...`
+  String get regenerating {
+    return Intl.message(
+      'Regenerating...',
+      name: 'regenerating',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Rephrase it...`
+  String get rephraseHint {
+    return Intl.message(
+      'Rephrase it...',
+      name: 'rephraseHint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Didn't find the right sentence? Press regenerate or write your own version below:`
+  String get customSentenceInstruction {
+    return Intl.message(
+      'Didn\'t find the right sentence? Press regenerate or write your own version below:',
+      name: 'customSentenceInstruction',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Recite this sentence`
+  String get reciteThisSentence {
+    return Intl.message(
+      'Recite this sentence',
+      name: 'reciteThisSentence',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Error: {error}`
+  String errorOccurred(Object error) {
+    return Intl.message(
+      'Error: $error',
+      name: 'errorOccurred',
+      desc: '',
+      args: [error],
+    );
+  }
+
+  /// `Failed to regenerate sentence`
+  String get regenerationFailed {
+    return Intl.message(
+      'Failed to regenerate sentence',
+      name: 'regenerationFailed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Nothing to show here`
+  String get noConversations {
+    return Intl.message(
+      'Nothing to show here',
+      name: 'noConversations',
+      desc: '',
+      args: [],
+    );
   }
 }
 

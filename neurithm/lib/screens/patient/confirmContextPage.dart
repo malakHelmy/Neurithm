@@ -9,6 +9,9 @@ import 'package:neurithm/services/confirmContextService.dart';
 import 'package:neurithm/services/signalReadingService.dart';
 import 'package:neurithm/widgets/appBar.dart';
 import 'package:neurithm/widgets/wavesBackground.dart';
+import 'dart:convert';
+import 'dart:io';
+import 'package:http/http.dart' as http;
 
 class ConfirmContextPage extends StatefulWidget {
   final List<String> correctedTexts;
@@ -43,48 +46,6 @@ class _ConfirmationPageState extends State<ConfirmContextPage> {
       setState(() {
         _currentUser = user;
       });
-    }
-  }
-
-  Future<void> _handleRegenerate() async {
-    if (_selectedText != null) {
-      try {
-        String aiModelId;
-
-        if (!_regenerationDone) {
-          // First time regenerate
-          aiModelId = await confirmContextService.getAiModelId('EEGNet');
-
-          // Create FlagModel without correctText
-          FlagModel flagModel = FlagModel(
-            sessionId: widget.sessionId,
-            modelId: aiModelId,
-            correctText: null,
-          );
-
-          // Save and capture document ID
-          _flagDocumentId =
-              await confirmContextService.saveFlagAndReturnId(flagModel);
-        } else {
-          // Subsequent regenerations (EEG Transformer)
-          aiModelId =
-              await confirmContextService.getAiModelId('EEG Transformer');
-          // (no need to save anything for transformer on regenerate)
-        }
-
-        setState(() {
-          _regenerationDone = true;
-          _isRegenerating = true;
-        });
-
-        await Future.delayed(const Duration(seconds: 3), () {
-          setState(() => _isRegenerating = false);
-        });
-      } catch (e) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error: $e')),
-        );
-      }
     }
   }
 
@@ -124,6 +85,52 @@ class _ConfirmationPageState extends State<ConfirmContextPage> {
   @override
   Widget build(BuildContext context) {
     final t = AppLocalizations.of(context)!;
+    Future<void> _handleRegenerate() async {
+      try {
+        setState(() {
+          _isRegenerating = true;
+        });
+
+        var response = await http.post(
+          Uri.parse('https://62c5-45-243-241-52.ngrok-free.app/regenerate'),
+          headers: {'Content-Type': 'application/json'},
+          body: json.encode({
+            'num_options': 5,
+          }),
+        );
+
+        if (response.statusCode == 200) {
+          var data = json.decode(response.body);
+
+          // Extract the corrected texts from the response
+          List<String> correctedTexts =
+              List<String>.from(data['corrected_texts']);
+          print("Corrected texts: $correctedTexts");
+
+          // Update the UI to show the corrected texts
+          setState(() {
+            widget.correctedTexts.clear();
+            widget.correctedTexts.addAll(correctedTexts);
+            _regenerationDone = true;
+          });
+        } else {
+          print("Failed to regenerate: ${response.statusCode}");
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text(t.regenerationFailed),
+          ));
+        }
+      } catch (e) {
+        print("Error occurred: $e");
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text('Error: $e'),
+        ));
+      } finally {
+        setState(() {
+          _isRegenerating = false;
+        });
+      }
+    }
+
     Widget _actionButtons() {
       return Column(
         children: [
@@ -244,6 +251,19 @@ class _ConfirmationPageState extends State<ConfirmContextPage> {
 
     return Scaffold(
       appBar: AppBar(
+        title: Padding(
+          padding: const EdgeInsets.only(top: 8.0),
+          child: Text(
+            t.chooseCorrectionLabel,
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+              fontSize: 22,
+              fontWeight: FontWeight.w900,
+              fontFamily: 'Lato',
+              color: Colors.white,
+            ),
+          ),
+        ),
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
@@ -256,199 +276,198 @@ class _ConfirmationPageState extends State<ConfirmContextPage> {
       body: Container(
         decoration: gradientBackground,
         child: Stack(
-          alignment: Alignment.center,
           children: [
-            Positioned.fill(
-              child: Container(
-                decoration: gradientBackground,
-                child: wavesBackground(
-                  getScreenWidth(context),
-                  getScreenHeight(context),
+            AspectRatio(
+              aspectRatio: getScreenWidth(context) / getScreenHeight(context),
+              child: Opacity(
+                opacity: 0.30,
+                child: Image.asset(
+                  'assets/images/waves.jpg',
+                  fit: BoxFit.cover,
                 ),
               ),
             ),
-            Padding(
-              padding: EdgeInsets.symmetric(
-                horizontal: spacing(15, getScreenHeight(context)),
-              ),
-              child: _isRegenerating
-                  ? const Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        CircularProgressIndicator(
-                          valueColor:
-                              AlwaysStoppedAnimation<Color>(Colors.white),
-                        ),
-                        SizedBox(height: 20),
-                        Text(
-                          "Regenerating...",
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w500,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ],
-                    )
-                  : SingleChildScrollView(
-                    child: Column(
+            Center(
+              child: Padding(
+                padding: EdgeInsets.symmetric(
+                  horizontal: spacing(15, getScreenHeight(context)),
+                ),
+                child: _isRegenerating
+                    ?  Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          SizedBox(height: spacing(50, getScreenHeight(context))),
+                          CircularProgressIndicator(
+                            valueColor:
+                                AlwaysStoppedAnimation<Color>(Colors.white),
+                          ),
+                          const SizedBox(height: 20),
                           Text(
-                            t.chooseCorrectionLabel,
-                            textAlign: TextAlign.center,
+                            t.regenerating,
                             style: const TextStyle(
-                              fontSize: 22,
-                              fontWeight: FontWeight.w900,
-                              fontFamily: 'Lato',
+                              fontSize: 18,
+                              fontWeight: FontWeight.w500,
                               color: Colors.white,
                             ),
                           ),
-                          // Display all corrected text options
-                          SizedBox(
-                            height: 300,
-                            child: ListView.builder(
-                              shrinkWrap: true,
-                              itemCount: widget.correctedTexts.length,
-                            
-                              physics: AlwaysScrollableScrollPhysics(),
-                              itemBuilder: (context, index) {
-                                return Padding(
-                                  padding:
-                                      const EdgeInsets.only(bottom: 15.0),
-                                  child: ElevatedButton(
-                                    onPressed: () async {
-                                      setState(() {
-                                        _selectedText =
-                                            widget.correctedTexts[index];
-                                      });
-                                                
-                                      if (_regenerationDone &&
-                                          _flagDocumentId != null) {
-                                        await confirmContextService
-                                            .updateFlagCorrectText(
-                                          documentId: _flagDocumentId!,
-                                          correctText: _selectedText!,
-                                        );
-                                      }
-                                    },
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: _selectedText ==
-                                              widget.correctedTexts[index]
-                                          ? const Color.fromARGB(255, 148, 206, 253)
-                                          : Colors.white,
-                                      foregroundColor: Colors.black,
-                                      padding:
-                                          const EdgeInsets.symmetric(vertical: 16),
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(12),
+                        ],
+                      )
+                    : SingleChildScrollView(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            SizedBox(
+                              height: 30,
+                            ),
+                            // Display all corrected text options
+                            SizedBox(
+                              child: ListView.builder(
+                                shrinkWrap: true,
+                                itemCount: widget.correctedTexts.length,
+                                physics: AlwaysScrollableScrollPhysics(),
+                                itemBuilder: (context, index) {
+                                  return Padding(
+                                    padding:
+                                        const EdgeInsets.only(bottom: 15.0),
+                                    child: ElevatedButton(
+                                      onPressed: () async {
+                                        setState(() {
+                                          _selectedText =
+                                              widget.correctedTexts[index];
+                                        });
+
+                                        if (_regenerationDone &&
+                                            _flagDocumentId != null) {
+                                          await confirmContextService
+                                              .updateFlagCorrectText(
+                                            documentId: _flagDocumentId!,
+                                            correctText: _selectedText!,
+                                          );
+                                        }
+                                      },
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: _selectedText ==
+                                                widget.correctedTexts[index]
+                                            ? const Color.fromARGB(
+                                                255, 148, 206, 253)
+                                            : Colors.white,
+                                        foregroundColor: Colors.black,
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 16),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(12),
+                                        ),
+                                        minimumSize:
+                                            const Size(double.infinity, 50),
                                       ),
-                                      minimumSize: const Size(double.infinity, 50),
+                                      child: Text(
+                                        widget.correctedTexts[index],
+                                        style: const TextStyle(fontSize: 18),
+                                      ),
                                     ),
-                                    child: Text(
-                                      widget.correctedTexts[index],
-                                      style: const TextStyle(fontSize: 18),
-                                    ),
-                                  ),
-                                );
-                              },
-                            ),
-                          ),
-                    
-                          SizedBox(height: spacing(10, getScreenHeight(context))),
-                          _actionButtons(),
-                          SizedBox(height: spacing(40, getScreenHeight(context))),
-                          if (_regenerationDone) ...[
-                            const Padding(
-                              padding: EdgeInsets.all(8.0),
-                              child: Text(
-                                "Didn't find the right sentence? Press regenerate or write your own version below:",
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ),
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 8.0),
-                              child: TextField(
-                                style: TextStyle(color: Color(0xFF1A2A3A)),
-                                decoration: InputDecoration(
-                                    filled: true,
-                                    fillColor: Colors.white,
-                                    hintText: "Rephrase it...",
-                                    hintStyle: TextStyle(color: Colors.grey),
-                                    border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(10),
-                                        borderSide:
-                                            BorderSide(color: Color(0xFF1A2A3A))),
-                                    focusedBorder: OutlineInputBorder(
-                                        borderSide: BorderSide(
-                                            color: Color(0xFF1A2A3A)))),
-                                onChanged: (value) {
-                                  setState(() {
-                                    _selectedText = value;
-                                  });
+                                  );
                                 },
                               ),
                             ),
-                            SizedBox(height: 15),
                             SizedBox(
-                              width: double.infinity,
-                              child: ElevatedButton.icon(
-                                onPressed: _selectedText == null
-                                    ? null
-                                    : () async {
-                                        await _handleRecite();
-                    
-                                        // Save FlagModel for EEGNet
-                                        String eegNetModelId =
-                                            await confirmContextService
-                                                .getAiModelId('EEGNet');
-                                        FlagModel eegNetFlag = FlagModel(
-                                          sessionId: widget.sessionId,
-                                          modelId: eegNetModelId,
-                                          correctText: _selectedText,
-                                        );
-                                        await confirmContextService
-                                            .saveFlag(eegNetFlag);
-                    
-                                        // Save FlagModel for EEG Transformer
-                                        String transformerModelId =
-                                            await confirmContextService
-                                                .getAiModelId('EEG Transformer');
-                                        FlagModel transformerFlag = FlagModel(
-                                          sessionId: widget.sessionId,
-                                          modelId: transformerModelId,
-                                          correctText: _selectedText,
-                                        );
-                                        await confirmContextService
-                                            .saveFlag(transformerFlag);
-                                      },
-                                icon: Icon(Icons.volume_up, color: Colors.white),
-                                label: Text(
-                                  "Recite this sentence",
+                                height: spacing(10, getScreenHeight(context))),
+                            _actionButtons(),
+                            SizedBox(
+                                height: spacing(10, getScreenHeight(context))),
+                            if (_regenerationDone) ...[
+                               Padding(
+                                padding: EdgeInsets.all(8.0),
+                                child: Text(
+                                  t.customSentenceInstruction,
                                   style: TextStyle(
-                                      color: Colors.white, fontSize: 18),
-                                ),
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: Color(0xFF1A2A3A),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(50),
+                                    fontSize: 16,
+                                    color: Colors.white,
                                   ),
-                                  padding: EdgeInsets.symmetric(
-                                      vertical:
-                                          spacing(12, getScreenHeight(context))),
                                 ),
                               ),
-                            ),
-                            SizedBox(height: 15),
+                              Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 8.0),
+                                child: TextField(
+                                  style: TextStyle(color: Color(0xFF1A2A3A)),
+                                  decoration: InputDecoration(
+                                      filled: true,
+                                      fillColor: Colors.white,
+                                      hintText: t.rephraseHint,
+                                      hintStyle: TextStyle(color: Colors.grey),
+                                      border: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                          borderSide: BorderSide(
+                                              color: Color(0xFF1A2A3A))),
+                                      focusedBorder: OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                              color: Color(0xFF1A2A3A)))),
+                                  onChanged: (value) {
+                                    setState(() {
+                                      _selectedText = value;
+                                    });
+                                  },
+                                ),
+                              ),
+                              SizedBox(height: 15),
+                              SizedBox(
+                                width: double.infinity,
+                                child: ElevatedButton.icon(
+                                  onPressed: _selectedText == null
+                                      ? null
+                                      : () async {
+                                          await _handleRecite();
+
+                                          // Save FlagModel for EEGNet
+                                          String eegNetModelId =
+                                              await confirmContextService
+                                                  .getAiModelId('EEGNet');
+                                          FlagModel eegNetFlag = FlagModel(
+                                            sessionId: widget.sessionId,
+                                            modelId: eegNetModelId,
+                                            correctText: _selectedText,
+                                          );
+                                          await confirmContextService
+                                              .saveFlag(eegNetFlag);
+
+                                          // Save FlagModel for EEG Transformer
+                                          String transformerModelId =
+                                              await confirmContextService
+                                                  .getAiModelId(
+                                                      'EEG Transformer');
+                                          FlagModel transformerFlag = FlagModel(
+                                            sessionId: widget.sessionId,
+                                            modelId: transformerModelId,
+                                            correctText: _selectedText,
+                                          );
+                                          await confirmContextService
+                                              .saveFlag(transformerFlag);
+                                        },
+                                  icon: Icon(Icons.volume_up,
+                                      color: Colors.white),
+                                  label: Text(
+                                    t.reciteThisSentence,
+                                    style: TextStyle(
+                                        color: Colors.white, fontSize: 18),
+                                  ),
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Color(0xFF1A2A3A),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(50),
+                                    ),
+                                    padding: EdgeInsets.symmetric(
+                                        vertical: spacing(
+                                            12, getScreenHeight(context))),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(height: 15),
+                            ],
                           ],
-                        ],
+                        ),
                       ),
-                  ),
+              ),
             ),
           ],
         ),

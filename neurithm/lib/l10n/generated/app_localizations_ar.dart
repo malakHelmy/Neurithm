@@ -358,4 +358,27 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get goBack => 'الرجوع';
+
+  @override
+  String get regenerating => 'جاري إعادة التوليد...';
+
+  @override
+  String get rephraseHint => 'أعد صياغتها...';
+
+  @override
+  String get customSentenceInstruction => 'لم تجد الجملة المناسبة؟ اضغط إعادة التوليد أو اكتب نسختك الخاصة أدناه:';
+
+  @override
+  String get reciteThisSentence => 'انطق هذه الجملة';
+
+  @override
+  String errorOccurred(Object error) {
+    return 'خطأ: $error';
+  }
+
+  @override
+  String get regenerationFailed => 'فشل في إعادة توليد الجملة';
+
+  @override
+  String get noConversations => 'لا يوجد محتوى لعرضه';
 }
