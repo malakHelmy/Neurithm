@@ -65,7 +65,7 @@ class ConfirmContextService {
 
   Future<String> saveFlagAndReturnId(FlagModel flagModel) async {
     final docRef = await FirebaseFirestore.instance
-        .collection('flags')
+        .collection('flagModel')
         .add(flagModel.toMap());
     return docRef.id;
   }
@@ -75,7 +75,7 @@ class ConfirmContextService {
     required String correctText,
   }) async {
     await FirebaseFirestore.instance
-        .collection('flags')
+        .collection('flagModel')
         .doc(documentId)
         .update({'correctText': correctText});
   }
