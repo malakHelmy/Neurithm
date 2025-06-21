@@ -17,7 +17,7 @@ class Biometricauth {
 
       if (availableBiometric.isNotEmpty) {
         bool authenticated = await auth.authenticate(
-          localizedReason: "Scan your finger to authenticate",
+          localizedReason: "Authenticate using biometrics",
         );
         UserPreferences.saveBiometricAuth(email, password);
       }
