@@ -498,45 +498,77 @@ def restart():
         
 @app.route('/regenerate', methods=['POST'])
 def regenerate():
-    """Regenerate predictions for a specific preprocessed word folder using the EEGTransformer model"""
+    """
+    Regenerate the full sentence from the last N wordX folders,
+    where N = number of words in concatenated_word.
+    """
+    global concatenated_word
     try:
-        data = request.json
-        word_folder = data.get('word_folder')
-        num_options = data.get('num_options', 5)
-
-        if not word_folder:
-            return jsonify(error="Missing 'word_folder' in request."), 400
-
-        # Updated base path
+        num_options = request.args.get('num_options', default=5, type=int)
         base_path = "processed_results"
-        full_path = os.path.join(base_path, word_folder)
 
-        if not os.path.exists(full_path):
-            return jsonify(error=f"Folder '{full_path}' not found."), 404
+        # Get how many words are in the concatenated sentence
+        num_words = len(concatenated_word.strip().split())
 
-        logger.info(f"♻ Regenerating predictions from folder: {full_path}")
+        if num_words == 0:
+            return jsonify(error="No concatenated sentence to match folders."), 400
 
-        predictions = run_predictions_in_memory(full_path, ALT_MODEL_PATH, ALT_LABEL_ENCODER_PATH, alt_model=True)
+        # Get all wordX folders sorted by number
+        all_word_folders = sorted(
+            [
+                f for f in os.listdir(base_path)
+                if os.path.isdir(os.path.join(base_path, f)) and f.startswith("word") and f[4:].isdigit()
+            ],
+            key=lambda x: int(x[4:])
+        )
 
-        logger.debug(f"EEGTransformer predictions: {json.dumps(predictions, ensure_ascii=False)}")
+        if len(all_word_folders) < num_words:
+            return jsonify(error="Not enough word folders to match the concatenated sentence."), 400
 
-        # Extract predicted letters (1st prediction per file)
-        letters = [pred[0] for pred in predictions.values() if isinstance(pred, list) and pred]
-        predicted_sequence = "".join(letters)
-        logger.info(f"Predicted letter sequence: {predicted_sequence}")
+        # Get only the last N folders based on number of words
+        word_folders = all_word_folders[-num_words:]
 
-        # Get corrected full-text options
-        corrected_texts = get_multiple_corrections(predicted_sequence, num_options)
+        logger.info(f"♻ Regenerating from folders: {word_folders}")
+
+        full_sentence = ""
+        folder_predictions = {}
+
+        for folder in word_folders:
+            folder_path = os.path.join(base_path, folder)
+
+            predictions = run_predictions_in_memory(
+                folder_path,
+                ALT_MODEL_PATH,
+                ALT_LABEL_ENCODER_PATH,
+                alt_model=True
+            )
+
+            if not predictions:
+                logger.warning(f"No predictions found in {folder_path}")
+                continue
+
+            letters = [pred[0] for pred in predictions.values() if isinstance(pred, list) and pred]
+            predicted_word = "".join(letters)
+            full_sentence += predicted_word + " "
+
+            folder_predictions[folder] = predicted_word
+
+        full_sentence = full_sentence.strip()
+        logger.info(f"🧠 Reconstructed sentence: {full_sentence}")
+
+        corrected_texts = get_sentence_corrections(full_sentence, num_options)
 
         return jsonify({
-            "regenerated_text": predicted_sequence,
+            "reconstructed_sentence": full_sentence,
             "corrected_texts": corrected_texts,
-            "folder_path": full_path
+            "word_folders": word_folders,
+            "per_folder_predictions": folder_predictions
         })
 
     except Exception as e:
         logger.exception("Regeneration failed.")
         return jsonify(error="Regeneration failed", message=str(e)), 500
+
    
 # Start ngrok tunnel for external access
 try:
