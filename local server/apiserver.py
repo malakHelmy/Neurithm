@@ -30,11 +30,11 @@ load_dotenv()
 
 # Constants
 NOTEBOOK_PATH = "notebooks/Letters_notebook_file_by_file.ipynb"
-MODEL_PATH = "models/eegnet_model_letters 81.31.keras"
-LABEL_ENCODER_PATH = "models/label_encoder_eegnet_letters 81.31.pkl"
+MODEL_PATH = "models/best_eegnet_hybrid_model.keras"
+LABEL_ENCODER_PATH = "models/label_encoder_eegnet_hybrid_final.pkl"
 # Add path for the alternative model
-ALT_MODEL_PATH = "models/best_eegnet_hybrid_model.keras"
-ALT_LABEL_ENCODER_PATH = "models/label_encoder_eegnet_hybrid_final.pkl"
+ALT_MODEL_PATH = "models/eegnet_model_letters 81.31.keras"
+ALT_LABEL_ENCODER_PATH = "models/label_encoder_eegnet_letters 81.31.pkl"
 OUTPUT_DIR = Path("processed_results")
 
 # Access the API key from the environment
