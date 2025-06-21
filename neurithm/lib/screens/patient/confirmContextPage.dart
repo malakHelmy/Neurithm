@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:neurithm/l10n/generated/app_localizations.dart';
+import 'package:neurithm/models/flagModel.dart';
 import 'package:neurithm/models/patient.dart';
 import 'package:neurithm/screens/patient/feedbackPage.dart';
 import 'package:neurithm/screens/patient/reciteContextPage.dart';
@@ -28,6 +29,7 @@ class _ConfirmationPageState extends State<ConfirmContextPage> {
   String? _selectedText;
   Patient? _currentUser;
   bool _regenerationDone = false;
+  String? _flagDocumentId;
 
   @override
   void initState() {
@@ -44,19 +46,31 @@ class _ConfirmationPageState extends State<ConfirmContextPage> {
     }
   }
 
-  // Action for "Regenerate"
   Future<void> _handleRegenerate() async {
     if (_selectedText != null) {
       try {
-        String aiModelId =
-            await confirmContextService.getAiModelId('EEG Transformer');
+        String aiModelId;
 
-        await confirmContextService.addPrediction(
-          sessionId: widget.sessionId,
-          aiModelId: aiModelId,
-          predictedText: _selectedText!,
-          isAccepted: false,
-        );
+        if (!_regenerationDone) {
+          // First time regenerate
+          aiModelId = await confirmContextService.getAiModelId('EEGNet');
+
+          // Create FlagModel without correctText
+          FlagModel flagModel = FlagModel(
+            sessionId: widget.sessionId,
+            modelId: aiModelId,
+            correctText: null,
+          );
+
+          // Save and capture document ID
+          _flagDocumentId =
+              await confirmContextService.saveFlagAndReturnId(flagModel);
+        } else {
+          // Subsequent regenerations (EEG Transformer)
+          aiModelId =
+              await confirmContextService.getAiModelId('EEG Transformer');
+          // (no need to save anything for transformer on regenerate)
+        }
 
         setState(() {
           _regenerationDone = true;
@@ -81,17 +95,16 @@ class _ConfirmationPageState extends State<ConfirmContextPage> {
         String aiModelId;
 
         if (_regenerationDone) {
+          aiModelId = await confirmContextService.getAiModelId('EEGNet');
+        } else {
           aiModelId =
               await confirmContextService.getAiModelId('EEG Transformer');
-        } else {
-          aiModelId = await confirmContextService.getAiModelId('EEGNet');
         }
 
         await confirmContextService.addPrediction(
           sessionId: widget.sessionId,
           aiModelId: aiModelId,
           predictedText: _selectedText!,
-          isAccepted: true,
         );
 
         Navigator.push(
@@ -167,7 +180,7 @@ class _ConfirmationPageState extends State<ConfirmContextPage> {
                       padding: EdgeInsets.symmetric(
                           vertical: spacing(12, getScreenHeight(context))),
                     ),
-                    child:  Row(
+                    child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Icon(Icons.volume_up,
@@ -292,11 +305,20 @@ class _ConfirmationPageState extends State<ConfirmContextPage> {
                                 padding:
                                     const EdgeInsets.symmetric(vertical: 8.0),
                                 child: ElevatedButton(
-                                  onPressed: () {
+                                  onPressed: () async {
                                     setState(() {
                                       _selectedText =
                                           widget.correctedTexts[index];
                                     });
+
+                                    if (_regenerationDone &&
+                                        _flagDocumentId != null) {
+                                      await confirmContextService
+                                          .updateFlagCorrectText(
+                                        documentId: _flagDocumentId!,
+                                        correctText: _selectedText!,
+                                      );
+                                    }
                                   },
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: _selectedText ==
@@ -324,6 +346,83 @@ class _ConfirmationPageState extends State<ConfirmContextPage> {
                         SizedBox(height: spacing(10, getScreenHeight(context))),
                         _actionButtons(),
                         SizedBox(height: spacing(40, getScreenHeight(context))),
+                        if (_regenerationDone) ...[
+                          const Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: Text(
+                              "Didn't find the right sentence? Press regenerate or write your own version below:",
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 8.0),
+                            child: TextField(
+                              decoration: InputDecoration(
+                                filled: true,
+                                fillColor: Colors.white,
+                                hintText: "Rephrase it...",
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                              ),
+                              onChanged: (value) {
+                                setState(() {
+                                  _selectedText = value;
+                                });
+                              },
+                            ),
+                          ),
+                          SizedBox(height: 8),
+                          ElevatedButton.icon(
+                            onPressed: _selectedText == null
+                                ? null
+                                : () async {
+                                    await _handleRecite();
+
+                                    // Save FlagModel for EEGNet
+                                    String eegNetModelId =
+                                        await confirmContextService
+                                            .getAiModelId('EEGNet');
+                                    FlagModel eegNetFlag = FlagModel(
+                                      sessionId: widget.sessionId,
+                                      modelId: eegNetModelId,
+                                      correctText: _selectedText,
+                                    );
+                                    await confirmContextService
+                                        .saveFlag(eegNetFlag);
+
+                                    // Save FlagModel for EEG Transformer
+                                    String transformerModelId =
+                                        await confirmContextService
+                                            .getAiModelId('EEG Transformer');
+                                    FlagModel transformerFlag = FlagModel(
+                                      sessionId: widget.sessionId,
+                                      modelId: transformerModelId,
+                                      correctText: _selectedText,
+                                    );
+                                    await confirmContextService
+                                        .saveFlag(transformerFlag);
+                                  },
+                            icon: Icon(Icons.volume_up, color: Colors.white),
+                            label: Text(
+                              "Recite",
+                              style: TextStyle(color: Colors.white),
+                            ),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Color(0xFF1A2A3A),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(50),
+                              ),
+                              padding: EdgeInsets.symmetric(
+                                  vertical:
+                                      spacing(12, getScreenHeight(context))),
+                            ),
+                          ),
+                        ],
                       ],
                     ),
             ),
