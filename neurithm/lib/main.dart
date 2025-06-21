@@ -4,13 +4,11 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:neurithm/l10n/generated/app_localizations.dart';
 import 'package:neurithm/models/locale.dart';
-import 'package:neurithm/screens/admin/adminDashboardPage.dart';
-import 'package:neurithm/screens/patient/confirmContextPage.dart';
 import 'package:neurithm/screens/welcomePage.dart';
 import 'package:provider/provider.dart';  
 
 Future<void> main() async {
-  //await dotenv.load();
+  await dotenv.load();
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: const FirebaseOptions(
@@ -45,10 +43,7 @@ class ThoughtToSpeechApp extends StatelessWidget {
               scaffoldBackgroundColor: const Color(0xFF1A2A3A),
               primaryColor: const Color(0xFF394B58),
             ),
-            home: ConfirmContextPage(
-              correctedTexts: [],
-              sessionId: '',
-            ),  // Home page
+            home: const WelcomePage(),  // Home page
           );
         },
       ),
