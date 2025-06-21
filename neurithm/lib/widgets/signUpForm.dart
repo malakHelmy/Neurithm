@@ -32,12 +32,12 @@ class _SignUpFormState extends State<SignUpForm> {
   final _confirmPasswordController = TextEditingController();
 
   String? _validateName(String? value) {
-    if (value == null || value.isEmpty) {
+    if (value == null || value.trim().isEmpty) {
       return 'Please enter a name';
     } else if (value.length < 3) {
       return 'Name should be at least 3 characters';
     }
-    if (!RegExp(r"^[a-zA-Z]+$").hasMatch(value)) {
+    if (!RegExp(r"^[a-zA-Z]+$").hasMatch(value.trim())) {
       return 'Name must contain only letters';
     }
     return null;
@@ -103,7 +103,7 @@ class _SignUpFormState extends State<SignUpForm> {
                   TextFormField(
                     controller: _passwordController,
                     obscureText: true,
-                    style: const TextStyle(fontSize: 18, color: Colors.black),
+                    style: const TextStyle(fontSize: 18, color: Color.fromARGB(255, 255, 255, 255)),
                     decoration: const InputDecoration(
                       labelText: "Password",
                       labelStyle:
@@ -122,7 +122,7 @@ class _SignUpFormState extends State<SignUpForm> {
                   TextFormField(
                     controller: _confirmPasswordController,
                     obscureText: true,
-                    style: const TextStyle(fontSize: 18, color: Colors.black),
+                    style: const TextStyle(fontSize: 18, color: Color.fromARGB(255, 255, 255, 255)),
                     decoration: const InputDecoration(
                       labelText: "Confirm Password",
                       labelStyle:
@@ -145,10 +145,10 @@ class _SignUpFormState extends State<SignUpForm> {
                         if (_formKey.currentState?.validate() ?? false) {
                           bool result =
                               await _authService.signUpWithEmailPassword(
-                            _firstNameController.text,
-                            _lastNameController.text,
-                            _emailController.text,
-                            _passwordController.text,
+                            _firstNameController.text.trim(),
+                            _lastNameController.text.trim(),
+                            _emailController.text.trim(),
+                            _passwordController.text.trim(),
                           );
       
                           if (result) {
