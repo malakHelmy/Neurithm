@@ -38,7 +38,6 @@ ALT_LABEL_ENCODER_PATH = "models/label_encoder_eegnet_letters 81.31.pkl"
 OUTPUT_DIR = Path("processed_results")
 
 # Access the API key from the environment
-OPENROUTER_API_KEY = "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"
 OPENROUTER_API_URL = "https://openrouter.ai/api/v1/chat/completions"
 MODEL_NAME = "deepseek/deepseek-chat-v3-0324"
 MAX_RETRIES = 3
@@ -301,7 +300,10 @@ concatenated_word = ""
 @app.route('/start_thinking', methods=['POST'])
 def start_thinking():
     global concatenated_word
+    global regenerated_concatenated_word
 
+    regenerated_concatenated_word = ""
+    
     if 'file' not in request.files:
         return jsonify(error="No file provided"), 400
 
@@ -445,6 +447,7 @@ def get_sentence_corrections(text, num_options=5):
 @app.route('/done_thinking', methods=['POST'])
 def done_thinking():
     global concatenated_word
+    global regenerated_concatenated_word
     
     try:
         if not concatenated_word:
@@ -467,6 +470,7 @@ def done_thinking():
             "corrected_texts": corrected_texts
         })
 
+        regenerated_concatenated_word = concatenated_word
         concatenated_word = ""
         return response
 
@@ -477,11 +481,13 @@ def done_thinking():
 
 @app.route('/restart', methods=['POST'])
 def restart():
-    global concatenated_word  # Declare the global variable
+    global concatenated_word
+    global regenerated_concatenated_word
 
     try:
         # Step 1: Reset the concatenated_word to an empty string
         concatenated_word = ""
+        regenerated_concatenated_word = ""
 
         # Log the reset action
         logger.debug("Concatenated word has been reset.")
@@ -502,13 +508,13 @@ def regenerate():
     Regenerate the full sentence from the last N wordX folders,
     where N = number of words in concatenated_word.
     """
-    global concatenated_word
+    global regenerated_concatenated_word
     try:
         num_options = request.args.get('num_options', default=5, type=int)
         base_path = "processed_results"
 
         # Get how many words are in the concatenated sentence
-        num_words = len(concatenated_word.strip().split())
+        num_words = len(regenerated_concatenated_word.strip().split())
 
         if num_words == 0:
             return jsonify(error="No concatenated sentence to match folders."), 400
@@ -556,7 +562,7 @@ def regenerate():
         full_sentence = full_sentence.strip()
         logger.info(f"🧠 Reconstructed sentence: {full_sentence}")
 
-        corrected_texts = get_sentence_corrections(full_sentence, num_options)
+        corrected_texts = get_multiple_corrections(full_sentence, num_options)
 
         return jsonify({
             "reconstructed_sentence": full_sentence,
@@ -568,7 +574,6 @@ def regenerate():
     except Exception as e:
         logger.exception("Regeneration failed.")
         return jsonify(error="Regeneration failed", message=str(e)), 500
-
    
 # Start ngrok tunnel for external access
 try:
